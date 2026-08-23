@@ -17,9 +17,9 @@ justify an architecture decision and hunt down failures.
 
 | File | Topic | Phases | What it gives you |
 |---|---|---|---|
-| `Cloud_hardware_roadmap_en.md` | The physical layer of computing (CPU, memory, storage, buses, network hardware, virtualization) | 0–7 | "Justify instance selection and bottlenecks **with physics**" |
-| `Cloud_linux_roadmap_en.md` | Linux / operating system (shell, permissions, processes, memory, boot/systemd, storage, networking-OS, hardening, automation, troubleshooting) | 0–12 | "**Read** a running server and **hunt down** the failure" |
-| `Cloud_network_fundamentals_roadmap_en.md` | Network fundamentals (OSI/encapsulation, addressing, subnet/CIDR, L2/L3, transport, DNS, NAT, HTTP/TLS, firewall) | 0–11 | "How does data flow, **why did the packet drop**" |
+| `Cloud_hardware_roadmap_fundamental_en.md` | The physical layer of computing (CPU, memory, storage, buses, network hardware, virtualization) | 0–7 | "Justify instance selection and bottlenecks **with physics**" |
+| `Cloud_linux_roadmap_fundamental_en.md` | Linux / operating system (shell, permissions, processes, memory, boot/systemd, storage, networking-OS, hardening, automation, troubleshooting) | 0–12 | "**Read** a running server and **hunt down** the failure" |
+| `Cloud_network_roadmap_fundamentals_en.md` | Network fundamentals (OSI/encapsulation, addressing, subnet/CIDR, L2/L3, transport, DNS, NAT, HTTP/TLS, firewall) | 0–11 | "How does data flow, **why did the packet drop**" |
 
 The three files bound each other cleanly (overlap is minimal): hardware takes the
 network *hardware*, the network map takes the network *protocol*; Linux defers

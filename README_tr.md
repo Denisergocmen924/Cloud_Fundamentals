@@ -19,7 +19,7 @@ avlayacak kadar derinden görmektir.
 |---|---|---|---|
 | `Cloud_hardware_roadmap_temel_tr.md` | Bilgisayarın fiziksel katmanı (CPU, bellek, depolama, bus, ağ donanımı, sanallaştırma) | 0–7 | "Instance seçimini ve darboğazı **fizikle** gerekçelendir" |
 | `Cloud_linux_roadmap_temel_tr.md` | Linux / işletim sistemi (shell, izinler, process, bellek, boot/systemd, depolama, ağ-OS, hardening, otomasyon, troubleshooting) | 0–12 | "Çalışan bir sunucuyu **oku** ve arızayı **avla**" |
-| `Cloud_network_fundamentals_roadmap_temel_tr.md` | Ağ temelleri (OSI/encapsulation, adresleme, subnet/CIDR, L2/L3, transport, DNS, NAT, HTTP/TLS, firewall) | 0–11 | "Veri nasıl akıyor, **paket neden düştü**" |
+| `Cloud_network_roadmap_temel_tr.md` | Ağ temelleri (OSI/encapsulation, adresleme, subnet/CIDR, L2/L3, transport, DNS, NAT, HTTP/TLS, firewall) | 0–11 | "Veri nasıl akıyor, **paket neden düştü**" |
 
 Üç dosya birbirini akıllıca sınırlar (örtüşme minimaldir): donanım ağ
 *donanımını*, network ağ *protokolünü* alır; Linux protokol teorisini network
