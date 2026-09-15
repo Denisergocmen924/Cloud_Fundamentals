@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ============================================================
+  DIAGRAM HEADER
+  ============================================================
+  file:             hw-3-05-raid-levels
+  subject:          Hardware
+  figure:           3.5
+  section:          3.5.2 Levels
+  subtitle:         Where the blocks go
+  type:             Comparison
+  source:           Cloud Learning With Workbooks/Cloud_hardware.roadmap/English_Hardware/Phase_3_Storage.md
+  boundary:         text from the start of the file down to the "Figure 3.5" line
+  height:           1200
+  number-conflicts: none
+  scale:            none
+  ============================================================
+
+  Rules: diagram_example/Standart_Rules_Diagrams.md
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
+
+  <style>
+    /* ---------- Text (§7) ---------- */
+    text { font-family: "Noto Sans", "DejaVu Sans", sans-serif; fill: #111827; }
+    .t-title        { font-size: 40px; font-weight: 700; }
+    .t-subtitle     { font-size: 26px; font-weight: 400; fill: #4B5563; }
+    .t-fig          { font-size: 24px; font-weight: 600; fill: #4B5563; }
+    .t-label        { font-size: 24px; font-weight: 400; }
+    .t-label-strong { font-size: 24px; font-weight: 600; }
+    .t-value        { font-size: 22px; font-weight: 400; font-family: "Noto Sans Mono", "DejaVu Sans Mono", monospace; }
+    .t-note         { font-size: 20px; font-weight: 400; fill: #4B5563; }
+    .t-sign         { font-size: 20px; font-weight: 400; fill: #6B7280; }
+    .t-problem      { fill: #DC2626; }
+
+    /* ---------- Domain colors (§8.2) — same meaning in every subject ---------- */
+    .c-compute  { fill: #DBEAFE; stroke: #1D4ED8; stroke-width: 2; }
+    .c-memory   { fill: #DCFCE7; stroke: #15803D; stroke-width: 2; }
+    .c-storage  { fill: #FFEDD5; stroke: #C2410C; stroke-width: 2; }
+    .c-io       { fill: #FEF9C3; stroke: #A16207; stroke-width: 2; }
+    .c-network  { fill: #EDE9FE; stroke: #6D28D9; stroke-width: 2; }
+    .c-virt     { fill: #CCFBF1; stroke: #0F766E; stroke-width: 2; }
+    .c-security { fill: #FCE7F3; stroke: #9D174D; stroke-width: 2; }
+    .c-software { fill: #F3F4F6; stroke: #374151; stroke-width: 2; }
+    .c-ink      { fill: #FFFFFF; stroke: #111827; stroke-width: 2; }
+    .c-problem  { fill: #FEE2E2; stroke: #DC2626; stroke-width: 2; }
+
+    /* ---------- Shapes (§9) ---------- */
+    .s-boundary { fill: none; stroke: #6B7280; stroke-width: 2; stroke-dasharray: 8 6; }
+    .s-unit     { fill: #374151; stroke: none; }
+    .s-dot      { fill: #111827; stroke: none; }
+
+    /* ---------- Lines (§10) ---------- */
+    .l-data    { fill: none; stroke: #111827; stroke-width: 4; }
+    .l-control { fill: none; stroke: #111827; stroke-width: 2; }
+    .l-async   { fill: none; stroke: #111827; stroke-width: 2; stroke-dasharray: 6 4; }
+    .l-problem { fill: none; stroke: #DC2626; stroke-width: 4; }
+    .l-plain   { fill: none; stroke: #374151; stroke-width: 2; }
+    .l-rule    { fill: none; stroke: #E5E7EB; stroke-width: 2; }
+    .l-guide   { fill: none; stroke: #E5E7EB; stroke-width: 2; }
+  </style>
+
+  <defs>
+    <marker id="arrow-data" viewBox="0 0 16 16" refX="14" refY="8" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M0,0 L16,8 L0,16 z" fill="#111827"/>
+    </marker>
+    <marker id="arrow-control" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M0,0 L12,6 L0,12 z" fill="#111827"/>
+    </marker>
+    <marker id="arrow-problem" viewBox="0 0 16 16" refX="14" refY="8" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M0,0 L16,8 L0,16 z" fill="#DC2626"/>
+    </marker>
+  </defs>
+
+  <!-- ===== background ===== -->
+  <g id="background">
+    <rect x="0" y="0" width="1600" height="1200" fill="#FFFFFF"/>
+  </g>
+
+  <!-- ===== title (§5.1) ===== -->
+  <g id="title">
+    <text class="t-title" x="64" y="88">3.5.2 Levels</text>
+    <text class="t-subtitle" x="64" y="132">Where the blocks go</text>
+    <text class="t-fig" x="1536" y="88" text-anchor="end">Figure 3.5</text>
+    <line class="l-rule" x1="64" y1="160" x2="1536" y2="160"/>
+  </g>
+
+  <!-- ===== content (§4: x 64–1536, y 184–1112) ===== -->
+  <g id="content">
+    <!-- 2×2 panels. Disk = c-storage box, data block = white, parity block (P) = gray. -->
+    <line class="s-boundary" x1="800" y1="184" x2="800" y2="1112"/>
+    <line class="s-boundary" x1="64" y1="652" x2="1536" y2="652"/>
+    <text class="t-label-strong" x="424" y="224" text-anchor="middle">RAID 0 — striping</text>
+    <rect class="c-storage" x="264" y="272" width="128" height="224" rx="4"/>
+    <text class="t-label" x="328" y="304" text-anchor="middle">Disk 1</text>
+    <rect class="c-ink" x="288" y="320" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="328" y="352" text-anchor="middle">A</text>
+    <rect class="c-ink" x="288" y="376" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="328" y="408" text-anchor="middle">C</text>
+    <rect class="c-ink" x="288" y="432" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="328" y="464" text-anchor="middle">E</text>
+    <rect class="c-storage" x="456" y="272" width="128" height="224" rx="4"/>
+    <text class="t-label" x="520" y="304" text-anchor="middle">Disk 2</text>
+    <rect class="c-ink" x="480" y="320" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="520" y="352" text-anchor="middle">B</text>
+    <rect class="c-ink" x="480" y="376" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="520" y="408" text-anchor="middle">D</text>
+    <rect class="c-ink" x="480" y="432" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="520" y="464" text-anchor="middle">F</text>
+    <text class="t-label" x="408" y="560" text-anchor="end">Capacity</text>
+    <text class="t-value" x="440" y="560">100%</text>
+    <text class="t-label" x="408" y="600" text-anchor="end">Survives</text>
+    <text class="t-value t-problem" x="440" y="600">none</text>
+    <text class="t-label-strong" x="1176" y="224" text-anchor="middle">RAID 1 — mirroring</text>
+    <rect class="c-storage" x="1016" y="272" width="128" height="224" rx="4"/>
+    <text class="t-label" x="1080" y="304" text-anchor="middle">Disk 1</text>
+    <rect class="c-ink" x="1040" y="320" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="1080" y="352" text-anchor="middle">A</text>
+    <rect class="c-ink" x="1040" y="376" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="1080" y="408" text-anchor="middle">B</text>
+    <rect class="c-ink" x="1040" y="432" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="1080" y="464" text-anchor="middle">C</text>
+    <rect class="c-storage" x="1208" y="272" width="128" height="224" rx="4"/>
+    <text class="t-label" x="1272" y="304" text-anchor="middle">Disk 2</text>
+    <rect class="c-ink" x="1232" y="320" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="1272" y="352" text-anchor="middle">A</text>
+    <rect class="c-ink" x="1232" y="376" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="1272" y="408" text-anchor="middle">B</text>
+    <rect class="c-ink" x="1232" y="432" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="1272" y="464" text-anchor="middle">C</text>
+    <text class="t-label" x="1160" y="560" text-anchor="end">Capacity</text>
+    <text class="t-value" x="1192" y="560">50%</text>
+    <text class="t-label" x="1160" y="600" text-anchor="end">Survives</text>
+    <text class="t-value" x="1192" y="600">1 disk lost</text>
+    <text class="t-label-strong" x="424" y="704" text-anchor="middle">RAID 5 — striping + parity (P)</text>
+    <rect class="c-storage" x="184" y="752" width="128" height="224" rx="4"/>
+    <text class="t-label" x="248" y="784" text-anchor="middle">Disk 1</text>
+    <rect class="c-ink" x="208" y="800" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="248" y="832" text-anchor="middle">A</text>
+    <rect class="c-ink" x="208" y="856" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="248" y="888" text-anchor="middle">C</text>
+    <rect class="c-software" x="208" y="912" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="248" y="944" text-anchor="middle">P</text>
+    <rect class="c-storage" x="360" y="752" width="128" height="224" rx="4"/>
+    <text class="t-label" x="424" y="784" text-anchor="middle">Disk 2</text>
+    <rect class="c-ink" x="384" y="800" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="424" y="832" text-anchor="middle">B</text>
+    <rect class="c-software" x="384" y="856" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="424" y="888" text-anchor="middle">P</text>
+    <rect class="c-ink" x="384" y="912" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="424" y="944" text-anchor="middle">E</text>
+    <rect class="c-storage" x="536" y="752" width="128" height="224" rx="4"/>
+    <text class="t-label" x="600" y="784" text-anchor="middle">Disk 3</text>
+    <rect class="c-software" x="560" y="800" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="600" y="832" text-anchor="middle">P</text>
+    <rect class="c-ink" x="560" y="856" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="600" y="888" text-anchor="middle">D</text>
+    <rect class="c-ink" x="560" y="912" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="600" y="944" text-anchor="middle">F</text>
+    <text class="t-label" x="408" y="1040" text-anchor="end">Capacity</text>
+    <text class="t-value" x="440" y="1040">(N-1)/N</text>
+    <text class="t-label" x="408" y="1080" text-anchor="end">Survives</text>
+    <text class="t-value" x="440" y="1080">1 disk lost</text>
+    <text class="t-label-strong" x="1176" y="704" text-anchor="middle">RAID 10 — striped mirrors</text>
+    <rect class="s-boundary" x="840" y="728" width="312" height="184"/>
+    <text class="t-note" x="856" y="756">RAID 1</text>
+    <rect class="s-boundary" x="1200" y="728" width="312" height="184"/>
+    <text class="t-note" x="1216" y="756">RAID 1</text>
+    <rect class="c-storage" x="856" y="776" width="128" height="112" rx="4"/>
+    <text class="t-label" x="920" y="808" text-anchor="middle">Disk 1</text>
+    <rect class="c-ink" x="880" y="824" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="920" y="856" text-anchor="middle">A</text>
+    <rect class="c-storage" x="1008" y="776" width="128" height="112" rx="4"/>
+    <text class="t-label" x="1072" y="808" text-anchor="middle">Disk 2</text>
+    <rect class="c-ink" x="1032" y="824" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="1072" y="856" text-anchor="middle">A</text>
+    <rect class="c-storage" x="1216" y="776" width="128" height="112" rx="4"/>
+    <text class="t-label" x="1280" y="808" text-anchor="middle">Disk 3</text>
+    <rect class="c-ink" x="1240" y="824" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="1280" y="856" text-anchor="middle">B</text>
+    <rect class="c-storage" x="1368" y="776" width="128" height="112" rx="4"/>
+    <text class="t-label" x="1432" y="808" text-anchor="middle">Disk 4</text>
+    <rect class="c-ink" x="1392" y="824" width="80" height="48" rx="4"/>
+    <text class="t-label-strong" x="1432" y="856" text-anchor="middle">B</text>
+    <path class="l-plain" d="M840,936 v16 H1512 v-16"/>
+    <text class="t-note" x="1176" y="984" text-anchor="middle">RAID 0 stripes across the pairs</text>
+    <text class="t-label" x="1160" y="1040" text-anchor="end">Capacity</text>
+    <text class="t-value" x="1192" y="1040">50%</text>
+    <text class="t-label" x="1160" y="1080" text-anchor="end">Survives</text>
+    <text class="t-value" x="1192" y="1080">1+ disk lost</text>
+  </g>
+
+  <!-- ===== footer (§5.2) — do not change ===== -->
+  <g id="footer">
+    <line class="l-rule" x1="64" y1="1136" x2="1536" y2="1136"/>
+    <text class="t-sign" x="64" y="1176" xml:space="preserve">Created by Denis Ergöçmen    GitHub: https://github.com/Denisergocmen924</text>
+  </g>
+
+</svg>

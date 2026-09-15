@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ============================================================
+  DIAGRAM HEADER
+  ============================================================
+  file:             hw-3-02-ssd-pages-blocks
+  subject:          Hardware
+  figure:           3.2
+  section:          3.2.4 Cell types
+  subtitle:         Pages, blocks and the FTL
+  type:             Anatomy
+  source:           Cloud Learning With Workbooks/Cloud_hardware.roadmap/English_Hardware/Phase_3_Storage.md
+  boundary:         text from the start of the file down to the "Figure 3.2" line
+  height:           900
+  number-conflicts: none
+  scale:            none
+  ============================================================
+
+  Rules: diagram_example/Standart_Rules_Diagrams.md
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+
+  <style>
+    /* ---------- Text (§7) ---------- */
+    text { font-family: "Noto Sans", "DejaVu Sans", sans-serif; fill: #111827; }
+    .t-title        { font-size: 40px; font-weight: 700; }
+    .t-subtitle     { font-size: 26px; font-weight: 400; fill: #4B5563; }
+    .t-fig          { font-size: 24px; font-weight: 600; fill: #4B5563; }
+    .t-label        { font-size: 24px; font-weight: 400; }
+    .t-label-strong { font-size: 24px; font-weight: 600; }
+    .t-value        { font-size: 22px; font-weight: 400; font-family: "Noto Sans Mono", "DejaVu Sans Mono", monospace; }
+    .t-note         { font-size: 20px; font-weight: 400; fill: #4B5563; }
+    .t-sign         { font-size: 20px; font-weight: 400; fill: #6B7280; }
+    .t-problem      { fill: #DC2626; }
+
+    /* ---------- Domain colors (§8.2) — same meaning in every subject ---------- */
+    .c-compute  { fill: #DBEAFE; stroke: #1D4ED8; stroke-width: 2; }
+    .c-memory   { fill: #DCFCE7; stroke: #15803D; stroke-width: 2; }
+    .c-storage  { fill: #FFEDD5; stroke: #C2410C; stroke-width: 2; }
+    .c-io       { fill: #FEF9C3; stroke: #A16207; stroke-width: 2; }
+    .c-network  { fill: #EDE9FE; stroke: #6D28D9; stroke-width: 2; }
+    .c-virt     { fill: #CCFBF1; stroke: #0F766E; stroke-width: 2; }
+    .c-security { fill: #FCE7F3; stroke: #9D174D; stroke-width: 2; }
+    .c-software { fill: #F3F4F6; stroke: #374151; stroke-width: 2; }
+    .c-ink      { fill: #FFFFFF; stroke: #111827; stroke-width: 2; }
+    .c-problem  { fill: #FEE2E2; stroke: #DC2626; stroke-width: 2; }
+
+    /* ---------- Shapes (§9) ---------- */
+    .s-boundary { fill: none; stroke: #6B7280; stroke-width: 2; stroke-dasharray: 8 6; }
+    .s-unit     { fill: #374151; stroke: none; }
+    .s-dot      { fill: #111827; stroke: none; }
+
+    /* ---------- Lines (§10) ---------- */
+    .l-data    { fill: none; stroke: #111827; stroke-width: 4; }
+    .l-control { fill: none; stroke: #111827; stroke-width: 2; }
+    .l-async   { fill: none; stroke: #111827; stroke-width: 2; stroke-dasharray: 6 4; }
+    .l-problem { fill: none; stroke: #DC2626; stroke-width: 4; }
+    .l-plain   { fill: none; stroke: #374151; stroke-width: 2; }
+    .l-rule    { fill: none; stroke: #E5E7EB; stroke-width: 2; }
+    .l-guide   { fill: none; stroke: #E5E7EB; stroke-width: 2; }
+  </style>
+
+  <defs>
+    <marker id="arrow-data" viewBox="0 0 16 16" refX="14" refY="8" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M0,0 L16,8 L0,16 z" fill="#111827"/>
+    </marker>
+    <marker id="arrow-control" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M0,0 L12,6 L0,12 z" fill="#111827"/>
+    </marker>
+    <marker id="arrow-problem" viewBox="0 0 16 16" refX="14" refY="8" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M0,0 L16,8 L0,16 z" fill="#DC2626"/>
+    </marker>
+  </defs>
+
+  <!-- ===== background ===== -->
+  <g id="background">
+    <rect x="0" y="0" width="1600" height="900" fill="#FFFFFF"/>
+  </g>
+
+  <!-- ===== title (§5.1) ===== -->
+  <g id="title">
+    <text class="t-title" x="64" y="88">3.2.4 Cell types</text>
+    <text class="t-subtitle" x="64" y="132">Pages, blocks and the FTL</text>
+    <text class="t-fig" x="1536" y="88" text-anchor="end">Figure 3.2</text>
+    <line class="l-rule" x1="64" y1="160" x2="1536" y2="160"/>
+  </g>
+
+  <!-- ===== content (§4: x 64–1536, y 184–812) ===== -->
+  <g id="content">
+    <!-- Two blocks of 8 pages each (real blocks: 128–256 pages). Page = 104×96, gap 16. -->
+
+    <!-- ===== Block A ===== -->
+    <rect class="c-storage" x="160" y="272" width="496" height="288" rx="4"/>
+    <text class="t-label-strong" x="176" y="304">Block A</text>
+    <rect class="c-ink" x="176" y="328" width="104" height="96" rx="4"/>
+    <text class="t-label" x="228" y="384" text-anchor="middle">LBA 1</text>
+    <rect class="c-ink" x="296" y="328" width="104" height="96" rx="4"/>
+    <text class="t-label" x="348" y="384" text-anchor="middle">LBA 2</text>
+    <rect class="c-software" x="416" y="328" width="104" height="96" rx="4"/>
+    <text class="t-label" x="468" y="368" text-anchor="middle">LBA 3</text>
+    <text class="t-note" x="468" y="400" text-anchor="middle">invalid</text>
+    <rect class="c-ink" x="536" y="328" width="104" height="96" rx="4"/>
+    <text class="t-label" x="588" y="384" text-anchor="middle">LBA 4</text>
+    <rect class="c-ink" x="176" y="440" width="104" height="96" rx="4"/>
+    <text class="t-label" x="228" y="496" text-anchor="middle">LBA 5</text>
+    <rect class="c-ink" x="296" y="440" width="104" height="96" rx="4"/>
+    <text class="t-note" x="348" y="496" text-anchor="middle">free</text>
+    <rect class="c-ink" x="416" y="440" width="104" height="96" rx="4"/>
+    <text class="t-note" x="468" y="496" text-anchor="middle">free</text>
+    <rect class="c-ink" x="536" y="440" width="104" height="96" rx="4"/>
+    <text class="t-note" x="588" y="496" text-anchor="middle">free</text>
+
+    <!-- ===== Block B ===== -->
+    <rect class="c-storage" x="960" y="272" width="496" height="288" rx="4"/>
+    <text class="t-label-strong" x="1440" y="304" text-anchor="end">Block B</text>
+    <rect class="c-io" x="976" y="328" width="104" height="96" rx="4"/>
+    <text class="t-label" x="1028" y="368" text-anchor="middle">LBA 3</text>
+    <text class="t-note" x="1028" y="400" text-anchor="middle">new</text>
+    <rect class="c-ink" x="1096" y="328" width="104" height="96" rx="4"/>
+    <text class="t-note" x="1148" y="384" text-anchor="middle">free</text>
+    <rect class="c-ink" x="1216" y="328" width="104" height="96" rx="4"/>
+    <text class="t-note" x="1268" y="384" text-anchor="middle">free</text>
+    <rect class="c-ink" x="1336" y="328" width="104" height="96" rx="4"/>
+    <text class="t-note" x="1388" y="384" text-anchor="middle">free</text>
+    <rect class="c-ink" x="976" y="440" width="104" height="96" rx="4"/>
+    <text class="t-note" x="1028" y="496" text-anchor="middle">free</text>
+    <rect class="c-ink" x="1096" y="440" width="104" height="96" rx="4"/>
+    <text class="t-note" x="1148" y="496" text-anchor="middle">free</text>
+    <rect class="c-ink" x="1216" y="440" width="104" height="96" rx="4"/>
+    <text class="t-note" x="1268" y="496" text-anchor="middle">free</text>
+    <rect class="c-ink" x="1336" y="440" width="104" height="96" rx="4"/>
+    <text class="t-note" x="1388" y="496" text-anchor="middle">free</text>
+
+    <!-- rewrite of LBA 3 goes to a free page elsewhere -->
+    <line class="l-data" x1="468" y1="328" x2="468" y2="240"/>
+    <line class="l-data" x1="468" y1="240" x2="1028" y2="240"/>
+    <line class="l-data" x1="1028" y1="240" x2="1028" y2="326" marker-end="url(#arrow-data)"/>
+    <text class="t-label" x="748" y="224" text-anchor="middle">update LBA 3 → write new page</text>
+
+    <!-- FTL mapping table -->
+    <rect class="c-software" x="688" y="328" width="240" height="96" rx="16"/>
+    <text class="t-label-strong" x="808" y="368" text-anchor="middle">FTL map</text>
+    <text class="t-value" x="808" y="400" text-anchor="middle">LBA 3 → B</text>
+    <line class="l-async" x1="928" y1="376" x2="974" y2="376" marker-end="url(#arrow-control)"/>
+
+    <!-- operation granularity -->
+    <text class="t-label-strong" x="160" y="632">Read and write: one page</text>
+    <text class="t-value" x="640" y="632">4–16 KiB</text>
+    <text class="t-label-strong" x="160" y="680">Erase: whole block</text>
+    <text class="t-value" x="640" y="680">128–256 pages (1–4 MiB)</text>
+    <text class="t-note" x="160" y="744">Invalid pages are erased later by garbage collection.</text>
+  </g>
+
+  <!-- ===== footer (§5.2) — do not change ===== -->
+  <g id="footer">
+    <line class="l-rule" x1="64" y1="836" x2="1536" y2="836"/>
+    <text class="t-sign" x="64" y="876" xml:space="preserve">Created by Denis Ergöçmen    GitHub: https://github.com/Denisergocmen924</text>
+  </g>
+
+</svg>

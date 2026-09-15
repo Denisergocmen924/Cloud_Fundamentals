@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ============================================================
+  DIAGRAM HEADER
+  ============================================================
+  file:             hw-0-04-half-adder
+  subject:          Hardware
+  figure:           0.4
+  section:          0.3.3 From gates to an adder circuit
+  subtitle:         Half adder: sum and carry
+  type:             Circuit
+  source:           Cloud Learning With Workbooks/Cloud_hardware.roadmap/English_Hardware/Phase_0_Numeric_Foundation.md
+  boundary:         text from the start of the file down to the "Figure 0.4" line
+  height:           900
+  number-conflicts: none
+  scale:            none
+  ============================================================
+
+  Rules: diagram_example/Standart_Rules_Diagrams.md
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+
+  <style>
+    /* ---------- Text (§7) ---------- */
+    text { font-family: "Noto Sans", "DejaVu Sans", sans-serif; fill: #111827; }
+    .t-title        { font-size: 40px; font-weight: 700; }
+    .t-subtitle     { font-size: 26px; font-weight: 400; fill: #4B5563; }
+    .t-fig          { font-size: 24px; font-weight: 600; fill: #4B5563; }
+    .t-label        { font-size: 24px; font-weight: 400; }
+    .t-label-strong { font-size: 24px; font-weight: 600; }
+    .t-value        { font-size: 22px; font-weight: 400; font-family: "Noto Sans Mono", "DejaVu Sans Mono", monospace; }
+    .t-note         { font-size: 20px; font-weight: 400; fill: #4B5563; }
+    .t-sign         { font-size: 20px; font-weight: 400; fill: #6B7280; }
+    .t-problem      { fill: #DC2626; }
+
+    /* ---------- Domain colors (§8.2) — same meaning in every subject ---------- */
+    .c-compute  { fill: #DBEAFE; stroke: #1D4ED8; stroke-width: 2; }
+    .c-memory   { fill: #DCFCE7; stroke: #15803D; stroke-width: 2; }
+    .c-storage  { fill: #FFEDD5; stroke: #C2410C; stroke-width: 2; }
+    .c-io       { fill: #FEF9C3; stroke: #A16207; stroke-width: 2; }
+    .c-network  { fill: #EDE9FE; stroke: #6D28D9; stroke-width: 2; }
+    .c-virt     { fill: #CCFBF1; stroke: #0F766E; stroke-width: 2; }
+    .c-security { fill: #FCE7F3; stroke: #9D174D; stroke-width: 2; }
+    .c-software { fill: #F3F4F6; stroke: #374151; stroke-width: 2; }
+    .c-ink      { fill: #FFFFFF; stroke: #111827; stroke-width: 2; }
+    .c-problem  { fill: #FEE2E2; stroke: #DC2626; stroke-width: 2; }
+
+    /* ---------- Shapes (§9) ---------- */
+    .s-boundary { fill: none; stroke: #6B7280; stroke-width: 2; stroke-dasharray: 8 6; }
+    .s-unit     { fill: #374151; stroke: none; }
+    .s-dot      { fill: #111827; stroke: none; }
+
+    /* ---------- Lines (§10) ---------- */
+    .l-data    { fill: none; stroke: #111827; stroke-width: 4; }
+    .l-control { fill: none; stroke: #111827; stroke-width: 2; }
+    .l-async   { fill: none; stroke: #111827; stroke-width: 2; stroke-dasharray: 6 4; }
+    .l-problem { fill: none; stroke: #DC2626; stroke-width: 4; }
+    .l-plain   { fill: none; stroke: #374151; stroke-width: 2; }
+    .l-rule    { fill: none; stroke: #E5E7EB; stroke-width: 2; }
+    .l-guide   { fill: none; stroke: #E5E7EB; stroke-width: 2; }
+  </style>
+
+  <defs>
+    <marker id="arrow-data" viewBox="0 0 16 16" refX="14" refY="8" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M0,0 L16,8 L0,16 z" fill="#111827"/>
+    </marker>
+    <marker id="arrow-control" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M0,0 L12,6 L0,12 z" fill="#111827"/>
+    </marker>
+    <marker id="arrow-problem" viewBox="0 0 16 16" refX="14" refY="8" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M0,0 L16,8 L0,16 z" fill="#DC2626"/>
+    </marker>
+  </defs>
+
+  <!-- ===== background ===== -->
+  <g id="background">
+    <rect x="0" y="0" width="1600" height="900" fill="#FFFFFF"/>
+  </g>
+
+  <!-- ===== title (§5.1) ===== -->
+  <g id="title">
+    <text class="t-title" x="64" y="88">0.3.3 From gates to an adder circuit</text>
+    <text class="t-subtitle" x="64" y="132">Half adder: sum and carry</text>
+    <text class="t-fig" x="1536" y="88" text-anchor="end">Figure 0.4</text>
+    <line class="l-rule" x1="64" y1="160" x2="1536" y2="160"/>
+  </g>
+
+  <!-- ===== content (§4: x 64–1536, y 184–812) ===== -->
+  <g id="content">
+    <!-- XOR on top (sum), AND below (carry). Junction dot = wires connected; a crossing without a dot is not connected. -->
+
+    <!-- Input A: straight to XOR, branch down to AND -->
+    <text class="t-label-strong" x="184" y="312" text-anchor="end">A</text>
+    <line class="l-control" x1="200" y1="304" x2="648" y2="304"/>
+    <circle class="s-dot" cx="400" cy="304" r="6"/>
+    <line class="l-control" x1="400" y1="304" x2="400" y2="528"/>
+    <line class="l-control" x1="400" y1="528" x2="640" y2="528"/>
+
+    <!-- Input B: straight to AND, branch up to XOR -->
+    <text class="t-label-strong" x="184" y="584" text-anchor="end">B</text>
+    <line class="l-control" x1="200" y1="576" x2="640" y2="576"/>
+    <circle class="s-dot" cx="320" cy="576" r="6"/>
+    <line class="l-control" x1="320" y1="576" x2="320" y2="352"/>
+    <line class="l-control" x1="320" y1="352" x2="648" y2="352"/>
+
+    <!-- XOR gate: OR body + extra back curve -->
+    <text class="t-label-strong" x="696" y="256" text-anchor="middle">XOR</text>
+    <path class="c-ink" d="M652,280 Q716,280 764,328 Q716,376 652,376 Q684,328 652,280 Z"/>
+    <path class="l-control" d="M636,280 Q668,328 636,376"/>
+    <line class="l-control" x1="764" y1="328" x2="880" y2="328"/>
+    <text class="t-label-strong" x="896" y="336">Sum</text>
+
+    <!-- AND gate -->
+    <text class="t-label-strong" x="688" y="480" text-anchor="middle">AND</text>
+    <path class="c-ink" d="M640,504 H688 A48,48 0 0 1 688,600 H640 Z"/>
+    <line class="l-control" x1="736" y1="552" x2="880" y2="552"/>
+    <text class="t-label-strong" x="896" y="560">Carry</text>
+
+    <!-- Truth table -->
+    <text class="t-label-strong" x="1104" y="296" text-anchor="middle">A</text>
+    <text class="t-label-strong" x="1176" y="296" text-anchor="middle">B</text>
+    <text class="t-label-strong" x="1296" y="296" text-anchor="middle">Sum</text>
+    <text class="t-label-strong" x="1424" y="296" text-anchor="middle">Carry</text>
+    <line class="l-control" x1="1064" y1="312" x2="1480" y2="312"/>
+    <text class="t-value" x="1104" y="352" text-anchor="middle">0</text>
+    <text class="t-value" x="1176" y="352" text-anchor="middle">0</text>
+    <text class="t-value" x="1296" y="352" text-anchor="middle">0</text>
+    <text class="t-value" x="1424" y="352" text-anchor="middle">0</text>
+    <text class="t-value" x="1104" y="400" text-anchor="middle">0</text>
+    <text class="t-value" x="1176" y="400" text-anchor="middle">1</text>
+    <text class="t-value" x="1296" y="400" text-anchor="middle">1</text>
+    <text class="t-value" x="1424" y="400" text-anchor="middle">0</text>
+    <text class="t-value" x="1104" y="448" text-anchor="middle">1</text>
+    <text class="t-value" x="1176" y="448" text-anchor="middle">0</text>
+    <text class="t-value" x="1296" y="448" text-anchor="middle">1</text>
+    <text class="t-value" x="1424" y="448" text-anchor="middle">0</text>
+    <text class="t-value" x="1104" y="496" text-anchor="middle">1</text>
+    <text class="t-value" x="1176" y="496" text-anchor="middle">1</text>
+    <text class="t-value" x="1296" y="496" text-anchor="middle">0</text>
+    <text class="t-value" x="1424" y="496" text-anchor="middle">1</text>
+
+    <text class="t-value" x="1064" y="584">Sum   = A XOR B</text>
+    <text class="t-value" x="1064" y="632">Carry = A AND B</text>
+
+    <text class="t-note" x="64" y="784">The same two inputs feed both gates.</text>
+  </g>
+
+  <!-- ===== footer (§5.2) — do not change ===== -->
+  <g id="footer">
+    <line class="l-rule" x1="64" y1="836" x2="1536" y2="836"/>
+    <text class="t-sign" x="64" y="876" xml:space="preserve">Created by Denis Ergöçmen    GitHub: https://github.com/Denisergocmen924</text>
+  </g>
+
+</svg>
