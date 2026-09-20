@@ -1,8 +1,10 @@
 # Linux — Offline Çalışma Kitabı
 
 > **Cloud Engineer Temel Yol Haritası — Linux / İşletim Sistemi**
-> Bu, [`Cloud_linux_roadmap_temel_tr.md`](../Cloud_linux_roadmap_temel_tr.md) yol
+> Bu, [`Cloud_linux_roadmap_temel_tr.md`](../../../Cloud%20Learning%20With%20Mentor/Turkish/Cloud_linux_roadmap_temel_tr.md) yol
 > haritasının **tek başına, YZ mentoru olmadan, internetsiz** baştan sona işlenebilir hâlidir.
+
+> 🇬🇧 English version: **[README_en.md](../English_Linux/README_en.md)**
 
 ---
 
@@ -52,24 +54,24 @@ makinen varsa çalıştırır, kendi çıktınla karşılaştırırsın.
 | [Faz_3_Process_ve_Kaynak.md](Faz_3_Process_ve_Kaynak.md) | 3 | PID, fork/exec, durumlar, sinyaller, cgroup, namespace | 6–8 saat |
 | [Faz_4_Bellek_IO_Performans.md](Faz_4_Bellek_IO_Performans.md) | 4 | RSS/VSZ, page cache, swap/OOM, load average, darboğaz triyajı | 6–8 saat |
 | [**Ara_Sinav_2.md**](Ara_Sinav_2.md) | 3–4 | Birleşik sınav: "kaynağı ne yiyor" | 1 saat |
-| [Faz_5_Boot_ve_systemd.md](Faz_5_Boot_ve_systemd.md) | 5 | Boot zinciri, systemd unit'leri, journald, cloud-init | 6–8 saat |
+| [Faz_5_Boot_Init_systemd.md](Faz_5_Boot_Init_systemd.md) | 5 | Boot zinciri, systemd unit'leri, journald, cloud-init | 6–8 saat |
 | [Faz_6_Depolama_ve_Dosya_Sistemleri.md](Faz_6_Depolama_ve_Dosya_Sistemleri.md) | 6 | Blok cihaz, mount, fstab, ext4/xfs, inode, LVM, EBS akışı | 5–7 saat |
 | [**Ara_Sinav_3.md**](Ara_Sinav_3.md) | 5–6 | Birleşik sınav: "boot'tan servise" + "veri nerede" | 1 saat |
-| [Faz_7_Ag_OS_Katmani.md](Faz_7_Ag_OS_Katmani.md) | 7 | `ip`, DNS istemcisi, SSH derinlemesine, `ss`, host firewall | 5–7 saat |
+| [Faz_7_Ag_ve_Baglanti.md](Faz_7_Ag_ve_Baglanti.md) | 7 | `ip`, DNS istemcisi, SSH derinlemesine, `ss`, host firewall | 5–7 saat |
 | [Faz_8_Paketler_ve_Servislestirme.md](Faz_8_Paketler_ve_Servislestirme.md) | 8 | apt/dnf, kendi uygulamanı systemd servisi yapmak, immutable AMI | 4–6 saat |
 | [Faz_9_Guvenlik_ve_Sertlestirme.md](Faz_9_Guvenlik_ve_Sertlestirme.md) | 9 | En az yetki, SSH sıkılaştırma, AppArmor/SELinux, auditd, capabilities, sırlar | 5–7 saat |
 | [**Ara_Sinav_4.md**](Ara_Sinav_4.md) | 7–9 | Birleşik sınav: dış dünya + savunma | 1 saat |
 | [Faz_10_Otomasyon_ve_Scripting.md](Faz_10_Otomasyon_ve_Scripting.md) | 10 | Bash temeli, `set -euo pipefail`, quoting, idempotency, IaC köprüsü | 5–7 saat |
 | [Faz_11_Gozlemlenebilirlik_ve_Troubleshooting.md](Faz_11_Gozlemlenebilirlik_ve_Troubleshooting.md) | 11 | Loglar, katman-katman metodoloji, araç ustalığı, adli refleks | 6–8 saat |
-| [Faz_12_Cloud_Baglantisi.md](Faz_12_Cloud_Baglantisi.md) | 12 | AMI → cloud-init → SSH → EBS → systemd → log → hardening | 4–5 saat |
+| [Faz_12_Cloud_a_Kopru.md](Faz_12_Cloud_a_Kopru.md) | 12 | AMI → cloud-init → SSH → EBS → systemd → log → hardening | 4–5 saat |
 
 **Ekler:**
 
 | Dosya | Ne işe yarar |
 |---|---|
-| [EK_A_Komut_Referansi.md](EK_A_Komut_Referansi.md) | Tüm komutlar, amaç ve tipik kullanımıyla — masaüstünde açık tut |
-| [EK_B_Terim_Sozlugu.md](EK_B_Terim_Sozlugu.md) | Tüm terimler, Türkçe telaffuz + tek cümlelik tanım + geçtiği faz |
-| [EK_C_Ariza_Karar_Agaclari.md](EK_C_Ariza_Karar_Agaclari.md) | "Permission denied", "servis başlamıyor", "disk dolu", "yavaş" — basılabilir karar ağaçları |
+| [EK_A_Komut_Sozlugu.md](EK_A_Komut_Sozlugu.md) | Tüm komutlar, amacı ve risk işaretiyle (🟢🟡🔴), geçtiği fazla — masaüstünde açık tut |
+| [EK_B_Dosya_Dizin_Haritasi.md](EK_B_Dosya_Dizin_Haritasi.md) | Hangi dosya nerede, ne işe yarar — FHS, `/etc`, `/var/log`, `/proc`, systemd birimleri, SSH dosyaları |
+| [EK_C_Bozulunca_Hizli_Basvuru.md](EK_C_Bozulunca_Hizli_Basvuru.md) | Belirti → muhtemel neden → doğrulama komutu → faz; tüm "Bozulunca" tablolarının tek sayfalık birleşimi |
 
 ---
 
@@ -221,9 +223,9 @@ Bu seri üç kitaptan oluşur ve üçü birbirini **akıllıca sınırlar**:
 
 | Kitap | Neyi alır | Bu kitapla kesişimi |
 |---|---|---|
-| [Donanım](../Cloud_hardware.roadmap/Turkish_Hardware/README.md) | Fiziksel katman: CPU, bellek, disk, NIC, hypervisor | Faz 4'ün "neden yavaş" sorusunun **altı**: cache, IOPS, steal time |
+| [Donanım](../../Cloud_hardware.roadmap/Turkish_Hardware/README.md) | Fiziksel katman: CPU, bellek, disk, NIC, hypervisor | Faz 4'ün "neden yavaş" sorusunun **altı**: cache, IOPS, steal time |
 | **Linux** (bu kitap) | İşletim sistemi: process, bellek yönetimi, boot, izin, araçlar | — |
-| [Ağ](../Cloud_network.roadmap/README.md) | Protokol teorisi: OSI, TCP/IP, subnet, DNS, TLS | Faz 7 burada sadece **OS tarafını** alır; protokolün kendisi orada |
+| Ağ ([mentor haritası](../../../Cloud%20Learning%20With%20Mentor/Turkish/Cloud_network_roadmap_temel_tr.md); çalışma kitabı planlandı) | Protokol teorisi: OSI, TCP/IP, subnet, DNS, TLS | Faz 7 burada sadece **OS tarafını** alır; protokolün kendisi orada |
 
 Bu kitap diğer ikisinden **bağımsız yürür.** Donanım veya ağ kitabını okumadıysan hiçbir
 yerde takılmazsın — gereken yerde ilgili kavram burada kısaca açıklanır, derinleşmek

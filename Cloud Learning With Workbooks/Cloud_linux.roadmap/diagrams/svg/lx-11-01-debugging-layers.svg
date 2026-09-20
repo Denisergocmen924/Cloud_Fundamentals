@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ============================================================
+  DIAGRAM HEADER
+  ============================================================
+  file:             lx-11-01-debugging-layers
+  subject:          Linux
+  figure:           11.1
+  section:          11.2 Layer-by-layer debugging methodology
+  subtitle:         Narrow down with evidence, not guesses
+  type:             Flow (decision / layered narrowing)
+  source:           Cloud Learning With Workbooks/Cloud_linux.roadmap/Turkish_Linux/Faz_11_Gozlemlenebilirlik_ve_Troubleshooting.md
+  boundary:         section 11.2.1 — five layers; no tool-mastery table, no cloud
+  height:           900
+  number-conflicts: none
+  scale:            not to scale (ordered layers, not time)
+  ============================================================
+
+  Rules: diagram_example/Standart_Rules_Diagrams.md
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+
+  <style>
+    text { font-family: "Noto Sans", "DejaVu Sans", sans-serif; fill: #111827; }
+    .t-title        { font-size: 40px; font-weight: 700; }
+    .t-subtitle     { font-size: 26px; font-weight: 400; fill: #4B5563; }
+    .t-fig          { font-size: 24px; font-weight: 600; fill: #4B5563; }
+    .t-box          { font-size: 24px; font-weight: 700; }
+    .t-label        { font-size: 22px; font-weight: 400; }
+    .t-label-strong { font-size: 22px; font-weight: 700; }
+    .t-note         { font-size: 19px; font-weight: 400; fill: #4B5563; }
+    .t-sign         { font-size: 20px; font-weight: 400; fill: #6B7280; }
+    .t-mono         { font-family: "DejaVu Sans Mono", monospace; font-size: 19px; fill: #374151; }
+    .t-good         { fill: #15803D; }
+    .t-axis         { font-size: 20px; font-weight: 600; fill: #6B7280; }
+
+    .c-compute  { fill: #DBEAFE; stroke: #1D4ED8; stroke-width: 2; }
+    .c-memory   { fill: #DCFCE7; stroke: #15803D; stroke-width: 2; }
+    .c-software { fill: #F3F4F6; stroke: #374151; stroke-width: 2; }
+    .c-problem  { fill: #FEE2E2; stroke: #B91C1C; stroke-width: 2; }
+
+    .s-boundary { fill: none; stroke: #6B7280; stroke-width: 2; stroke-dasharray: 8 6; }
+    .l-rule    { fill: none; stroke: #E5E7EB; stroke-width: 2; }
+    .l-data    { fill: none; stroke: #111827; stroke-width: 3.5; }
+    .l-thin    { fill: none; stroke: #6B7280; stroke-width: 2; }
+  </style>
+
+  <defs>
+    <marker id="arrow-data" viewBox="0 0 16 16" refX="14" refY="8" markerWidth="15" markerHeight="15" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M0,0 L16,8 L0,16 z" fill="#111827"/>
+    </marker>
+    <marker id="arrow-thin" viewBox="0 0 16 16" refX="14" refY="8" markerWidth="13" markerHeight="13" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M0,0 L16,8 L0,16 z" fill="#6B7280"/>
+    </marker>
+  </defs>
+
+  <g id="background">
+    <rect x="0" y="0" width="1600" height="900" fill="#FFFFFF"/>
+  </g>
+
+  <g id="title">
+    <text class="t-title" x="64" y="88">11.2 Layer-by-layer debugging</text>
+    <text class="t-subtitle" x="64" y="132">Narrow down with evidence, not guesses</text>
+    <text class="t-fig" x="1536" y="88" text-anchor="end">Figure 11.1</text>
+    <line class="l-rule" x1="64" y1="160" x2="1536" y2="160"/>
+  </g>
+
+  <g id="content">
+
+    <!-- ===== symptom ===== -->
+    <rect class="c-problem" x="560" y="192" width="480" height="52" rx="8"/>
+    <text class="t-box" x="800" y="226" text-anchor="middle">Symptom: "application won't open"</text>
+    <line class="l-data" x1="800" y1="244" x2="800" y2="266" marker-end="url(#arrow-data)"/>
+
+    <!-- ===== direction axis (left) ===== -->
+    <line class="l-thin" x1="496" y1="286" x2="496" y2="668" marker-end="url(#arrow-thin)"/>
+    <text class="t-axis" transform="rotate(90 468 474)" x="468" y="474" text-anchor="middle">cheapest &amp; most likely  →  deepest &amp; rarest</text>
+
+    <!-- ===== 5 layer boxes (column x520 w560) ===== -->
+    <!-- 1 -->
+    <rect class="c-software" x="520" y="268" width="560" height="68" rx="8"/>
+    <text class="t-box"  x="540" y="300">1 · Application log</text>
+    <text class="t-mono" x="540" y="326">journalctl -u &lt;svc&gt;   ·   /var/log</text>
+    <!-- 2 -->
+    <rect class="c-software" x="520" y="354" width="560" height="68" rx="8"/>
+    <text class="t-box"  x="540" y="386">2 · Service status</text>
+    <text class="t-mono" x="540" y="412">systemctl status &lt;svc&gt;   (failed? restarting?)</text>
+    <!-- 3 -->
+    <rect class="c-compute" x="520" y="440" width="560" height="68" rx="8"/>
+    <text class="t-box"  x="540" y="472">3 · Resource</text>
+    <text class="t-mono" x="540" y="498">top · free · iostat   ·   dmesg (OOM?)</text>
+    <!-- 4 -->
+    <rect class="c-software" x="520" y="526" width="560" height="68" rx="8"/>
+    <text class="t-box"  x="540" y="558">4 · Network</text>
+    <text class="t-mono" x="540" y="584">ss -tulpn · curl · dig   (listen? bind?)</text>
+    <!-- 5 -->
+    <rect class="c-software" x="520" y="612" width="560" height="68" rx="8"/>
+    <text class="t-box"  x="540" y="644">5 · Kernel</text>
+    <text class="t-mono" x="540" y="670">dmesg · journalctl -k   (disk / driver / hw)</text>
+
+    <!-- down arrows between layers (center) -->
+    <line class="l-data" x1="800" y1="336" x2="800" y2="354" marker-end="url(#arrow-data)"/>
+    <line class="l-data" x1="800" y1="422" x2="800" y2="440" marker-end="url(#arrow-data)"/>
+    <line class="l-data" x1="800" y1="508" x2="800" y2="526" marker-end="url(#arrow-data)"/>
+    <line class="l-data" x1="800" y1="594" x2="800" y2="612" marker-end="url(#arrow-data)"/>
+
+    <!-- ===== right decision panel ===== -->
+    <rect class="s-boundary" x="1140" y="268" width="360" height="412" rx="10"/>
+    <text class="t-label-strong" x="1320" y="322" text-anchor="middle">At each layer, ask:</text>
+    <text class="t-label" x="1320" y="366" text-anchor="middle">"Is the evidence here?"</text>
+    <line class="l-rule" x1="1172" y1="398" x2="1468" y2="398"/>
+    <text class="t-label-strong t-good" x="1320" y="452" text-anchor="middle">Found  →  root cause</text>
+    <text class="t-note" x="1320" y="482" text-anchor="middle">stop here; fix it —</text>
+    <text class="t-note" x="1320" y="508" text-anchor="middle">don't mask the symptom</text>
+    <text class="t-label-strong" x="1320" y="578" text-anchor="middle">Not found  →</text>
+    <text class="t-note" x="1320" y="608" text-anchor="middle">go one layer deeper</text>
+    <text class="t-note" x="1320" y="634" text-anchor="middle">(the arrows on the left)</text>
+
+    <!-- thin arrows from each layer box to the panel -->
+    <line class="l-thin" x1="1080" y1="302" x2="1138" y2="330" marker-end="url(#arrow-thin)"/>
+    <line class="l-thin" x1="1080" y1="388" x2="1138" y2="360" marker-end="url(#arrow-thin)"/>
+    <line class="l-thin" x1="1080" y1="474" x2="1138" y2="420" marker-end="url(#arrow-thin)"/>
+    <line class="l-thin" x1="1080" y1="560" x2="1138" y2="450" marker-end="url(#arrow-thin)"/>
+    <line class="l-thin" x1="1080" y1="646" x2="1138" y2="470" marker-end="url(#arrow-thin)"/>
+
+    <!-- ===== bottom lesson ===== -->
+    <rect class="s-boundary" x="64" y="712" width="1436" height="52" rx="8"/>
+    <text class="t-label-strong" x="782" y="745" text-anchor="middle">Most bugs are found in the first two layers — reaching the kernel is rare. Evidence at every step, never a random restart.</text>
+
+  </g>
+
+  <g id="footer">
+    <line class="l-rule" x1="64" y1="836" x2="1536" y2="836"/>
+    <text class="t-sign" x="64" y="876" xml:space="preserve">Created by Denis Ergöçmen    GitHub: https://github.com/Denisergocmen924</text>
+  </g>
+
+</svg>

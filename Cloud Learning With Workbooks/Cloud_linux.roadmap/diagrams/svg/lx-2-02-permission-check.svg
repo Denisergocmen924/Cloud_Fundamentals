@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ============================================================
+  DIAGRAM HEADER
+  ============================================================
+  file:             lx-2-02-permission-check
+  subject:          Linux
+  figure:           2.2
+  section:          2.2.1 Which triple does the kernel use
+  subtitle:         The kernel picks one triple and looks only at it
+  type:             Decision tree
+  source:           Cloud Learning With Workbooks/Cloud_linux.roadmap/English_Linux/Phase_2_Users_and_Permissions.md
+  boundary:         text from the start of the file down to the "Figure 2.2" line
+  height:           1200
+  number-conflicts: none
+  scale:            none
+  ============================================================
+
+  Rules: diagram_example/Standart_Rules_Diagrams.md
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1200" viewBox="0 0 1600 1200">
+
+  <style>
+    /* ---------- Text (§7) ---------- */
+    text { font-family: "Noto Sans", "DejaVu Sans", sans-serif; fill: #111827; }
+    .t-title        { font-size: 40px; font-weight: 700; }
+    .t-subtitle     { font-size: 26px; font-weight: 400; fill: #4B5563; }
+    .t-fig          { font-size: 24px; font-weight: 600; fill: #4B5563; }
+    .t-label        { font-size: 24px; font-weight: 400; }
+    .t-label-strong { font-size: 24px; font-weight: 600; }
+    .t-value        { font-size: 22px; font-weight: 400; font-family: "Noto Sans Mono", "DejaVu Sans Mono", monospace; }
+    .t-note         { font-size: 20px; font-weight: 400; fill: #4B5563; }
+    .t-sign         { font-size: 20px; font-weight: 400; fill: #6B7280; }
+    .t-problem      { fill: #DC2626; }
+
+    /* ---------- Domain colors (§8.2) — same meaning in every subject ---------- */
+    .c-compute  { fill: #DBEAFE; stroke: #1D4ED8; stroke-width: 2; }
+    .c-memory   { fill: #DCFCE7; stroke: #15803D; stroke-width: 2; }
+    .c-storage  { fill: #FFEDD5; stroke: #C2410C; stroke-width: 2; }
+    .c-io       { fill: #FEF9C3; stroke: #A16207; stroke-width: 2; }
+    .c-network  { fill: #EDE9FE; stroke: #6D28D9; stroke-width: 2; }
+    .c-virt     { fill: #CCFBF1; stroke: #0F766E; stroke-width: 2; }
+    .c-security { fill: #FCE7F3; stroke: #9D174D; stroke-width: 2; }
+    .c-software { fill: #F3F4F6; stroke: #374151; stroke-width: 2; }
+    .c-ink      { fill: #FFFFFF; stroke: #111827; stroke-width: 2; }
+    .c-problem  { fill: #FEE2E2; stroke: #DC2626; stroke-width: 2; }
+
+    /* ---------- Shapes (§9) ---------- */
+    .s-boundary { fill: none; stroke: #6B7280; stroke-width: 2; stroke-dasharray: 8 6; }
+    .s-unit     { fill: #374151; stroke: none; }
+    .s-dot      { fill: #111827; stroke: none; }
+
+    /* ---------- Lines (§10) ---------- */
+    .l-data    { fill: none; stroke: #111827; stroke-width: 4; }
+    .l-control { fill: none; stroke: #111827; stroke-width: 2; }
+    .l-async   { fill: none; stroke: #111827; stroke-width: 2; stroke-dasharray: 6 4; }
+    .l-problem { fill: none; stroke: #DC2626; stroke-width: 4; }
+    .l-plain   { fill: none; stroke: #374151; stroke-width: 2; }
+    .l-rule    { fill: none; stroke: #E5E7EB; stroke-width: 2; }
+    .l-guide   { fill: none; stroke: #E5E7EB; stroke-width: 2; }
+  </style>
+
+  <defs>
+    <marker id="arrow-data" viewBox="0 0 16 16" refX="14" refY="8" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M0,0 L16,8 L0,16 z" fill="#111827"/>
+    </marker>
+    <marker id="arrow-control" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="12" markerHeight="12" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M0,0 L12,6 L0,12 z" fill="#111827"/>
+    </marker>
+    <marker id="arrow-problem" viewBox="0 0 16 16" refX="14" refY="8" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M0,0 L16,8 L0,16 z" fill="#DC2626"/>
+    </marker>
+  </defs>
+
+  <!-- ===== background ===== -->
+  <g id="background">
+    <rect x="0" y="0" width="1600" height="1200" fill="#FFFFFF"/>
+  </g>
+
+  <!-- ===== title (§5.1) ===== -->
+  <g id="title">
+    <text class="t-title" x="64" y="88">Which triple does the kernel use?</text>
+    <text class="t-subtitle" x="64" y="132">It picks one triple, top to bottom, and looks only at it</text>
+    <text class="t-fig" x="1536" y="88" text-anchor="end">Figure 2.2</text>
+    <line class="l-rule" x1="64" y1="160" x2="1536" y2="160"/>
+  </g>
+
+  <!-- ===== content (§4: x 64–1536, y 184–1112) ===== -->
+  <g id="content">
+    <!-- Diamonds down the left-centre column; each "yes" exits right to the chosen triple. -->
+
+    <!-- start -->
+    <rect class="c-compute" x="460" y="200" width="360" height="80" rx="16"/>
+    <text class="t-label-strong" x="640" y="248" text-anchor="middle">Process opens a file</text>
+    <line class="l-control" x1="640" y1="280" x2="640" y2="298" marker-end="url(#arrow-control)"/>
+
+    <!-- diamond 1: euid 0 -->
+    <polygon class="c-ink" points="640,300 830,380 640,460 450,380"/>
+    <text class="t-label" x="640" y="388" text-anchor="middle">effective UID = 0 ?</text>
+    <rect class="c-security" x="1040" y="340" width="440" height="96" rx="16"/>
+    <text class="t-label-strong" x="1064" y="380">root</text>
+    <text class="t-note" x="1064" y="414">r/w bits skipped; exec needs one x</text>
+    <line class="l-control" x1="830" y1="380" x2="1038" y2="388" marker-end="url(#arrow-control)"/>
+    <text class="t-note" x="900" y="366" text-anchor="middle">yes</text>
+    <line class="l-control" x1="640" y1="460" x2="640" y2="538" marker-end="url(#arrow-control)"/>
+    <text class="t-note" x="662" y="505">no</text>
+
+    <!-- diamond 2: owner -->
+    <polygon class="c-ink" points="640,540 830,620 640,700 450,620"/>
+    <text class="t-label" x="640" y="628" text-anchor="middle">UID = file's owner ?</text>
+    <rect class="c-compute" x="1040" y="580" width="440" height="80" rx="16"/>
+    <text class="t-label-strong" x="1260" y="628" text-anchor="middle">use OWNER triple only</text>
+    <line class="l-control" x1="830" y1="620" x2="1038" y2="620" marker-end="url(#arrow-control)"/>
+    <text class="t-note" x="900" y="606" text-anchor="middle">yes</text>
+    <line class="l-control" x1="640" y1="700" x2="640" y2="778" marker-end="url(#arrow-control)"/>
+    <text class="t-note" x="662" y="745">no</text>
+
+    <!-- diamond 3: group -->
+    <polygon class="c-ink" points="640,780 830,860 640,940 450,860"/>
+    <text class="t-label" x="640" y="868" text-anchor="middle">in the file's group ?</text>
+    <rect class="c-compute" x="1040" y="820" width="440" height="80" rx="16"/>
+    <text class="t-label-strong" x="1260" y="868" text-anchor="middle">use GROUP triple only</text>
+    <line class="l-control" x1="830" y1="860" x2="1038" y2="860" marker-end="url(#arrow-control)"/>
+    <text class="t-note" x="900" y="846" text-anchor="middle">yes</text>
+    <line class="l-control" x1="640" y1="940" x2="640" y2="978" marker-end="url(#arrow-control)"/>
+    <text class="t-note" x="662" y="965">no</text>
+
+    <!-- other -->
+    <rect class="c-compute" x="460" y="980" width="360" height="80" rx="16"/>
+    <text class="t-label-strong" x="640" y="1028" text-anchor="middle">use OTHER triple</text>
+
+    <!-- bottom rule -->
+    <text class="t-note" x="800" y="1098" text-anchor="middle">Chosen triple has the needed bit? → allow · else EACCES (Permission denied). Triples never combine.</text>
+  </g>
+
+  <!-- ===== footer (§5.2) — do not change ===== -->
+  <g id="footer">
+    <line class="l-rule" x1="64" y1="1136" x2="1536" y2="1136"/>
+    <text class="t-sign" x="64" y="1176" xml:space="preserve">Created by Denis Ergöçmen    GitHub: https://github.com/Denisergocmen924</text>
+  </g>
+
+</svg>

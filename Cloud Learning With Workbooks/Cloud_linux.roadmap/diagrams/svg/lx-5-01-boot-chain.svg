@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ============================================================
+  DIAGRAM HEADER
+  ============================================================
+  file:             lx-5-01-boot-chain
+  subject:          Linux
+  figure:           5.1
+  section:          5.1 Boot chain — from power to PID 1
+  subtitle:         Each link finds and hands off to the next
+  type:             Flow
+  source:           Cloud Learning With Workbooks/Cloud_linux.roadmap/English_Linux/Phase_5_Boot_Init_systemd.md
+  boundary:         section 5.1 (boot chain) and 5.2.1 (PID 1) — no systemctl/journald concepts
+  height:           900
+  number-conflicts: none
+  scale:            not to scale (sequence, not time)
+  ============================================================
+
+  Rules: diagram_example/Standart_Rules_Diagrams.md
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+
+  <style>
+    /* ---------- Text (§7) ---------- */
+    text { font-family: "Noto Sans", "DejaVu Sans", sans-serif; fill: #111827; }
+    .t-title        { font-size: 40px; font-weight: 700; }
+    .t-subtitle     { font-size: 26px; font-weight: 400; fill: #4B5563; }
+    .t-fig          { font-size: 24px; font-weight: 600; fill: #4B5563; }
+    .t-box          { font-size: 24px; font-weight: 700; }
+    .t-role         { font-size: 20px; font-weight: 400; fill: #4B5563; }
+    .t-label        { font-size: 24px; font-weight: 400; }
+    .t-label-strong { font-size: 24px; font-weight: 600; }
+    .t-note         { font-size: 20px; font-weight: 400; fill: #4B5563; }
+    .t-sign         { font-size: 20px; font-weight: 400; fill: #6B7280; }
+    .t-good         { fill: #15803D; }
+
+    /* ---------- Domain colors (§8.2) ---------- */
+    .c-compute  { fill: #DBEAFE; stroke: #1D4ED8; stroke-width: 2; }
+    .c-memory   { fill: #DCFCE7; stroke: #15803D; stroke-width: 2; }
+    .c-storage  { fill: #FFEDD5; stroke: #C2410C; stroke-width: 2; }
+    .c-software { fill: #F3F4F6; stroke: #374151; stroke-width: 2; }
+
+    /* ---------- Shapes (§9) ---------- */
+    .s-boundary { fill: none; stroke: #6B7280; stroke-width: 2; stroke-dasharray: 8 6; }
+
+    /* ---------- Lines (§10) ---------- */
+    .l-data    { fill: none; stroke: #111827; stroke-width: 4; }
+    .l-plain   { fill: none; stroke: #374151; stroke-width: 2; }
+    .l-rule    { fill: none; stroke: #E5E7EB; stroke-width: 2; }
+  </style>
+
+  <defs>
+    <marker id="arrow-data" viewBox="0 0 16 16" refX="14" refY="8" markerWidth="16" markerHeight="16" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path d="M0,0 L16,8 L0,16 z" fill="#111827"/>
+    </marker>
+  </defs>
+
+  <!-- ===== background ===== -->
+  <g id="background">
+    <rect x="0" y="0" width="1600" height="900" fill="#FFFFFF"/>
+  </g>
+
+  <!-- ===== title (§5.1) ===== -->
+  <g id="title">
+    <text class="t-title" x="64" y="88">5.1 Boot chain — from power to PID 1</text>
+    <text class="t-subtitle" x="64" y="132">Each link finds and hands off to the next</text>
+    <text class="t-fig" x="1536" y="88" text-anchor="end">Figure 5.1</text>
+    <line class="l-rule" x1="64" y1="160" x2="1536" y2="160"/>
+  </g>
+
+  <!-- ===== content (§4: x 64–1536, y 184–812) ===== -->
+  <g id="content">
+
+    <!-- power label -->
+    <text class="t-label-strong" x="64" y="232">Power on</text>
+
+    <!-- ===================== main flow row ===================== -->
+    <!-- 6 boxes, width 200, gap 54; y 256, height 128 -->
+    <!-- 1 Firmware -->
+    <rect class="c-software" x="64"  y="256" width="200" height="128" rx="8"/>
+    <text class="t-box"  x="164"  y="312" text-anchor="middle">Firmware</text>
+    <text class="t-role" x="164"  y="346" text-anchor="middle">BIOS / UEFI</text>
+
+    <!-- 2 GRUB -->
+    <rect class="c-software" x="318" y="256" width="200" height="128" rx="8"/>
+    <text class="t-box"  x="418"  y="312" text-anchor="middle">GRUB</text>
+    <text class="t-role" x="418"  y="346" text-anchor="middle">bootloader</text>
+
+    <!-- 3 Kernel -->
+    <rect class="c-compute" x="572" y="256" width="200" height="128" rx="8"/>
+    <text class="t-box"  x="672"  y="312" text-anchor="middle">Kernel</text>
+    <text class="t-role" x="672"  y="346" text-anchor="middle">runs, no root yet</text>
+
+    <!-- 4 initramfs -->
+    <rect class="c-memory" x="826" y="256" width="200" height="128" rx="8"/>
+    <text class="t-box"  x="926"  y="312" text-anchor="middle">initramfs</text>
+    <text class="t-role" x="926"  y="346" text-anchor="middle">temp root in RAM</text>
+
+    <!-- 5 systemd PID 1 -->
+    <rect class="c-software" x="1080" y="256" width="200" height="128" rx="8"/>
+    <text class="t-box"  x="1180" y="306" text-anchor="middle">systemd</text>
+    <text class="t-role" x="1180" y="338" text-anchor="middle">init — PID 1</text>
+    <text class="t-role" x="1180" y="364" text-anchor="middle">first user process</text>
+
+    <!-- 6 target -->
+    <rect class="c-software" x="1334" y="256" width="200" height="128" rx="8"/>
+    <text class="t-box"  x="1434" y="306" text-anchor="middle">target</text>
+    <text class="t-role" x="1434" y="338" text-anchor="middle">multi-user:</text>
+    <text class="t-role" x="1434" y="364" text-anchor="middle">net + services</text>
+
+    <!-- flow arrows between boxes (y 320) -->
+    <line class="l-data" x1="266" y1="320" x2="316" y2="320" marker-end="url(#arrow-data)"/>
+    <line class="l-data" x1="520" y1="320" x2="570" y2="320" marker-end="url(#arrow-data)"/>
+    <line class="l-data" x1="774" y1="320" x2="824" y2="320" marker-end="url(#arrow-data)"/>
+    <line class="l-data" x1="1028" y1="320" x2="1078" y2="320" marker-end="url(#arrow-data)"/>
+    <line class="l-data" x1="1282" y1="320" x2="1332" y2="320" marker-end="url(#arrow-data)"/>
+
+    <!-- ===================== initramfs pivot callout ===================== -->
+    <!-- dashed boundary under kernel+initramfs region -->
+    <rect class="s-boundary" x="572" y="432" width="454" height="196" rx="8"/>
+    <text class="t-label-strong" x="584" y="468">The chicken-and-egg link</text>
+
+    <!-- real root disk box -->
+    <rect class="c-storage" x="600" y="500" width="180" height="96" rx="8"/>
+    <text class="t-label-strong" x="690" y="544" text-anchor="middle">real root</text>
+    <text class="t-role" x="690" y="574" text-anchor="middle">disk  /  (nvme0n1)</text>
+
+    <!-- arrow: initramfs (box above) mounts the real root disk -->
+    <line class="l-data" x1="912" y1="432" x2="788" y2="516" marker-end="url(#arrow-data)"/>
+    <text class="t-note" x="912" y="512" text-anchor="start">mounts</text>
+
+    <!-- caption below the callout -->
+    <text class="t-note" x="584" y="664" text-anchor="start">Then switch_root drops the RAM root and runs the init on the real disk.</text>
+
+    <!-- ===================== services marker ===================== -->
+    <rect class="c-software" x="1080" y="470" width="454" height="120" rx="8"/>
+    <text class="t-label-strong t-good" x="1307" y="512" text-anchor="middle">Services start here — not before</text>
+    <text class="t-note" x="1307" y="546" text-anchor="middle">ssh · nginx · your app are units systemd starts</text>
+    <text class="t-note" x="1307" y="574" text-anchor="middle">(so no SSH until the chain reaches PID 1)</text>
+    <!-- arrow from systemd down into services marker -->
+    <line class="l-data" x1="1180" y1="386" x2="1180" y2="468" marker-end="url(#arrow-data)"/>
+
+    <!-- ===================== bottom lesson ===================== -->
+    <text class="t-note" x="800" y="712" text-anchor="middle">A failure before PID 1 (GRUB, initramfs) is invisible to systemctl / journalctl — read the console instead.</text>
+
+  </g>
+
+  <!-- ===== footer (§5.2) — do not change ===== -->
+  <g id="footer">
+    <line class="l-rule" x1="64" y1="836" x2="1536" y2="836"/>
+    <text class="t-sign" x="64" y="876" xml:space="preserve">Created by Denis Ergöçmen    GitHub: https://github.com/Denisergocmen924</text>
+  </g>
+
+</svg>
