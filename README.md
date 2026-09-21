@@ -105,8 +105,8 @@ README of the path you chose, not from the middle of a file.
 | Subject | Mentor (EN / TR) | Workbook (EN / TR) |
 |---|---|---|
 | Hardware | ✅ / ✅ | ✅ / ✅ |
-| Linux | ✅ / ✅ | in progress |
-| Network | ✅ / ✅ | planned |
+| Linux | ✅ / ✅ | ✅ / ✅ |
+| Network | ✅ / ✅ | ✅ / ✅ |
 
 Diagrams are being produced and added to the workbooks phase by phase.
 
@@ -219,7 +219,7 @@ README'sinden başla.
 | Konu | Mentor (EN / TR) | Çalışma kitabı (EN / TR) |
 |---|---|---|
 | Hardware | ✅ / ✅ | ✅ / ✅ |
-| Linux | ✅ / ✅ | devam ediyor |
-| Network | ✅ / ✅ | planlandı |
+| Linux | ✅ / ✅ | ✅ / ✅ |
+| Network | ✅ / ✅ | ✅ / ✅ |
 
 Diyagramlar üretilip çalışma kitaplarına faz faz ekleniyor.

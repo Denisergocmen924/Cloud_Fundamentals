@@ -225,7 +225,7 @@ Bu seri üç kitaptan oluşur ve üçü birbirini **akıllıca sınırlar**:
 |---|---|---|
 | [Donanım](../../Cloud_hardware.roadmap/Turkish_Hardware/README.md) | Fiziksel katman: CPU, bellek, disk, NIC, hypervisor | Faz 4'ün "neden yavaş" sorusunun **altı**: cache, IOPS, steal time |
 | **Linux** (bu kitap) | İşletim sistemi: process, bellek yönetimi, boot, izin, araçlar | — |
-| Ağ ([mentor haritası](../../../Cloud%20Learning%20With%20Mentor/Turkish/Cloud_network_roadmap_temel_tr.md); çalışma kitabı planlandı) | Protokol teorisi: OSI, TCP/IP, subnet, DNS, TLS | Faz 7 burada sadece **OS tarafını** alır; protokolün kendisi orada |
+| [Ağ](../../Cloud_network.roadmap/Turkish_Network/README.md) | Protokol teorisi: OSI, TCP/IP, subnet, DNS, TLS | Faz 7 burada sadece **OS tarafını** alır; protokolün kendisi orada |
 
 Bu kitap diğer ikisinden **bağımsız yürür.** Donanım veya ağ kitabını okumadıysan hiçbir
 yerde takılmazsın — gereken yerde ilgili kavram burada kısaca açıklanır, derinleşmek

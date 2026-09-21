@@ -234,7 +234,7 @@ This series has three books, and they **limit each other on purpose**:
 |---|---|---|
 | [Hardware](../../Cloud_hardware.roadmap/English_Hardware/README_en.md) | The physical layer: CPU, memory, disk, NIC, hypervisor | What lies **beneath** Phase 4's "why is it slow" question: cache, IOPS, steal time |
 | **Linux** (this book) | The operating system: processes, memory management, boot, permissions, tools | — |
-| Network ([mentor map](../../../Cloud%20Learning%20With%20Mentor/English/Cloud_network_roadmap_fundamentals_en.md); workbook planned) | Protocol theory: OSI, TCP/IP, subnets, DNS, TLS | Phase 7 here takes only the **OS side**; the protocol itself lives there |
+| [Network](../../Cloud_network.roadmap/English_Network/README_en.md) | Protocol theory: OSI, TCP/IP, subnets, DNS, TLS | Phase 7 here takes only the **OS side**; the protocol itself lives there |
 
 This book **walks independently** of the other two. If you have not read the hardware or
 network book, you will not get stuck anywhere — where a concept is needed, it is explained
