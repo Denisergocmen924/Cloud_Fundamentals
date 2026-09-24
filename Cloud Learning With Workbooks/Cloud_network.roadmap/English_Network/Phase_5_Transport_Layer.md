@@ -594,331 +594,318 @@ are two separate events**, and which of them failed determines the cause almost 
 ---
 ---
 
-# Answers to the Think questions
+# Phase 5 — Answers to the Think questions
 
-## Answer 5.1 — The file-sharing application
+## Answer 5.1 — Correctness or timeliness
 
-**(a)** File transfer → **TCP** (the file must arrive complete and in order; a single lost byte corrupts it).
-Screen sharing → **UDP** (or a UDP-based protocol like QUIC/WebRTC).
+(a) **File transfer → TCP** (if a single byte is missing the file is corrupt). **Live screen sharing → UDP**
+(delay matters more than quality).
 
-**(b)** If you used TCP for screen sharing: at every lost packet TCP would stop and wait for the
-retransmission, and **all the frames behind it** would wait too (head-of-line blocking, 5.1.2). What the
-user would feel: the picture freezes for a moment and then **fast-forwards** — the catching-up frames arrive
-all at once. Worse, the delay accumulates: the more loss there is, the further behind reality the picture
-falls. With UDP that frame would simply be skipped, the picture would glitch for an instant and then carry
-on **live**.
+(b) In TCP a single lost packet holds up the delivery of **all** the data behind it (head-of-line blocking,
+the box in 5.1.2). What the user feels: the picture **freezes**, then the accumulated frames suddenly rush
+past, then it freezes again. The delay builds up and the "live" quality is lost. With UDP that frame is
+**skipped**: the picture glitches for a moment but the stream stays real-time — for the viewer the second is
+far better.
 
-**(c)** If you used UDP for the file transfer you would have to write everything TCP does yourself:
-numbering the packets, detecting losses, requesting retransmission, correcting the order, flow control. That
-is exactly what QUIC does (5.1.2) — and it took years of engineering. For an ordinary file transfer it is a
-pointless cost.
+(c) You would have to **write the reliability yourself**: numbering the packets, detecting the missing ones,
+asking for them again, fixing the order, and adding congestion control. That is, reinventing TCP. This is
+sometimes genuinely done (QUIC is exactly this, the box in 5.1.2) but it needs a justification — for an
+ordinary file transfer TCP is already the right tool.
+**Related section:** 5.1.1–5.1.2 · **Next:** Phase 8.3 (HTTP/3 and QUIC).
 
-**Related section:** 5.1 · **Next:** 5.2 — how a TCP connection is established
+## Answer 5.2 — Silence and RST say different things
 
-## Answer 5.2 — The SYN gets no reply
+(a) The SYN goes out and there is no reply at all → three possibilities: (i) **a firewall is dropping the
+packet silently** (a DROP policy — the most common cause, in the cloud a security group or NACL); (ii) **a
+routing problem** — the packet does not reach the destination or there is no return path (asymmetric
+routing, Phase 4.7); (iii) **the host is missing or down** — there is no machine running at that IP.
 
-**(a)** Three possible causes: (1) **a firewall/security group is dropping the packet silently** (DROP, not
-REJECT) — the most common; (2) **there is no routing to that IP**, or the return path is missing (Phase
-4.2); (3) **the host is down** or its network interface is off.
+(b) **If an RST had come back** the diagnosis would narrow a great deal: an RST proves that **the target
+machine exists, is reachable and received the packet** (5.2.2). The problem is not in the network but at the
+target: no process is listening on that port (Phase 1.4.1 — "connection refused"). That is, the suspicion
+moves **from the network to the application** — you would be talking to a completely different team.
 
-**(b)** If an **RST** came back the diagnosis would change completely: the packet **reaches the host** and
-the host **replies**. That means routing is fine, the firewall is letting it through, the machine is alive —
-but **nothing is listening on that port**. The service has not started, has crashed, or is listening on a
-different port. The place to look moves from the network to the **application**.
+(c) Because the two point to **completely different teams**. *Silence* = a network/security problem → look
+at the firewall rules, the route table, the security group. *RST* = an application problem → is the service
+up, is it listening on the right port, is it bound to the right interface (`0.0.0.0` vs `127.0.0.1`,
+Phase 1.4.2). This single distinction saves hours of searching in the wrong place.
+**Related section:** 5.2.2 · **Next:** Phase 9.2.3 (DROP and REJECT), Phase 10.1 (layer-by-layer diagnosis).
 
-**(c)** Because it splits the problem space in two. A timeout says "look at the network" (routing,
-firewall, security group); an RST says "look at the machine" (is the service running, is it listening on the
-right port, `ss -tulpn`). These two lead in completely opposite directions, and telling them apart takes one
-`tcpdump` command and a few seconds. Trying to solve a problem in the wrong place is the most expensive
-mistake in diagnosis.
+## Answer 5.3 — A cumulative ACK cannot jump a gap
 
-**Related section:** 5.2.2 · **Next:** 5.3 — how loss is detected
+(a) The ACKs the receiver sends:
+- 1000 received → `ack=2000` ("I am waiting for 2000")
+- 2000 was **lost** → nothing
+- 3000 arrived (out of order) → **`ack=2000`** (still the same!)
+- 4000 arrived (out of order) → **`ack=2000`** (the same again)
 
-## Answer 5.3 — The lost middle packet
+(b) The sender counts the **duplicate ACKs**. When it sees three identical ACKs (`ack=2000`, `ack=2000`,
+`ack=2000`) it does not wait for the timeout: it understands that 2000 was lost and retransmits immediately
+— **fast retransmit** (5.3.2). If the duplicate ACKs do not come either (for example because the following
+packets were lost as well), then the **RTO timeout** kicks in, but that is slower.
 
-**(a)** The receiver's ACKs: after 1000 arrives it says `ack=2000`. 2000 is lost. 3000 arrives — but the
-receiver is still waiting for 2000, so it says **`ack=2000` again**. 4000 arrives — **`ack=2000` again**.
-So: `ack=2000`, `ack=2000`, `ack=2000` — duplicate ACKs.
+(c) Because the ACK is **cumulative**: `ack=5000` would mean "I have received **everything** before 5000"
+(5.3.1). But the receiver has not received 2000–2999 — that would be a lie, and the sender would never
+retransmit the lost packet. Even if the receiver has received data beyond the gap, it must point at **the
+start of the gap**. (Note: TCP's **SACK** — Selective ACK — extension makes it possible to say "2000 is
+missing but I have 3000–4999" and makes retransmission far more efficient. It is on by default in modern
+systems.)
+**Related section:** 5.3.1–5.3.2 · **Next:** 5.5.1 (loss = a congestion signal).
 
-**(b)** The sender sees **three duplicate ACKs** and does not wait for the timer: it concludes "2000 was
-lost" and retransmits immediately — **fast retransmit** (5.3.2). If only one duplicate had arrived it would
-have waited for the RTO timer, which is far slower.
+## Answer 5.4 — Loss combined with distance is deadly
 
-**(c)** Because the ACK number is **cumulative**: `ack=5000` would mean "I have received everything before
-5000" — and that would be a lie, 2000 is missing. TCP's ACK mechanism can only say "I received an
-uninterrupted run up to here". (The receiver does **hold on to** the 3000 and 4000 data in its buffer; it is
-just not allowed to acknowledge them. The **SACK** option exists exactly for this — "I got these too" — but
-the basic mechanism is cumulative.)
+(a) **No.** The link is 1 Gbps and idle — bandwidth is not the problem. The problem is that TCP **cannot
+use** that bandwidth.
 
-**Related section:** 5.3 · **Next:** 5.4 — who limits the sending rate
+(b) Two steps:
+1. **Throughput ≈ window / RTT** (5.5.2). Because the RTT is 160 ms, the rate achievable with the same
+   window is already low — the window would have to grow very large.
+2. **At every loss cwnd is halved** and it grows back **at the speed of RTT** (AIMD, 5.5.1). With a 160 ms
+   RTT recovery is very slow; with 0.8% loss the window can never grow before a new loss arrives. The
+   result: cwnd stays permanently low and throughput sits on the floor. The link is empty but TCP cannot use
+   it because it cannot trust it.
 
-## Answer 5.4 — Frankfurt → Singapore
+(c) **It would hardly matter.** With an RTT of 0.5 ms, cwnd recovers within milliseconds of a loss — 0.8%
+loss would not even be noticed. The same loss rate turns into a disaster with distance. That is why "loss
+percentage" on its own is meaningless; it has to be judged **together with RTT**.
+**Related section:** 5.5.1–5.5.2 · **Next:** Phase 8.5 (CDN — shortening the distance), Phase 10.2.3 (finding
+the loss along the path with `mtr`).
 
-**(a)** No, the bandwidth is not the issue at all — the link is 1 Gbps and idle. The problem is that TCP
-**cannot use** that bandwidth.
+## Answer 5.5 — Something forgets the idle connection
 
-**(b)** The mechanism, in two steps: **(1)** Even without loss, maximum throughput ≈ window / RTT (5.5.2).
-With a 160 ms RTT, one window's worth of data can be sent only 6 times a second — to fill 1 Gbps you would
-need an enormous window. **(2)** Now add the 0.8% loss: at every loss cwnd is **halved** and grows back
-linearly, +1 per RTT. Each RTT is 160 ms, so recovery is glacial — and by the time it recovers the next loss
-has arrived. cwnd never manages to grow. The result: a 1 Gbps link may deliver only a few Mbps.
+(a) Two causes: (i) **a NAT or stateful firewall session timeout** (5.6.1) — the device in between deletes
+the entry for a connection it has not seen a packet on for a long time; the next packet is treated as an
+"unknown connection" and rejected with an RST (Phase 7.2, Phase 9.1). (ii) **A server-side idle timeout** —
+sshd or a load balancer closing an idle session.
 
-**(c)** Inside the same data centre (RTT 0.5 ms) the same 0.8% loss would matter **far** less: cwnd would be
-halved, but recovery would also be 320 times faster (0.5 ms per RTT instead of 160 ms). It would be back at
-its old size within milliseconds. That is the rule: **at small RTT loss is tolerable, at large RTT it is
-devastating.** The same percentage, entirely different consequences.
+(b) With **keepalive**: you make small packets be sent over the connection at regular intervals, so the
+device in between sees the connection as "alive" and does not delete its entry. In SSH that is
+`ServerAliveInterval 60` on the client side and `ClientAliveInterval 60` on the server side. There is also
+`SO_KEEPALIVE` at the TCP level, but its default interval is very long (2 hours) — application-level
+keepalive is more reliable.
 
-**Related section:** 5.5.2 · **Next:** 5.6 — how a connection ends
+(c) Because the problem is not in the connection **itself** but in the **memory** of the device in between.
+That device remembers a connection only as long as it sees traffic (Phase 9.1 — stateful tracking). Regular
+small packets refresh that memory. You fix the problem without touching the network configuration, only by
+changing behaviour at the endpoints — which is usually the only option you have, because the NAT/firewall in
+between is under someone else's control.
+**Related section:** 5.6.1 · **Next:** Phase 7.2 (the NAT session table), Phase 9.1 (the stateful firewall).
 
-## Answer 5.5 — The SSH session that drops
+## Answer 5.6 — The classic MTU black hole
 
-**(a)** Two possible causes: (1) **a NAT/firewall session timeout** — the device between drops the entry for
-an idle connection from its table and sends an RST at the next packet (Phase 7.2); (2) **a server-side idle
-timeout** — SSH's `ClientAliveInterval` setting, or a load balancer's idle timeout.
+(a) An **MTU black hole** (5.7.3). The signature fits perfectly: small packets get through (ping ✓, the
+handshake ✓ — `telnet` connects), large packets do not (the query result = large data → it freezes). That
+the VPN was only just set up makes the suspicion certain: the IPsec headers have pushed the MTU below 1500.
 
-**(b)** Turn on **keepalive**. On the SSH client side `ServerAliveInterval 60` (in `~/.ssh/config`): the
-client sends a tiny packet every 60 seconds. The connection is never idle, so the NAT entry is refreshed.
-On the server side the equivalent is `ClientAliveInterval`. At the TCP level the same job is done by
-`SO_KEEPALIVE`, but the SSH-level setting is more practical.
+(b) **`ping -M do -s 1472 <target>`** (the box in 5.7.3). If this does not get through, the path MTU is below
+1500. Reduce the size (1400, 1372, 1300...) to find the largest value that gets through; add 28 to learn the
+real path MTU.
 
-**(c)** It works because a NAT/firewall timeout is measured by **how long no traffic has passed**. Keepalive
-guarantees that traffic passes regularly — so the counter never fills. The device thinks the connection is
-alive, because it is. This is the shortest path to solving the problem without touching the network
-configuration.
+(c) Two solutions:
+- **MSS clamping** (lowering the MSS value of SYN packets on the VPN device/gateway) — the two sides use
+  small segments from the start.
+- **Allowing ICMP type 3 code 4 (Fragmentation Needed)** — it lets path MTU discovery work on its own.
 
-**Related section:** 5.6.1 · **Next:** 5.7 — the heart of packet loss
-
-## Answer 5.6 — The database connection over the VPN
-
-**(a)** Diagnosis: an **MTU black hole** (5.7.3). The signature fits perfectly: `ping` works (small
-packet), `telnet` connects (the handshake packets are small), but running a query freezes it (the response
-is large). The IPsec headers the VPN adds have brought the path MTU below 1500 and something along the way
-is blocking the ICMP Fragmentation Needed message.
-
-**(b)** A single command confirms it:
-
-```
-$ ping -M do -s 1472 <db-ip>      # if this fails but -s 1372 succeeds → MTU problem
-```
-
-If the small one gets through and the large one does not, the diagnosis is certain.
-
-**(c)** Two solutions: **(1) Allow ICMP type 3 code 4** on the security group / NACL / firewall. This is
-**the more correct** solution, because it makes path MTU discovery work as designed: every connection
-discovers the right size by itself, and if the tunnel's MTU changes later the system adapts automatically.
-**(2) MSS clamping** or lowering the MTU by hand (`ip link set dev eth0 mtu 1400` 🟡). This works but it is
-a workaround: it has to be configured on every machine, it must be kept up to date, and if the value is
-wrong the problem resurfaces. The rule: first make the mechanism work, only clamp if you cannot.
-
-**Related section:** 5.7.3 · **Next:** 5.8 — the failure table
-
----
----
-
-# Frequently asked questions
-
-**Q1. If TCP is this reliable, why is UDP used at all? Would it not be better to make everything
-reliable?**
-Because reliability has a **price**: waiting. TCP waits for a lost packet, retransmits it and holds
-everything behind it (5.1.2). In a live video call that wait is worse than the loss — a 200 ms-late frame
-is already useless. UDP is not "bad TCP"; it is a different trade-off: *speed over correctness*. And when
-reliability is wanted **over** UDP, QUIC is written (5.1.2).
-
-**Q2. Why three steps in the handshake and four in the close?**
-In the handshake the server can put both its acknowledgement and its own request into a single packet
-(SYN-ACK) — so three are enough. In the close each direction has to be closed **separately**: A may have
-finished sending while B still has data. So FIN, ACK, FIN, ACK — four steps (5.6.1).
-
-**Q3. What is the difference between the sequence number and the ACK number?**
-`seq` = "the number of the first byte **in this packet** I am sending". `ack` = "the number of the byte I
-am **waiting for next**". That is, ack is always **one more** than the last byte received. In the handshake
-capture in 5.2.2, the server's `ack` being one more than the client's `seq` is exactly this (5.3.1).
-
-**Q4. What is the difference between flow control and congestion control — they both look like slowing
-down?**
-The limits are set by different parties. **Flow control:** the receiver says it explicitly — "my buffer is
-this full, send this much" (the `win` value). **Congestion control:** nobody says it; the sender
-**estimates** it from packet loss (cwnd). Flow control protects the **receiver**, congestion control
-protects the **network** (5.4.1).
-
-**Q5. Why is the "it connects but data does not flow" case always MTU?**
-Not always, but it is always the first suspect — because it is the **only** failure that produces exactly
-this pattern. Handshake packets carry no data, a few dozen bytes; they fit through any MTU. Data packets
-are large (up to the MSS). If the path's MTU is small and ICMP is blocked, only the large ones are dropped.
-The result: it connects, it freezes (5.7.3).
-
-**Q6. What does it mean when there are thousands of TIME_WAITs? Is it a fault?**
-It is **normal**. A closing connection waits in `TIME_WAIT` for about 60 seconds so that late packets do not
-get mixed into a new connection (5.6.1). On a busy web server thousands of TIME_WAITs mean thousands of
-requests were served successfully. It becomes a problem only if the ephemeral port pool is exhausted
-(1.4.1) — and that shows up as "cannot assign requested address" errors.
-
-**Q7. Why does packet loss hurt more on distant connections?**
-Because recovery is measured in RTT (5.5.2). At every loss cwnd is halved and grows back **+1 per RTT**. If
-RTT is 0.5 ms, recovery takes milliseconds; if RTT is 160 ms, hundreds of times longer — and in the
-meantime the next loss has arrived. The same 1% loss that goes unnoticed locally can drop an
-intercontinental connection to a few Mbps.
+**The second is the more correct one**, because it fixes the root cause: the mechanism already exists, it
+is just blocked. Once ICMP is open the system finds the right MTU itself **for every path** — not only for
+this VPN but for all future paths. MSS clamping works but it is a patch: it has to be configured separately
+for every new tunnel and it protects only TCP (it does not help with UDP tunnels). In practice most
+organisations apply **both**.
+**Related section:** 5.7.3 · **Next:** Phase 7.4 (tunnelling), Phase 9.3 (ICMP policy), Phase 10.1 (the
+diagnostic methodology).
 
 ---
 ---
 
-# Test yourself
+# Phase 5 — Frequently asked questions
 
-Answer without looking. Write your answers down; check them against the key afterwards.
+**Q1 — Why is UDP still used; does TCP not do everything better?** Because TCP's guarantees have a
+**price**: handshake latency, stalling while waiting for a lost packet (head-of-line blocking), and
+congestion control throttling the speed. In real-time applications that price is more harmful than the loss
+(5.1.2). And for single-packet question-and-answer exchanges like DNS, setting up a handshake is pure waste.
 
-## Part A — Reasoning about the mechanisms
+**Q2 — Why is the handshake three steps; are two not enough?** No. With two steps (SYN, SYN-ACK) the server
+cannot know that the client **received** its own reply. After the third ACK both sides are in the position
+"I hear them, and they hear me" — two-way communication has been proven (5.2.1).
 
-**1.** Explain in one sentence each what the SYN, SYN-ACK and ACK packets say.
+**Q3 — What exactly is the difference between flow control and congestion control?** **Flow control protects
+the receiver** and is a limit the receiver **states explicitly** (the receive window, carried in every ACK).
+**Congestion control protects the network** and is a limit nobody states, which the sender **estimates from
+packet loss** (cwnd). The sender uses the **smaller** of the two (5.4.1, 5.5.1).
 
-**2.** Why are three steps needed in the handshake rather than two?
+**Q4 — I see thousands of `TIME_WAIT`s in `ss` output; is that a problem?** Usually **no** — it is normal
+behaviour (5.6.1). Thousands of TIME_WAITs are expected on a busy server. The only case where it is a
+problem is when it leads to ephemeral port exhaustion (Phase 1.4.2, Think 1.4) — then you see "cannot assign
+requested address" errors. The fix is usually **connection reuse** (keep-alive, connection pooling), not
+fiddling with the TIME_WAIT duration.
 
-**3.** What is the difference between the `seq` and `ack` numbers? Answer using the words "I am waiting for".
+**Q5 — Does lowering the MTU hurt performance?** To some extent, yes: the header ratio rises in every
+packet and more packets are needed for the same data. But it is **far better than a connection that does
+not work**. The right approach is to make path MTU discovery work (allow ICMP) rather than lowering the MTU
+by hand — then every path uses its own correct value (5.7.3).
 
-**4.** What does it mean when the receiver sends the **same** ACK three times, and what does the sender do?
+**Q6 — When do jumbo frames (9000 MTU) make sense?** Only in a network you **control end to end**: inside a
+data centre, storage networks, traffic inside a VPC. If there is a single 1500-byte interface on the path,
+jumbo frames are either fragmented or dropped. In AWS traffic inside a VPC supports 9001 MTU but traffic
+leaving over an IGW/VPN drops to 1500 (5.7.1) — that transition point is where problems are born.
 
-**5.** Which side does flow control protect, and which side does congestion control protect?
+**Q7 — At what value of `retrans` should I worry?** Not the absolute number but the **ratio and the trend**
+matter. Below 0.1% of the total segment count is usually noise. Above 1%, especially on a high-RTT
+connection, is a serious performance problem (5.5.2). What to really look at is **whether it is rising**:
+run `ss -ti` a few seconds apart; if `retrans` keeps climbing there is active loss on the path, and the next
+tool is `mtr`.
 
-**6.** Write the formula `MSS = ...` and say what each number is.
+---
+---
 
-**7.** What is the difference between a FIN and an RST?
+# Phase 5 — Test yourself
 
-**8.** What is a "path MTU" and why is it not the same as the interface's MTU?
+Write your answers on paper, then compare them with the key. Target: 14+ out of 18.
 
-## Part B — Scenario reasoning
+## Part A — Definitions and mechanisms
 
-**9.** `curl` times out; `tcpdump` shows the SYN going out with no reply at all. Write two possible causes
-and say how you would tell them apart.
+1. Write the four differences between TCP and UDP.
+2. Why does DNS use UDP? Why does video streaming use UDP? Are the two reasons different?
+3. Write the three steps of the three-way handshake and what is said at each step.
+4. Why is the handshake three steps — why are two not enough?
+5. What do the sequence number and the ACK number mean? What does it mean that an ACK is "cumulative"?
+6. What is fast retransmit and which signal triggers it?
+7. What is the difference between flow control and congestion control? Whom does each protect?
+8. Write the relationship between MTU and MSS as a formula.
 
-**10.** SSH connects, the banner comes, and the moment you type `ls -la` it freezes. What is your
-diagnosis and with which command do you confirm it?
+## Part B — Apply and diagnose
 
-**11.** The link is 1 Gbps and idle, RTT is 180 ms, there is 1% loss and the transfer runs at 3 Mbps. Is
-the bandwidth insufficient? Explain the mechanism.
+9. In `tcpdump` the SYN goes out but there is no reply at all. Write two possible causes.
+10. An RST comes back to the SYN. What is your diagnosis, and which team does the suspicion shift to?
+11. In `ss -ti` output you see `retrans:47/1200`. What does it mean, and what is your next step?
+12. SSH connects, the banner comes, and the moment you type `ls -la` it freezes. What is your diagnosis?
+13. With which command do you test the path MTU by hand? Where does the `-s 1472` value come from?
+14. RTT is 200 ms, loss is 1%, the link is 10 Gbps. Why is the transfer slow?
 
-**12.** There are thousands of `TIME_WAIT`s on a server. Is this a fault? In what case would it become
-one?
+## Part C — Reasoning and connection
 
-**13.** A UDP-based service "seems to be working" but the client gets no data. Why is this harder to
-diagnose than TCP, and how would you approach it?
-
-**14.** A long-idle SSH session drops with an RST. Write the cause and a solution that does not touch the
-network configuration.
-
-## Part C — Reading commands and output
-
-**15.** In `ss -ti` output you see `rtt:148.3/2.1 retrans:14/230 cwnd:4 mss:1448`. Interpret these four
-values and say what the overall picture tells you.
-
-**16.** In `tcpdump` output you see `Flags [S]`, then `Flags [R.]`. What happened, and where does the
-problem lie — the network or the application?
-
-**17.** `ping -M do -s 1472 10.0.5.20` fails, `ping -M do -s 1372 10.0.5.20` succeeds. What is the path
-MTU roughly, and what would you look at?
-
-**18.** What is different about `ss -tan | grep TIME_WAIT | wc -l` returning 8400 on a web server versus on
-a database server?
+15. When you see the symptom "the handshake is fine but no data flows", what should your first suspicion be
+    and **why**?
+16. When a router drops a packet it does not tell the sender. How does TCP notice the loss? Write two ways.
+17. What is ICMP's role in an MTU black hole? What would happen if ICMP were not blocked?
+18. On a backend behind an ALB you see an RTT of 1 ms in `ss -ti`, but users complain about slowness. It is
+    not a contradiction — explain.
 
 ---
 
 ## Answer key
 
-**1.** SYN: "I want to connect, my starting number is X." SYN-ACK: "I received X, I want to connect too, my
-number is Y." ACK: "I received Y, the connection is established." (5.2.1) **2.** Because **both** sides'
-ability to send and receive has to be confirmed; with two steps the server could not know that the client
-received its reply (5.2.1). **3.** `seq` = the number of the first byte in the packet I am sending; `ack` =
-"I received everything up to here, **I am waiting for** this number next" — always one more than the last
-byte received (5.3.1). **4.** Duplicate ACKs: the receiver got out-of-order data and is repeating what it is
-waiting for; after three the sender concludes there was a loss and retransmits immediately — fast
-retransmit, without waiting for the RTO (5.3.2). **5.** Flow control protects the **receiver** (its buffer),
-congestion control protects the **network** (the routers along the path) (5.4.1). **6.** `MSS = MTU − 20
-(IP) − 20 (TCP)` → 1460 = 1500 − 20 − 20; MSS is the amount of **data** TCP can carry in one segment
-(5.7.2). **7.** FIN is a graceful, mutual, four-step close; RST is an abrupt one-packet cut — a closed port,
-a crash, a firewall rejection, a NAT timeout (5.6.1). **8.** The path MTU is the **smallest** MTU along the
-whole path; your interface may be 1500 but a tunnel in the middle may be 1400 — the packet has to fit the
-smallest one (5.7.1). **9.** (i) A firewall/security group dropping it silently, (ii) no routing / the host
-is down. To tell them apart: check routing (`ip route get`), look for the packet on the target machine with
-`tcpdump` — if it arrives there and no reply goes back, the filtering is local (5.2.2). **10.** An **MTU
-black hole**: small packets get through, the large output does not. Confirm with `ping -M do -s 1472
-<target>` — if it fails but a smaller size succeeds, the diagnosis is certain (5.7.3). **11.** No, the
-bandwidth is not the problem: throughput ≈ window / RTT, and at every loss cwnd is halved and recovers +1
-per RTT — with a 180 ms RTT recovery is glacial and the next loss arrives first; cwnd stays permanently
-small (5.5.2). **12.** It is **normal** — closed connections wait about 60 s so that late packets are not
-mixed into a new connection; it becomes a problem only when the ephemeral port pool is exhausted (5.6.1,
-1.4.1). **13.** Because UDP has **no** handshake, no RST and no retransmission — there is only silence;
-there is no symptom to read. The approach: run `tcpdump` **at both ends** simultaneously and see where the
-packet stops (5.1.1). **14.** A NAT/firewall session timeout dropping the entry for an idle connection;
-solution: `ServerAliveInterval 60` in `~/.ssh/config` — regular keepalive traffic keeps the entry alive
-(5.6.1). **15.** rtt 148 ms = a very distant connection; `retrans:14/230` = 14 of 230 segments were
-retransmitted, about 6% loss — very high; `cwnd:4` = the congestion window has been beaten down to almost
-nothing; `mss:1448` = normal. The overall picture: a distant connection + serious loss → the throughput will
-be on the floor, and the work is to find the loss (`mtr`), not to add bandwidth (5.3.2, 5.5.2). **16.** The
-SYN went out and an **RST** came back: the host is alive and replied, but nothing is listening on that port.
-The problem is on the **application** side — the service is down or on a different port; check with `ss
--tulpn` (5.2.2). **17.** The largest size that gets through is between 1372 and 1472, so the path MTU is
-somewhere around 1400–1500 — probably 1400, meaning there is a **tunnel/VPN** in the path. What to look at:
-is ICMP type 3 code 4 allowed, and is MSS clamping configured (5.7.3). **18.** On a web server it is
-expected — thousands of short-lived HTTP connections open and close (each leaves a TIME_WAIT). On a database
-server it is **suspicious**: database connections are normally long-lived and pooled; thousands of
-TIME_WAITs mean the application is opening and closing a new connection for every query — a connection-pool
-misconfiguration (5.6.1).
+1. **TCP:** connection-oriented (handshake), reliable (retransmission), ordered, flow/congestion
+   controlled. **UDP:** connectionless, unreliable, unordered, uncontrolled — and a smaller header, lower
+   latency (5.1.1). — 2. **DNS:** a single-packet question and answer; setting up a handshake would be
+   waste, and asking again is cheaper if it is lost. **Video:** delay is more harmful than loss; a frame
+   that arrives late is useless anyway. The reasons are **different**: one is efficiency, the other is
+   timeliness (5.1.2). — 3. **SYN** ("I want to connect, my seq number is X"), **SYN-ACK** ("I received X,
+   my number is Y"), **ACK** ("I received Y — established") (5.2.1). — 4. Because with two steps the server
+   cannot know that the client **received its own reply**; the third step proves two-way communication
+   (5.2.1). — 5. **Seq:** the number of the first byte in this packet. **ACK:** "I have received everything
+   up to this number, I am waiting for the next". **Cumulative** = **everything** before the ack value has
+   been received (5.3.1). — 6. Retransmitting the lost packet without waiting for the timeout; it is
+   triggered by **three duplicate ACKs** (5.3.2). — 7. **Flow control protects the receiver** (the receive
+   window the receiver announces); **congestion control protects the network** (the cwnd the sender
+   estimates from loss). What is sent = min(the two) (5.4.1, 5.5.1). — 8. **MSS = MTU − IP header (20) − TCP
+   header (20)**; on standard Ethernet 1460 = 1500 − 40 (5.7.2).
 
----
+9. (i) A firewall is **dropping the packet silently** (DROP); (ii) a routing problem or no return path;
+   (iii) the host is missing/down (5.2.2). — 10. The target machine **exists, is reachable and received the
+   packet** — but **no process is listening** on that port. The suspicion shifts from the network to the
+   **application** (5.2.2). — 11. 47 of 1200 segments were retransmitted (~4%) — **high**, there is real
+   packet loss on the path. Next step: find at which hop the loss happens with **`mtr`** (5.3.2, 5.5.2). —
+   12. An **MTU black hole** — small packets (the handshake, the banner) get through, large packets (the
+   `ls -la` output) are dropped (5.7.3). — 13. **`ping -M do -s 1472 <target>`**. 1472 + 8 (ICMP header) + 20
+   (IP header) = **1500**, that is, the largest ping that fills the MTU exactly (5.7.3). — 14. Throughput ≈
+   window / RTT; because the RTT is large the window would have to grow very large, but 1% loss halves cwnd
+   every time and, because recovery happens at the speed of RTT, the window can never grow. The bandwidth
+   cannot be used (5.5.2).
+
+15. **MTU.** Because handshake packets are **small** (a few dozen bytes) and always get through; data
+    packets are **large** (up to the MSS) and are dropped if there is a low-MTU point on the path. "It
+    connects but nothing flows" is the direct signature of this distinction (5.2.2, 5.7.3). — 16. (i)
+    **Timeout (RTO):** if the ACK does not arrive within a certain time the packet is retransmitted. (ii)
+    **Three duplicate ACKs:** when the receiver gets out-of-order data it repeats the same ACK; the sender
+    treats this as a loss signal and does a **fast retransmit** (5.3.2). — 17. The ICMP **Fragmentation
+    Needed** message carries "the packet is too big, the MTU is this" to the sender — it is the only
+    information channel of path MTU discovery. If it is blocked the sender cannot learn, resends at the same
+    size, and the packet is dropped again: a **black hole** (5.7.3, Phase 4.4.2). If ICMP were open the
+    sender would learn the MTU and lower its segment size — the problem would resolve itself. — 18. Because
+    the ALB **terminates** the TCP connection: client↔ALB and ALB↔backend are **two separate** connections.
+    The 1 ms you see on the backend is the RTT between the ALB and the backend; the delay the client
+    experiences (perhaps 150 ms + loss) is on the client↔ALB side and is **invisible** from the backend.
+    In performance diagnosis it is essential to know which connection you are looking at (the cloud box in
+    5.5.2).
 
 ## Scoring
 
-| Correct answers | What it means | What to do |
-|---|---|---|
-| 16–18 | The transport layer is solid | Go on to Phase 6 |
-| 12–15 | The mechanisms are in place, the details are shaky | Reread 5.3 and 5.7, then continue |
-| 8–11 | The outline is there, the reasoning is not | Rework 5.2, 5.5 and 5.7, redo Lab 5 |
-| 0–7 | Not yet settled | Reread the phase from the beginning; do not skip 5.7 |
+| Correct answers | What it means |
+|---|---|
+| 16–18 | Transport has settled — especially the MTU reflex. You are ready for Phase 6. |
+| 13–15 | Good. Read 5.7 (MTU) once more; that is what will help you most in the field. |
+| 9–12 | The handshake and the loss mechanism may be getting mixed up. Verify 5.2 and 5.3 with `tcpdump`. |
+| 0–8 | Walk the phase again. The goal: to say MTU the moment you hear "it connects but nothing flows". |
 
 **Which section to go back to for a question you missed:**
 
 | Question | Section |
 |---|---|
-| 1, 2, 9, 16 | 5.2 — the handshake and its diagnosis |
-| 3, 4, 15 | 5.3 — seq/ACK and retransmission |
-| 5 | 5.4, 5.5 — the window and congestion |
-| 11, 15 | 5.5.2 — RTT, loss and throughput |
-| 7, 12, 14, 18 | 5.6 — closing a connection |
-| 6, 8, 10, 17 | 5.7 — MTU/MSS and the black hole |
-| 13 | 5.1 — TCP vs UDP |
+| 1, 2 | 5.1 TCP vs UDP |
+| 3, 4, 9, 10 | 5.2 The handshake |
+| 5, 6, 11, 16 | 5.3 Seq/ACK/retransmission |
+| 7 | 5.4 + 5.5 Flow vs congestion |
+| 14, 18 | 5.5.2 Throughput and RTT |
+| 8, 12, 13, 15, 17 | 5.7 MTU and the black hole |
 
 ---
 ---
 
-# Closing and the Bridge to Phase 6
+# Phase 5 — Closing and the Bridge to Phase 6
 
-You have finished the transport layer. You now know how a connection is established, how loss is detected
-and repaired, who slows the sending rate down and why, and — most valuably — the signature of the MTU black
-hole: **small packets get through, large packets do not**. That single sentence will save you days in the
-field.
+## What you carry out of this phase
 
-But notice something. Every example in this phase started with an **IP address**. `tcpdump` showed
-`93.184.216.34.443`; the SYN packet went to an IP. Yet you wrote `curl https://example.com`.
+Phase 5 gave you **how reliability is built**. You learned that TCP and UDP are different contracts — one
+chooses correctness, the other timeliness. You picked up the three-way handshake and its diagnostic value
+(the timeout / RST / ICMP trio). You saw how numbering and acknowledgement detect loss without any extra
+message. You told apart that flow control protects the **receiver** and congestion control protects the
+**network**, and understood why high RTT + loss collapses throughput. And most valuably: you learned the
+signature of the **MTU black hole** — *small packets get through, large packets do not.*
 
-> **🤔 Phase output — carry this question into the next phase:**
+The two most durable sentences: **"establishing a connection and data flowing are two separate events"**
+and **"if it connects but nothing flows, let your first suspicion be MTU."**
+
+## Where Phase 6 connects to this
+
+From Phase 0 up to here we did everything with **IP addresses**. `ping 8.8.8.8`, `curl
+https://93.184.216.34`, route tables, prefixes — all of it in numbers.
+
+But in real life you do not type `93.184.216.34`. You type `example.com`.
+
+So **how** does that name turn into the 32-bit number the machine needs? And when that conversion breaks,
+why does everything look like "no internet" — even though IP, routing and TCP are perfectly healthy?
+
+Phase 6 is the answer: DNS. You will see the name hierarchy, the resolution chain (resolver → root → TLD →
+authoritative), the record types, and why the cache/TTL is both the biggest accelerator and the most
+insidious source of failures.
+
+Phase 5 made data flow **reliably**; Phase 6 teaches finding **where** it will flow.
+
+> **🤔 Phase output — ask yourself:** When you type `curl https://example.com`, for the machine to start the
+> TCP handshake it first has to know the destination **IP** (5.2.1 — the destination IP field of the SYN
+> packet has to be filled in). But all it has is a **name**. Whom will it ask for that name — and where will
+> it get the address of that "whom" from? (Hint: it was one of the four things DHCP handed out in Phase
+> 1.6.1.)
 >
-> The SYN packet is the **first** packet of the connection, and it needs a destination IP in its header. But
-> you typed a **name**. That means before the connection is established, something turned that name into an
-> address — and that step happened **before** everything in this phase. If that step fails, **the SYN is
-> never sent at all**. In diagnosis this makes a big difference: "no reply to the SYN" and "there was no SYN
-> at all" are two completely different failures. So who does that translation, how long does it take, and
-> what happens when it goes wrong? That is Phase 6.
-
-> **🧪 Lab 5 idea — watch a connection from birth to death**
->
-> 1. Start `sudo tcpdump -n -i any 'tcp port 443 and host example.com' -w /tmp/cap.pcap` in one terminal,
->    run `curl -s https://example.com > /dev/null` in another, and stop the capture.
-> 2. Open the capture with `tcpdump -r /tmp/cap.pcap` and find the three lines of the handshake; write down
->    the `seq` and `ack` numbers and check the "one more" rule for yourself (5.3.1).
-> 3. Find the closing packets at the end of the capture: is it FIN or RST? (5.6.1)
-> 4. Run `ss -ti` while a large download (`curl -o /dev/null https://speed.hetzner.de/100MB.bin`) is in
->    progress and watch `cwnd` grow and `retrans` change (5.3.2, 5.5.1).
-> 5. Find your path MTU by hand: raise and lower the size with `ping -M do -s <size> 8.8.8.8` and find the
->    largest value that gets through; add 28 (5.7.3). If you have a VPN, repeat the same test with the VPN
->    on and off and compare the two numbers.
+> **🧪 Lab 5 idea (all 🟢, tcpdump needs root):** (1) Start `sudo tcpdump -n 'tcp port 443 and host
+> example.com'`, run `curl -s https://example.com > /dev/null` in another terminal; find the SYN / SYN-ACK /
+> ACK trio together with its flags. (2) At the same time run `ss -ti` and read the `rtt`, `mss`, `cwnd` and
+> `retrans` values. (3) Test your path MTU with `ping -M do -s 1472 8.8.8.8`; if it gets through you are at
+> 1500, if not, reduce the size and find the limit. (4) Run `mtr -rwc 30 <a distant target>` and compare
+> `retrans` with the per-hop loss — do the two agree? (5) Connect to a closed port (`curl -v
+> http://localhost:9999`) and see **connection refused**; then connect to a filtered address and see the
+> **timeout**. Living the two symptoms side by side makes 5.2.2 permanent.
 
 ---
 

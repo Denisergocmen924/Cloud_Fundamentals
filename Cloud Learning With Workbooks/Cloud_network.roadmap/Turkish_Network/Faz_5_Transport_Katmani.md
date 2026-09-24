@@ -611,7 +611,7 @@ paketi aldığını** kanıtlar (5.2.2). Sorun ağda değil, hedefte: o portu di
 kurallarına, route table'a, security group'a bak. *RST* = uygulama sorunu → servis ayakta mı, doğru portu
 mu dinliyor, doğru arayüze mi bağlanmış (`0.0.0.0` vs `127.0.0.1`, Faz 1.4.2). Bu tek ayrım, saatlerce
 yanlış yerde aramayı önler.
-**İlgili bölüm:** 5.2.2 · **Devamı:** Faz 9.3 (firewall davranışları), Faz 10.3 (teşhis akışı).
+**İlgili bölüm:** 5.2.2 · **Devamı:** Faz 9.2.3 (DROP ve REJECT), Faz 10.1 (katman katman teşhis).
 
 ## Cevap 5.3 — Kümülatif ACK, boşluğu geçemez
 
@@ -648,7 +648,7 @@ ve yeniden gönderimi çok daha verimli hâle getirir. Modern sistemlerde varsay
 (c) **Neredeyse hiç fark etmezdi.** RTT 0.5 ms iken cwnd, kayıptan sonra milisaniyeler içinde toparlanır —
 %0.8 kayıp fark edilmez bile. Aynı kayıp oranı, mesafeyle birlikte felakete dönüşür. Bu yüzden "kayıp
 yüzdesi" tek başına anlamsızdır; **RTT ile birlikte** değerlendirilmelidir.
-**İlgili bölüm:** 5.5.1-5.5.2 · **Devamı:** Faz 8.5 (CDN — mesafeyi kısaltmak), Faz 10.4 (performans teşhisi).
+**İlgili bölüm:** 5.5.1-5.5.2 · **Devamı:** Faz 8.5 (CDN — mesafeyi kısaltmak), Faz 10.2.3 (`mtr` ile yolda kaybı bulmak).
 
 ## Cevap 5.5 — Boştaki bağlantıyı bir şey unutuyor
 
@@ -687,7 +687,7 @@ azaltarak (1400, 1372, 1300...) geçen en büyük değeri bul; +28 ekleyerek ger
 açıldığında sistem **her yol için** doğru MTU'yu kendisi bulur — sadece bu VPN için değil, gelecekteki tüm
 yollar için. MSS clamping ise işe yarar ama bir yamadır: her yeni tünel için ayrıca yapılandırılması gerekir
 ve sadece TCP'yi korur (UDP tünellerinde işe yaramaz). Pratikte çoğu kurum **ikisini birden** uygular.
-**İlgili bölüm:** 5.7.3 · **Devamı:** Faz 7.4 (tünelleme), Faz 9.3 (ICMP politikası), Faz 10.3 (teşhis).
+**İlgili bölüm:** 5.7.3 · **Devamı:** Faz 7.4 (tünelleme), Faz 9.3 (ICMP politikası), Faz 10.1 (teşhis metodolojisi).
 
 ---
 ---
