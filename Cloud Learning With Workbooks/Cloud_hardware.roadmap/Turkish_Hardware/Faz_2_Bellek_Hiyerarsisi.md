@@ -76,18 +76,22 @@ bakalım.
 | **Aynı AZ ağ gidiş-dönüş** | ~0,25–0,5 ms | ~750.000–1.500.000 | — |
 | **Kıtalararası ağ** | ~70–150 ms | ~200.000.000+ | — |
 
-**Bu tabloyu bir kez insan ölçeğine çevirelim.** Register erişimini **1 saniye** kabul edelim:
+**Bu tabloyu bir kez insan ölçeğine çevirelim.** **1 clock çevrimini 1 saniye** kabul edelim
+(Ek A.1'deki ölçekle aynı: 3 GHz'de 1 çevrim ≈ 0,33 ns, yani ölçek katsayısı ≈ 3,3 × 10⁹).
+Yukarıdaki çevrim sütunu doğrudan saniyeye dönüşür:
 
 | Seviye | İnsan ölçeğinde |
 |---|---|
-| Register | 1 saniye |
-| L1 cache | 10 saniye |
-| L2 cache | 40 saniye |
-| L3 cache | 3–7 dakika |
-| **DRAM** | **~15 dakika** |
-| NVMe SSD | **~3–14 saat** |
-| HDD | **~2–4 ay** |
-| Kıtalararası ağ | **~2–5 yıl** |
+| Register | 1 saniyeden az |
+| L1 cache | 4–5 saniye |
+| L2 cache | 12–20 saniye |
+| L3 cache | 40 saniye – 2 dakika |
+| **DRAM** | **~4–5 dakika** |
+| NVMe SSD | **~17 saat – 3,5 gün** |
+| SATA SSD | ~3,5–17 gün |
+| Aynı AZ ağ gidiş-dönüş | ~9–17 gün |
+| HDD | **~6 ay – 1 yıl** |
+| Kıtalararası ağ | **~7–14 yıl** |
 
 > **Bu tabloyu ezberlemene gerek yok — ama ölçek hissini içselleştir.** Bir cloud
 > engineer'ın kafasındaki en değerli sezgilerden biri şudur:

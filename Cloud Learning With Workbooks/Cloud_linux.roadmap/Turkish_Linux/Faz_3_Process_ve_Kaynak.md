@@ -208,8 +208,10 @@ lideri), `l` (çok-thread'li), `+` (foreground process grubunda), `<` (yüksek �
 > **❓ Akla gelen soru: "R hem 'çalışıyor' hem 'çalışmaya hazır' demekse, gerçekten CPU'da olan
 > hangisi?"** Çekirdek açısından ikisi aynı kuyruktadır (runqueue). Fiziksel çekirdek sayısı kadar
 > process aynı anda **gerçekten** çalışır; gerisi "runnable" — hazır ama sıra bekliyor. `top`'ta
-> "load average" dediğimiz sayı tam da bu R durumundaki (çalışan + bekleyen) process sayısının bir
-> ortalamasıdır (Faz 4'te açacağız). Yani yüksek load = "çok process aynı anda CPU istiyor".
+> "load average" dediğimiz sayı bu R durumundaki (çalışan + bekleyen) process'lerin **artı** `D`
+> durumundakilerin (kesintisiz uyku, genelde disk I/O'sunu bekleyen — bkz. 3.2.3) sayısının bir
+> ortalamasıdır (Faz 4'te açacağız). Yani yüksek load = "çok process CPU'yu (R) ya da diski (D)
+> istiyor"; tek başına "CPU meşgul" demek değildir.
 
 ## 3.2.2 Zombie: ölmüş ama gömülmemiş `[mekanizma]`
 

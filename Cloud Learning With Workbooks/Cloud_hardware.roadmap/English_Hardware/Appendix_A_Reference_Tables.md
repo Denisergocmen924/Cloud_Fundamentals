@@ -274,14 +274,16 @@ lspci -vv | grep -E "LnkCap|LnkSta"   # the slot's capability and its actual sta
 
 **Frame overhead:**
 ```
-Ethernet header + CRC : 18 bytes
-IP header             : 20 bytes
-TCP header            : 20 bytes
+Preamble + SFD        :  8 bytes  (outside the MTU, on the wire)
+Ethernet header + CRC : 18 bytes  (outside the MTU)
+Inter-frame gap       : 12 bytes  (outside the MTU)
+IP header             : 20 bytes  (inside the MTU)
+TCP header            : 20 bytes  (inside the MTU)
 ────────────────────────────────
-Total                 : 58 bytes
+Total                 : 78 bytes
 
-MTU 1500 → efficiency 96.3%
-MTU 9000 → efficiency 99.4%  + 6× fewer packets
+MTU 1500 → efficiency 94.9%  (1460 / 1538)
+MTU 9000 → efficiency 99.1%  (8960 / 9038)  + 6× fewer packets
 ```
 
 ### The four components of latency *(Phase 5.3.2)*

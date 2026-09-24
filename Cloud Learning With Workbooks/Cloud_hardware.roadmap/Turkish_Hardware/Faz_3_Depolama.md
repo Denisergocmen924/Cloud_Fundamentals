@@ -586,8 +586,8 @@ değildir:
 
 ```
 Kapasitenin %50'sinde:  await ≈ 1,0 × taban gecikme
-Kapasitenin %80'inde:   await ≈ 2,0 × taban
-Kapasitenin %90'ında:   await ≈ 4,0 × taban
+Kapasitenin %80'inde:   await ≈ 2,5 × taban
+Kapasitenin %90'ında:   await ≈ 5,0 × taban
 Kapasitenin %95'inde:   await ≈ 8,0 × taban
 Kapasitenin %99'unda:   await ≈ 40  × taban
 ```
@@ -956,8 +956,9 @@ await ≈ kuyruk uzunluğu ÷ işlem hızı
 ```
 
 **Yani 22,4 ms'lik gecikmenin neredeyse tamamı kuyrukta bekleme.** Cihazın kendi hizmet
-süresi ~0,3 ms. 3.4.4'teki eğrinin %99 satırındasın: taban gecikmenin **~70 katını**
-ödüyorsun.
+süresi ~0,3 ms. %99,8 kullanımla 3.4.4'teki eğrinin en uç ucundasın: taban gecikmenin
+**~75 katını** (22,4 ÷ 0,3) ödüyorsun — tablodaki %99 satırının 40×'i bile bu uca
+yetişmez.
 
 Uygulama tarafında görünümü: her sorgu 22 ms disk bekliyor, bağlantı havuzu doluyor,
 p99 gecikme patlamış durumda.

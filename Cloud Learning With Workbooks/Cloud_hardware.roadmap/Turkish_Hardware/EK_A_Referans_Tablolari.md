@@ -271,14 +271,16 @@ lspci -vv | grep -E "LnkCap|LnkSta"   # yuvanın kapasitesi ve gerçek durumu
 
 **Çerçeve ek yükü:**
 ```
-Ethernet başlık + CRC : 18 byte
-IP başlık             : 20 byte
-TCP başlık            : 20 byte
+Preamble + SFD        :  8 byte   (MTU dışında, hatta)
+Ethernet başlık + CRC : 18 byte   (MTU dışında)
+Çerçeveler arası boşluk: 12 byte   (MTU dışında)
+IP başlık             : 20 byte   (MTU içinde)
+TCP başlık            : 20 byte   (MTU içinde)
 ────────────────────────────────
-Toplam                : 58 byte
+Toplam                : 78 byte
 
-MTU 1500 → verim %96,3
-MTU 9000 → verim %99,4  + paket sayısı 6 kat az
+MTU 1500 → verim %94,9  (1460 / 1538)
+MTU 9000 → verim %99,1  (8960 / 9038)  + paket sayısı 6 kat az
 ```
 
 ### Gecikmenin dört bileşeni *(Faz 5.3.2)*

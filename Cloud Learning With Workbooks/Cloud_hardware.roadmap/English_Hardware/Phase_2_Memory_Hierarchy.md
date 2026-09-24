@@ -77,18 +77,22 @@ consequence of that difference in numbers.
 | **Same-AZ network round trip** | ~0.25–0.5 ms | ~750,000–1,500,000 | — |
 | **Intercontinental network** | ~70–150 ms | ~200,000,000+ | — |
 
-**Let's translate this table to human scale once.** Take register access as **1 second**:
+**Let's translate this table to human scale once.** Take **1 clock cycle as 1 second**
+(the same scale as Appendix A.1: at 3 GHz one cycle ≈ 0.33 ns, so the scale factor is ≈ 3.3 × 10⁹).
+The cycles column above converts directly into seconds:
 
 | Level | On a human scale |
 |---|---|
-| Register | 1 second |
-| L1 cache | 10 seconds |
-| L2 cache | 40 seconds |
-| L3 cache | 3–7 minutes |
-| **DRAM** | **~15 minutes** |
-| NVMe SSD | **~3–14 hours** |
-| HDD | **~2–4 months** |
-| Intercontinental network | **~2–5 years** |
+| Register | under 1 second |
+| L1 cache | 4–5 seconds |
+| L2 cache | 12–20 seconds |
+| L3 cache | 40 seconds – 2 minutes |
+| **DRAM** | **~4–5 minutes** |
+| NVMe SSD | **~17 hours – 3.5 days** |
+| SATA SSD | ~3.5–17 days |
+| Same-AZ network round trip | ~9–17 days |
+| HDD | **~6 months – 1 year** |
+| Intercontinental network | **~7–14 years** |
 
 > **You don't need to memorize this table — but internalize the sense of scale.** One of the most
 > valuable intuitions in a cloud engineer's head is this:

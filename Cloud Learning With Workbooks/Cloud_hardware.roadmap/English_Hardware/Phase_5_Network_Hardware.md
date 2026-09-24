@@ -106,19 +106,24 @@ the **electrical/optical signals** on the wire.
 consequence:
 
 ```
-Fixed overhead of every packet:
-  Ethernet header+CRC : 18 bytes
-  IP header           : 20 bytes
-  TCP header          : 20 bytes
-  ──────────────────────────────
-  Total overhead      : 58 bytes
+Fixed overhead of every frame:
+  On the wire, OUTSIDE the MTU:
+    Preamble + SFD        :  8 bytes
+    Ethernet header + CRC : 18 bytes
+    Inter-frame gap       : 12 bytes   (IFG)
+  INSIDE the MTU (part of the 1500):
+    IP header             : 20 bytes
+    TCP header            : 20 bytes
+  ──────────────────────────────────
+  Total overhead          : 78 bytes
 
-With a 1500-byte MTU:  1500 / 1558 = 96.3% efficiency
+With a 1500-byte MTU:  1460 bytes of TCP data, 1538 bytes on the wire
+                       1460 / 1538 = 94.9% efficiency
 ```
 
 **Jumbo frames (MTU 9000):**
 ```
-9000 / 9058 = 99.4% efficiency
+8960 / 9038 = 99.1% efficiency
 And more importantly: the PACKET COUNT for the same data DROPS 6×
 → 6× fewer interrupts, 6× less header processing (the math from Phase 4.4.2)
 ```
@@ -788,9 +793,9 @@ goes from 0.3 ms to 90 ms.
 > The theoretical maximum of a 10 Gbps link is 1250 MB/s. But every packet carries protocol
 > overhead (5.1.2):
 > ```
-> Efficiency at 1500-byte MTU: 1500 / 1538 ≈ 97.5%
-> 10 Gbps × 0.975 ≈ 9.75 Gbps (theoretical ceiling)
-> Measured in practice: 9.4 Gbps  ← 94%, healthy
+> Efficiency at 1500-byte MTU: 1460 / 1538 ≈ 94.9%
+> 10 Gbps × 0.949 ≈ 9.49 Gbps (theoretical ceiling)
+> Measured in practice: 9.4 Gbps  ← 99% of the ceiling, 94% of the line rate — healthy
 > ```
 > With jumbo frames (MTU 9000) you can see 9.8+ Gbps.
 >
@@ -1027,8 +1032,8 @@ is smaller than the BDP, the link **never fills up** and throughput is capped by
 *(5.3.3)*
 
 **B7.** *(5.1.2)*
-1. **Higher efficiency:** the fixed 58 bytes of overhead is spread over a larger payload
-   (96.3% → 99.4%).
+1. **Higher efficiency:** the fixed 78 bytes of overhead is spread over a larger payload
+   (94.9% → 99.1%).
 2. **Fewer packets:** the same data fits into 6× fewer packets → 6× fewer interrupts and less
    header processing. **The second is usually more important.**
 

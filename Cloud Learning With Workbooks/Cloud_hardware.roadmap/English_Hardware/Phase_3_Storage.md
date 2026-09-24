@@ -586,8 +586,8 @@ linear:
 
 ```
 At 50% of capacity:  await ≈ 1.0 × base latency
-At 80% of capacity:  await ≈ 2.0 × base
-At 90% of capacity:  await ≈ 4.0 × base
+At 80% of capacity:  await ≈ 2.5 × base
+At 90% of capacity:  await ≈ 5.0 × base
 At 95% of capacity:  await ≈ 8.0 × base
 At 99% of capacity:  await ≈ 40  × base
 ```
@@ -954,8 +954,8 @@ await ≈ queue length ÷ processing rate
 ```
 
 **So almost all of the 22.4 ms of latency is time spent waiting in the queue.** The device's own
-service time is ~0.3 ms. You're on the 99% row of the curve in 3.4.4: you're paying **~70×** the base
-latency.
+service time is ~0.3 ms. At 99.8% utilization you are at the far end of the curve in 3.4.4: you're paying
+**~75×** the base latency (22.4 ÷ 0.3) — even the 99% row of the table (40×) falls short of it.
 
 How it looks from the application's side: every query waits 22 ms for the disk, the connection pool
 fills up, and p99 latency has exploded.

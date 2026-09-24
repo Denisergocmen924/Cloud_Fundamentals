@@ -105,19 +105,24 @@ NIC (Network Interface Card), bilgisayarın belleğindeki **bit'ler** ile kablod
 **MTU (Maximum Transmission Unit) = 1500 byte** standarttır ve önemli bir sonucu vardır:
 
 ```
-Her paketin sabit ek yükü:
-  Ethernet başlık+CRC : 18 byte
-  IP başlık           : 20 byte
-  TCP başlık          : 20 byte
-  ──────────────────────────────
-  Toplam ek yük       : 58 byte
+Her çerçevenin sabit ek yükü:
+  Hat üstünde, MTU'nun DIŞINDA:
+    Preamble + SFD          :  8 byte
+    Ethernet başlık + CRC   : 18 byte
+    Çerçeveler arası boşluk : 12 byte   (IFG)
+  MTU'nun İÇİNDE (1500'ün bir kısmı):
+    IP başlık               : 20 byte
+    TCP başlık              : 20 byte
+  ──────────────────────────────────────
+  Toplam ek yük             : 78 byte
 
-1500 byte MTU ile:  1500 / 1558 = %96,3 verim
+1500 byte MTU ile:  TCP verisi 1460 byte, hattaki toplam 1538 byte
+                    1460 / 1538 = %94,9 verim
 ```
 
 **Jumbo frame (MTU 9000):**
 ```
-9000 / 9058 = %99,4 verim
+8960 / 9038 = %99,1 verim
 Ve daha önemlisi: aynı veri için PAKET SAYISI 6 KAT AZALIR
 → 6 kat az kesme, 6 kat az başlık işleme (Faz 4.4.2'nin hesabı)
 ```
@@ -786,9 +791,9 @@ tek başına zararsız görünen bir desen, RTT 0,3 ms'den 90 ms'ye çıkınca f
 > 10 Gbps hattın teorik maksimumu 1250 MB/s'dir. Ama her paket protokol ek yükü taşır
 > (5.1.2):
 > ```
-> 1500 byte MTU'da verim: 1500 / 1538 ≈ %97,5
-> 10 Gbps × 0,975 ≈ 9,75 Gbps (teorik tavan)
-> Pratikte ölçülen: 9,4 Gbps  ← %94, sağlıklı
+> 1500 byte MTU'da verim: 1460 / 1538 ≈ %94,9
+> 10 Gbps × 0,949 ≈ 9,49 Gbps (teorik tavan)
+> Pratikte ölçülen: 9,4 Gbps  ← tavanın %99'u, hattın %94'ü — sağlıklı
 > ```
 > Jumbo frame (MTU 9000) ile 9,8+ Gbps görebilirsin.
 >
@@ -1020,7 +1025,7 @@ onay beklemeden en fazla pencere boyutu kadar veri gönderebilir; pencere BDP'de
 hat **asla dolmaz** ve throughput pencereyle sınırlanır. *(5.3.3)*
 
 **B7.** *(5.1.2)*
-1. **Verim artışı:** Sabit 58 byte ek yük daha büyük payload'a bölünür (%96,3 → %99,4).
+1. **Verim artışı:** Sabit 78 byte ek yük daha büyük payload'a bölünür (%94,9 → %99,1).
 2. **Paket sayısı azalması:** Aynı veri 6 kat az pakete sığar → 6 kat az kesme ve başlık
    işleme. **İkincisi genelde daha önemlidir.**
 

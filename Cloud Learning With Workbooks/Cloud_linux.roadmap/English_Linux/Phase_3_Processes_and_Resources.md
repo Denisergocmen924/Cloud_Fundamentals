@@ -214,9 +214,11 @@ nice), `N` (low priority). For example `Ssl` = a sleeping, session-leader, multi
 > **❓ Question that comes to mind: "If R means both 'running' and 'ready to run', which one is
 > actually on the CPU?"** From the kernel's point of view both are in the same queue (the runqueue).
 > As many processes as there are physical cores run **truly** at the same time; the rest are
-> "runnable" — ready but waiting their turn. The number we call "load average" in `top` is exactly a
-> moving average of the count of processes in this R state (running + waiting) (we open this up in
-> Phase 4). So high load = "many processes want the CPU at the same time".
+> "runnable" — ready but waiting their turn. The number we call "load average" in `top` is a
+> moving average of the count of processes in this R state (running + waiting) **plus** those in
+> the `D` state (uninterruptible sleep, usually waiting on disk I/O — see 3.2.3) (we open this up in
+> Phase 4). So high load = "many processes want the CPU (R) or the disk (D)"; on its own it does
+> not mean "the CPU is busy".
 
 ## 3.2.2 Zombie: dead but not buried `[mechanism]`
 
