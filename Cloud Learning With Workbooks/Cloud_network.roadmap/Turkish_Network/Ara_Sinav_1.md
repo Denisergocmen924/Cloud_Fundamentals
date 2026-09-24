@@ -263,14 +263,14 @@ otomatik gelir; elle ayarlananlar tek tek düzeltilmelidir. · *Faz 2.2 × Faz 2
 
 **15.** (a) **Havuzu genişletmek** — en hızlı ve en az riskli; `/24` içinde boş adres varsa (örneğin
 `.51–.99` ve `.151–.250`) tek ayarla çözülür. (b) **Lease süresini kısaltmak** — ölü kayıtları daha
-hızlı geri kazandırır (1.6.4), misafir cihazların çok olduğu ağlarda doğru bir hamledir, ama havuz
+hızlı geri kazandırır (1.6.2), misafir cihazların çok olduğu ağlarda doğru bir hamledir, ama havuz
 gerçekten küçükse yalnızca zaman kazandırır. (c) **`/23`'e çıkarmak** — adres sorununu kökten çözer ama
 **en çok iş yaratır**: tüm makinelerin maskesi değişmeli (Soru 14c). Doğru sıra: önce (a), kalıcı
 büyüme varsa planlı biçimde (c). · *Faz 1.6 × Faz 2.2/2.4*
 
 **16.** `link/ether` = **MAC adresi** (L2 kimliği, 1.1); `inet` = **IPv4 adresi** (L3, 1.2); `/24` =
 **maske** — ağ kısmı 24 bit (2.2); `brd 192.168.10.255` = bu subnet'in **broadcast** adresi (2.3.2);
-`valid_lft 42318sec` = **DHCP lease'inin kalan süresi** (1.6.4). `dynamic` kelimesi adresin **DHCP ile**
+`valid_lft 42318sec` = **DHCP lease'inin kalan süresi** (1.6.3). `dynamic` kelimesi adresin **DHCP ile**
 alındığını ele verir. Hayır, bu IP **sabit değildir** — lease süresi dolduğunda yenilenir ve (nadiren
 de olsa) değişebilir. · *Faz 1.1/1.2 × Faz 1.6 × Faz 2.3*
 

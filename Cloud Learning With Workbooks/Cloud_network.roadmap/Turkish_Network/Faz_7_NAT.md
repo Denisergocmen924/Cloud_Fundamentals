@@ -734,7 +734,7 @@ sıkışmasının adımlarını, sertifika doğrulamasını, ve reverse proxy / 
 >
 > **🧪 Lab 7 fikri (hepsi 🟢):** (1) `ip addr show` ile private adresini not et, `curl -s ifconfig.me` ile
 > public görünüşünü al, ikisini karşılaştır. (2) `ip route get 8.8.8.8` ile hangi arayüz ve gateway
-> üzerinden çıktığını gör (4.3.2) — NAT'ı yapan cihaz odur. (3) `curl -s ifconfig.me` komutunu telefonun
+> üzerinden çıktığını gör (4.3.1) — NAT'ı yapan cihaz odur. (3) `curl -s ifconfig.me` komutunu telefonun
 > hotspot'una bağlanarak tekrarla; public IP değişti mi? (4) Ev router'ının arayüzüne gir ve NAT/bağlantı
 > tablosunu bul (genelde "NAT table", "Active connections" veya "Session list" adıyla) — 7.1.2'deki
 > tabloyu **gerçek hâliyle** gör. (5) `curl -4 example.com` ve `curl -6 example.com` çalıştır; ikisi de

@@ -274,14 +274,14 @@ Phase 2.3*
 
 **15.** (a) **Widening the pool** — the fastest and least risky; if there are free addresses inside the `/24`
 (for example `.51–.99` and `.151–.250`) it is solved with a single setting. (b) **Shortening the lease time**
-— it reclaims dead entries faster (1.6.4), which is the right move on networks with many guest devices, but
+— it reclaims dead entries faster (1.6.2), which is the right move on networks with many guest devices, but
 if the pool really is small it only buys time. (c) **Growing to `/23`** — it solves the address problem at
 the root but **creates the most work**: every machine's mask must change (Question 14c). The right order:
 (a) first, and (c) in a planned way if the growth is permanent. · *Phase 1.6 × Phase 2.2/2.4*
 
 **16.** `link/ether` = the **MAC address** (the L2 identity, 1.1); `inet` = the **IPv4 address** (L3, 1.2);
 `/24` = the **mask** — the network part is 24 bits (2.2); `brd 192.168.10.255` = this subnet's **broadcast**
-address (2.3.2); `valid_lft 42318sec` = **the remaining time of the DHCP lease** (1.6.4). The word `dynamic`
+address (2.3.2); `valid_lft 42318sec` = **the remaining time of the DHCP lease** (1.6.3). The word `dynamic`
 gives away that the address was obtained **via DHCP**. No, this IP is **not fixed** — it is renewed when the
 lease expires and (rarely, but still) it can change. · *Phase 1.1/1.2 × Phase 1.6 × Phase 2.3*
 

@@ -204,13 +204,13 @@ blokta bir yerde" der. Yönlendirme, elindeki en kesin bilgiyi kullanır — bu 
 **5.** Switch bilmediği bir hedef MAC ile karşılaşınca **flood eder** — frame'i giriş portu dışındaki
 tüm portlara gönderir ve cevaptan öğrenir (3.2.2). Yani bilgisizliği "herkese sorarak" çözer. Router
 ise bilmediği bir hedefle karşılaşınca paketi **düşürür** ve `Destination Unreachable` döndürür
-(4.2.2) — tahmin etmez, flood etmez. Fark, teşhiste kritiktir: L2 arızaları genelde "çalışıyor ama
+(4.4.2) — tahmin etmez, flood etmez. Fark, teşhiste kritiktir: L2 arızaları genelde "çalışıyor ama
 yavaş/gürültülü" görünürken, L3 arızaları "hiç çalışmıyor" görünür. · *Faz 3.2 × Faz 4.2*
 
 **6.** **TTL** koruması sayesinde (4.4.1): her router paketi iletirken TTL'i bir azaltır ve sıfıra
 inince düşürüp `Time Exceeded` gönderir. Koruma **L3'te** (IP başlığında) çalışır. **L2'de böyle bir
 alan yoktur** — Ethernet frame'inde TTL yoktur. Bu yüzden switch'ler arasında bir döngü oluşursa
-frame'ler sonsuza kadar dolaşır ve ağı kilitler (**broadcast storm**, 3.3.3); bunu önlemek için ayrı
+frame'ler sonsuza kadar dolaşır ve ağı kilitler (**broadcast storm**, 3.3.2); bunu önlemek için ayrı
 bir protokol (STP) kullanılır. · *Faz 3.3 × Faz 4.4*
 
 **7.** Pratikte **bir VLAN bir subnet'e karşılık gelir** — VLAN L2'de yayın alanını böler, subnet L3'te
@@ -236,13 +236,13 @@ ARP ve yerel switch sağlamdır — gateway'e ulaşabiliyorsun (3.1, 4.1). Timeo
 demektir (Faz 9'da göreceksin). Kalan ihtimaller: router'da `10.10.2.0/24` rotası yok, **dönüş rotası**
 yok, hedef makine ayakta değil, veya araya giren bir filtreleme var. · *Faz 3.1 × Faz 4.1/4.2*
 
-**11.** Birlikte şunu kanıtlarlar: makine **gateway'i biliyor** (route tablosunda default var, 4.1.2)
-**ve ona L2 seviyesinde ulaşabiliyor** (ARP çözülmüş, durum `REACHABLE`, 3.1.3). Yani bu makinenin
+**11.** Birlikte şunu kanıtlarlar: makine **gateway'i biliyor** (route tablosunda default var, 4.1.1)
+**ve ona L2 seviyesinde ulaşabiliyor** (ARP çözülmüş, durum `REACHABLE`, 3.1.2). Yani bu makinenin
 yapması gereken her şey tamam: paket doğru yere, doğru MAC ile çıkıyor. Sorun bu makinede değil,
 **daha ileride** — router'da, hedefte veya dönüş yolundadır. Teşhisi bir sonraki hop'a taşımak için
 gereken kanıt budur. · *Faz 3.1 × Faz 4.1/4.2*
 
-**12.** Sorun büyük ihtimalle **dönüş yönündedir** (4.2.3). Ayırt etmek için aranacak tek gözlem:
+**12.** Sorun büyük ihtimalle **dönüş yönündedir** (4.1.1). Ayırt etmek için aranacak tek gözlem:
 **hedef makineye paket ulaşıyor mu?** Hedefte `tcpdump -ni any icmp` çalıştırıp echo request'in
 görünüp görünmediğine bakarsın. Request görünüyor ama ofise cevap dönmüyorsa **gidiş sağlam, dönüş
 kırık**; request hiç görünmüyorsa sorun gidiş tarafındadır (router veya araya giren bir engel).
@@ -251,7 +251,7 @@ Tek yönü test etmek daima yarım testtir. · *Faz 4.2 × Faz 4.4*
 **13.** (a) **Evet, ping sunucuya ulaşıyor** — router'ın `10.10.2.0/24` rotası var ve sunucu kendi
 segmentinde erişilebilir. (b) **Hayır, cevap dönemiyor:** sunucunun route tablosunda yalnızca
 `10.10.2.0/24` var; `10.10.1.50` hedefi hiçbir satırla eşleşmez ve `default` da olmadığı için paket
-düşürülür (4.2.2 — "no route to host"). (c) Belirti "hiç çalışmıyor" gibi görünür çünkü ofisteki
+düşürülür (4.4.2 — "no route to host"). (c) Belirti "hiç çalışmıyor" gibi görünür çünkü ofisteki
 kullanıcı yalnızca **cevap gelmediğini** görür; paketinin hedefe ulaştığını göremez. Asimetrik
 arızaların kafa karıştırıcı olmasının sebebi tam olarak budur. · *Faz 4.1 × Faz 4.2*
 
@@ -262,16 +262,16 @@ bir şeyi test ediyor. Bu, sahada çok sık görülen bir muhakeme hatasıdır: 
 yönlendirme çalışıyor demek değildir.* · *Faz 3.1/3.2 × Faz 4.1*
 
 **15.** (a) **Çalışır** — default rota, sunucunun bilmediği tüm hedefleri router'a gönderir; en genel
-ve en yaygın çözümdür (4.1.2). (b) **Çalışır ve daha dar kapsamlıdır** — yalnızca ofis ağına dönüşü
+ve en yaygın çözümdür (4.1.1). (b) **Çalışır ve daha dar kapsamlıdır** — yalnızca ofis ağına dönüşü
 açar; sunucunun başka hiçbir ağa çıkamaması istenen bir güvenlik tercihiyse doğru seçimdir (LPM
 gereği bu spesifik satır zaten default'tan önce seçilirdi, 4.3.1). (c) **Router'a bir şey eklemek işe
 yaramaz** — router'ın her iki ağa da rotası zaten var; eksik olan bilgi **sunucunun** tablosundadır.
 Doğru katmana müdahale etmek, teşhisin yarısıdır. · *Faz 4.1 × Faz 4.2/4.3*
 
-**16.** `REACHABLE` = ARP kaydı doğrulanmış ve taze, iletişim var (3.1.3). `STALE` = kayıt var ama bir
+**16.** `REACHABLE` = ARP kaydı doğrulanmış ve taze, iletişim var (3.1.2). `STALE` = kayıt var ama bir
 süredir doğrulanmadı; kullanılır ve gerekirse yeniden doğrulanır — **arıza değildir.** `FAILED` = ARP
 isteği yapıldı, **cevap gelmedi**. Bu, o IP'nin bulunduğu segmentte yanıt veren bir makine olmadığını
-gösterir (3.1.4). Makinenin ayakta olmadığını **kanıtlamaz**: makine kapalı olabilir, ARP'a cevap
+gösterir (3.1.2). Makinenin ayakta olmadığını **kanıtlamaz**: makine kapalı olabilir, ARP'a cevap
 vermiyor olabilir, farklı bir VLAN'da olabilir (3.4), veya adres hiç kullanılmıyor olabilir. · *Faz
 3.1 × Faz 3.4*
 
@@ -282,7 +282,7 @@ bu yüzden `via` alanı yoktur. `via` yalnızca paketin bir sonraki hop'a teslim
 bulunur (4.2.1). · *Faz 4.2 × Faz 4.3*
 
 **18.** Çünkü `ip route` tabloyu **listeler**, `ip route get` ise çekirdeğin o hedef için **gerçekte
-vereceği kararı** gösterir — LPM'i senin yerine uygular (4.3.2). Çok satırlı, üst üste binen
+vereceği kararı** gösterir — LPM'i senin yerine uygular (4.3.1). Çok satırlı, üst üste binen
 tablolarda hangi satırın kazandığını gözle bulmak hataya açıktır; bu komut tartışmayı bitirir. `via`
 farkı: ilk çıktıda `via` **yok** → hedef doğrudan bağlı bir ağda (tünel arayüzünde). İkincisinde
 `via 192.168.1.1` **var** → hedefe bir **sonraki hop** üzerinden gidiliyor (4.2.1). · *Faz 4.2 × Faz
@@ -350,8 +350,8 @@ ulaştığını garanti etmez. Router doluysa düşürür, kablo gürültülüys
 
 Faz 5 tam buraya bağlanır: bu güvenilmez zeminin üstüne **güvenilir** bir iletim nasıl inşa edilir?
 Sıra numaraları, onaylar, yeniden gönderim, akış ve tıkanıklık kontrolü — TCP'nin tamamı, Faz 4'ün
-bıraktığı bu boşluğu doldurmak için vardır. Ve orada Faz 3'ten getirdiğin bir şey daha işine
-yarayacak: MTU (3.2.4), Faz 5.7'de en sinsi arıza sınıflarından birinin kaynağı olacak.
+bıraktığı bu boşluğu doldurmak için vardır. Ve orada karşına çıkacak bir şey daha var:
+MTU (5.7.1), en sinsi arıza sınıflarından birinin (5.7.3) kaynağı olacak.
 
 > **Devam etmeden önce:** Yukarıdaki 1. ve 21. soruların cevabını tereddütsüz verebiliyorsan — uzak bir
 > hedefe giden paketin frame'inde neden gateway'in MAC'i olduğunu — Faz 5'e hazırsın. Veremiyorsan

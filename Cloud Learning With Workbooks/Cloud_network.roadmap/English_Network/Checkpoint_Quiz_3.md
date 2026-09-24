@@ -299,12 +299,12 @@ here, so it is a configuration ready for fast change. (b) The `SERVER:` line say
 local query does not, the problem is not in DNS itself but in **your resolver**. (c) The **dangling CNAME**
 risk: if the CNAME's target (the CDN distribution) is deleted but the record stays, the name cannot be resolved
 (NXDOMAIN) — or worse, if that target name is taken over by someone else it becomes a **subdomain takeover**
-(6.3.3). · *Phase 6.3 × Phase 6.4*
+(6.3.2). · *Phase 6.3 × Phase 6.4*
 
 **17.** **ESTAB** = an established, healthy connection. **SYN-SENT** = the SYN was sent and the **SYN-ACK is
 awaited** — being stuck here shows that the answer never came: a firewall DROP or an unreachable target (5.2.2,
 9.2.3). **This is the real sign of a fault.** **TIME-WAIT** = the side that closed the connection is waiting
-for delayed packets — it is **normal** (5.6.2); if its count rises very high it points at an excess of
+for delayed packets — it is **normal** (5.6.1); if its count rises very high it points at an excess of
 short-lived connections. **CLOSE-WAIT** = the other side sent a FIN but **the local application has not closed
 the socket** — a few are normal, but when they pile up it is **an application bug** (a socket leak, 5.6.1). ·
 *Phase 5.2/5.6 × Phase 9.2*

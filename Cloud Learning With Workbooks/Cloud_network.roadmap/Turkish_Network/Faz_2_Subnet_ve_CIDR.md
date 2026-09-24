@@ -639,7 +639,7 @@ kural: parçalar **çakışmamalı** (2.4.2).
 
 **S6 — İki VPC'nin CIDR'ı çakışırsa gerçekten hiçbir şey yapılamaz mı?** Peering ve doğrudan VPN mümkün
 olmaz — çünkü her iki taraf da o adresleri "kendi ağı" sayar (2.1.2) ve trafik hiç dışarı çıkmaz. Kısmi
-çözümler vardır (NAT ile adres çevirme, PrivateLink ile tek servis yayınlama — Faz 11.9) ama hepsi ek
+çözümler vardır (NAT ile adres çevirme, PrivateLink ile tek servis yayınlama — Faz 11.7.1) ama hepsi ek
 karmaşıklıktır. **Doğru çözüm baştan planlamaktır**: ortamlara ayrık CIDR blokları tahsis et (2.2.1).
 
 **S7 — Prefix'i sonradan değiştirebilir miyim?** Bir makinenin prefix'ini değiştirmek kolaydır (tek satır

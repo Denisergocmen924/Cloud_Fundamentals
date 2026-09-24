@@ -143,7 +143,7 @@
 | `SOA` | Bölgenin yetki bilgisi | Varsayılan negatif TTL burada | 6.1 |
 | `SRV` | Servis konumu (host + port) | Servis keşfinde kullanılır | 6.3 |
 
-> **Dangling CNAME (Faz 6.3.4):** CNAME'in hedefi silinir ama kayıt kalırsa, o adı başkası alabilir —
+> **Dangling CNAME (Faz 6.3.2):** CNAME'in hedefi silinir ama kayıt kalırsa, o adı başkası alabilir —
 > **subdomain takeover.** Kaynağı silerken DNS kaydını da sil.
 
 ## B.8 HTTP durum kodları (Faz 8)

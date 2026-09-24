@@ -223,11 +223,11 @@ ulaşmaz → gönderici aynı boyutta yeniden dener → paketler **sessizce** ka
 görünmemesinin sebebi belirtinin uygulama diliyle konuşmasıdır: *"SSH bağlanıyor ama donuyor"*,
 *"sorgular takılıyor"*, *"site açılıyor ama resimler gelmiyor"* (9.3.1). · *Faz 5.7 × Faz 9.3*
 
-**7.** Devrede olan mekanizma **sertifika doğrulamasıdır** (8.4.3): tarayıcı, sunucunun sunduğu
+**7.** Devrede olan mekanizma **sertifika doğrulamasıdır** (8.4.2): tarayıcı, sunucunun sunduğu
 sertifikanın **istenen alan adını** kapsayıp kapsamadığına bakar. CNAME zinciri DNS'te sorunsuz çözülse
 bile, CDN senin alan adın için bir sertifika sunmuyorsa doğrulama başarısız olur. Yani hata **TLS
 tarafındadır** — DNS görevini yapmıştır. Genellikle sebep, CDN'de alan adı için sertifika
-yapılandırılmamış olması veya **SNI** ile yanlış sertifikanın sunulmasıdır (8.4.4). · *Faz 6.3 × Faz
+yapılandırılmamış olması veya **SNI** ile yanlış sertifikanın sunulmasıdır (8.4.2). · *Faz 6.3 × Faz
 8.4*
 
 **8.** Hata 1 (**Faz 7**): private subnet yalnızca **internetten gelen** bağlantıyı engeller (7.3.2);
@@ -290,19 +290,19 @@ hızlı değişime hazır bir yapılandırma. (b) `SERVER:` satırı **hangi ç�
 (6.2.3); `127.0.0.53` yerel stub çözümleyicidir. Teşhiste kritiktir: `dig @1.1.1.1` çalışıp yerel
 sorgu çalışmıyorsa sorun DNS'in kendisinde değil, **senin çözümleyicinde**dir. (c) **Dangling CNAME**
 riski: CNAME hedefi (CDN dağıtımı) silinir ama kayıt kalırsa, isim çözülemez (NXDOMAIN) — ya da daha
-kötüsü, o hedef adı başkası tarafından ele geçirilirse **subdomain takeover** olur (6.3.4). · *Faz 6.3
+kötüsü, o hedef adı başkası tarafından ele geçirilirse **subdomain takeover** olur (6.3.2). · *Faz 6.3
 × Faz 6.4*
 
 **17.** **ESTAB** = kurulmuş, sağlıklı bağlantı. **SYN-SENT** = SYN gönderildi, **SYN-ACK bekleniyor**
 — burada takılı kalmak, cevabın hiç gelmediğini gösterir: firewall DROP veya erişilemeyen hedef
 (5.2.2, 9.2.3). **Asıl arıza işareti budur.** **TIME-WAIT** = bağlantıyı kapatan taraf, gecikmiş
-paketler için bekliyor — **normaldir** (5.6.2); sayısı çok yükselirse kısa ömürlü bağlantıların
+paketler için bekliyor — **normaldir** (5.6.1); sayısı çok yükselirse kısa ömürlü bağlantıların
 fazlalığına işaret eder. **CLOSE-WAIT** = karşı taraf FIN gönderdi ama **yerel uygulama soketi
 kapatmadı** — tek tük normal, ama biriktiğinde bir **uygulama hatasıdır** (soket sızıntısı, 5.6.1).
 · *Faz 5.2/5.6 × Faz 9.2*
 
 **18.** Başarılı olan katmanlar: **DNS** (isim çözüldü), **TCP** (`Connected ... port 443` — handshake
-tamam, 5.2.1), **TLS** (`certificate verify ok` — el sıkışma ve doğrulama tamam, 8.4.3) ve **HTTP
+tamam, 5.2.1), **TLS** (`certificate verify ok` — el sıkışma ve doğrulama tamam, 8.4.2) ve **HTTP
 isteği gönderildi.** 504, **sunucu tarafına** işaret eder: proxy/yük dengeleyici arkadaki servise
 bağlanmış ama cevabı zamanında alamamıştır (8.2.2). İstemcide sorun olmadığını kanıtlayan satırlar
 tam olarak bunlardır — ağ, TLS ve istek zinciri eksiksiz çalışmıştır; kalan tek şüpheli backend'dir.
@@ -312,7 +312,7 @@ tam olarak bunlardır — ağ, TLS ve istek zinciri eksiksiz çalışmıştır; 
 geçmiyor ve çekirdek **`mtu=1436`** diyor. Yani efektif MTU **1436**'dır, 1500 değil — aradaki 64
 bayt, bir **tünelin** (VPN/IPsec/VXLAN) eklediği başlık yüküdür (7.4.2). Yol açtığı arıza: **MTU black
 hole** — ICMP Fragmentation Needed engellenirse büyük paketler sessizce kaybolur ve belirti
-"bağlanıyor ama takılıyor" olur (5.7.3, 9.3.1). Çözüm genelde **MSS clamping**'dir (5.7.4). · *Faz 5.7
+"bağlanıyor ama takılıyor" olur (5.7.3, 9.3.1). Çözüm genelde **MSS clamping**'dir (5.7.3). · *Faz 5.7
 × Faz 7.4*
 
 **20.** İlk satır: `10.0.1.50 → 10.0.2.20:5432` **ACCEPT** — istek veritabanına ulaşmış. İkinci satır:

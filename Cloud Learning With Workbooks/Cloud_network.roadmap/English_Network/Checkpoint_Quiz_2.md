@@ -211,14 +211,14 @@ why `0.0.0.0/0` (prefix length 0) is always the **last resort**. · *Phase 4.3 �
 **5.** When a switch meets a destination MAC it does not know, it **floods** — it sends the frame to every
 port except the ingress port and learns from the reply (3.2.2). That is, it solves its ignorance "by asking
 everybody". A router, on meeting a destination it does not know, **drops** the packet and returns
-`Destination Unreachable` (4.2.2) — it does not guess and it does not flood. The difference is critical in
+`Destination Unreachable` (4.4.2) — it does not guess and it does not flood. The difference is critical in
 diagnosis: L2 failures usually look like "it works but it is slow/noisy", while L3 failures look like "it
 does not work at all". · *Phase 3.2 × Phase 4.2*
 
 **6.** Thanks to **TTL** protection (4.4.1): every router decrements TTL by one as it forwards the packet,
 and when it hits zero it drops the packet and sends `Time Exceeded`. The protection works **at L3** (in the
 IP header). **No such field exists at L2** — there is no TTL in an Ethernet frame. This is why, if a loop
-forms between switches, frames circulate forever and lock up the network (a **broadcast storm**, 3.3.3); a
+forms between switches, frames circulate forever and lock up the network (a **broadcast storm**, 3.3.2); a
 separate protocol (STP) is used to prevent it. · *Phase 3.3 × Phase 4.4*
 
 **7.** In practice **a VLAN corresponds to a subnet** — a VLAN splits the broadcast domain at L2, a subnet
@@ -246,12 +246,12 @@ route, there is no **return route**, the destination machine is not up, or there
 *Phase 3.1 × Phase 4.1/4.2*
 
 **11.** Together they prove this: the machine **knows its gateway** (there is a default in the route table,
-4.1.2) **and can reach it at the L2 level** (ARP is resolved, the state is `REACHABLE`, 3.1.3). So
+4.1.1) **and can reach it at the L2 level** (ARP is resolved, the state is `REACHABLE`, 3.1.2). So
 everything this machine has to do is done: the packet leaves for the right place, with the right MAC. The
 problem is not on this machine but **further along** — at the router, at the destination, or on the return
 path. This is the evidence you need to move the diagnosis to the next hop. · *Phase 3.1 × Phase 4.1/4.2*
 
-**12.** The problem is most likely **in the return direction** (4.2.3). The single observation to look for
+**12.** The problem is most likely **in the return direction** (4.1.1). The single observation to look for
 in order to tell: **is the packet reaching the destination machine?** You run `tcpdump -ni any icmp` on the
 destination and see whether the echo request appears. If the request appears but no reply comes back to the
 office, **the outbound path is sound and the return is broken**; if the request never appears, the problem
@@ -261,7 +261,7 @@ is on the outbound side (the router or an obstacle in between). Testing one dire
 **13.** (a) **Yes, the ping reaches the server** — the router has the `10.10.2.0/24` route and the server is
 reachable on its own segment. (b) **No, the reply cannot get back:** the server's route table has only
 `10.10.2.0/24`; the destination `10.10.1.50` matches no row, and since there is no `default` either the
-packet is dropped (4.2.2 — "no route to host"). (c) The symptom looks like "nothing works at all" because
+packet is dropped (4.4.2 — "no route to host"). (c) The symptom looks like "nothing works at all" because
 the user in the office only sees that **no reply came**; they cannot see that their packet reached the
 destination. This is exactly why asymmetric failures are so confusing. · *Phase 4.1 × Phase 4.2*
 
@@ -272,17 +272,17 @@ observation is correct but it tests something irrelevant. This is a reasoning er
 field: *local working does not mean routing is working.* · *Phase 3.1/3.2 × Phase 4.1*
 
 **15.** (a) **It works** — a default route sends every destination the server does not know to the router;
-it is the most general and most common solution (4.1.2). (b) **It works and is narrower in scope** — it only
+it is the most general and most common solution (4.1.1). (b) **It works and is narrower in scope** — it only
 opens the return to the office network; if it is a deliberate security choice that the server can reach no
 other network, it is the right pick (under LPM this specific row would be chosen before the default anyway,
 4.3.1). (c) **Adding something to the router is of no use** — the router already has routes to both
 networks; the missing information is in **the server's** table. Intervening at the right layer is half the
 diagnosis. · *Phase 4.1 × Phase 4.2/4.3*
 
-**16.** `REACHABLE` = the ARP entry is verified and fresh, there is communication (3.1.3). `STALE` = the
+**16.** `REACHABLE` = the ARP entry is verified and fresh, there is communication (3.1.2). `STALE` = the
 entry exists but has not been verified for a while; it will be used and re-verified if necessary — it is
 **not a fault**. `FAILED` = an ARP request was made and **no answer came**. That shows there is no machine
-answering on the segment that IP belongs to (3.1.4). It does **not prove** the machine is down: the machine
+answering on the segment that IP belongs to (3.1.2). It does **not prove** the machine is down: the machine
 may be powered off, may not answer ARP, may be in a different VLAN (3.4), or the address may not be in use at
 all. · *Phase 3.1 × Phase 3.4*
 
@@ -293,7 +293,7 @@ there is no `via` field. `via` is present only where the packet will be handed t
 *Phase 4.2 × Phase 4.3*
 
 **18.** Because `ip route` **lists** the table, while `ip route get` shows the decision the kernel will
-**actually make** for that destination — it applies LPM for you (4.3.2). In tables with many overlapping
+**actually make** for that destination — it applies LPM for you (4.3.1). In tables with many overlapping
 rows, finding by eye which row wins is error-prone; this command ends the argument. The `via` difference: the
 first output has **no** `via` → the destination is on a directly attached network (on the tunnel interface).
 The second **has** `via 192.168.1.1` → the destination is reached through a **next hop** (4.2.1). · *Phase
@@ -363,8 +363,8 @@ out it is destroyed — and **nobody is obliged to tell the sender.**
 
 Phase 5 connects exactly here: how do you build **reliable** transmission on top of this unreliable ground?
 Sequence numbers, acknowledgements, retransmission, flow and congestion control — the whole of TCP exists to
-fill the gap Phase 4 left. And there is one more thing you bring from Phase 3 that will come in useful:
-MTU (3.2.4) will be the source of one of the most insidious classes of failure in Phase 5.7.
+fill the gap Phase 4 left. And there is one more thing you will meet there:
+MTU (5.7.1) will be the source of one of the most insidious classes of failure (5.7.3).
 
 > **Before you go on:** If you can answer questions 1 and 21 above without hesitation — why the frame of a
 > packet going to a remote destination carries the gateway's MAC — you are ready for Phase 5. If you cannot,

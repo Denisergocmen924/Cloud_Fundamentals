@@ -660,7 +660,7 @@ are VLSM almost always, because the tiers have different needs. The only rule: t
 
 **Q6 — If two VPCs' CIDRs overlap, can really nothing be done?** Peering and a direct VPN become impossible —
 because both sides count those addresses as "my own network" (2.1.2) and traffic never leaves. There are
-partial solutions (translating addresses with NAT, publishing a single service with PrivateLink — Phase 11.9)
+partial solutions (translating addresses with NAT, publishing a single service with PrivateLink — Phase 11.7.1)
 but all of them are extra complexity. **The right solution is to plan from the start**: allocate disjoint CIDR
 blocks to environments (2.2.1).
 

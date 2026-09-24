@@ -525,7 +525,7 @@ ortadan kalkar. Bu yüzden statik varlıklara çok uzun TTL (bir yıl) verilebil
 güvenlidir. HTML dosyasının kendisine ise kısa TTL verilir, çünkü yeni adları o duyurur.
 (Invalidation da bir seçenektir ama anlık değildir, maliyetlidir ve her deploy'da tekrarlanması gerekir —
 yapısal çözüm değildir.)
-**İlgili bölüm:** 8.5.2 · **Devamı:** Faz 6.4 (TTL), Faz 11.9 (CloudFront eşlemesi).
+**İlgili bölüm:** 8.5.2 · **Devamı:** Faz 6.4 (TTL), Faz 11.6.2 (CloudFront eşlemesi).
 
 ---
 ---

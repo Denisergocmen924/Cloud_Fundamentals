@@ -543,7 +543,7 @@ safe because the name changes. The HTML file itself gets a short TTL, because it
 names. (Invalidation is an option too, but it is not instant, it costs money and it has to be repeated on
 every deploy — it is not a structural solution.)
 
-**Related section:** 8.5.2 · **Next:** Phase 6.4 (TTL), Phase 11.9 (the CloudFront mapping)
+**Related section:** 8.5.2 · **Next:** Phase 6.4 (TTL), Phase 11.6.2 (the CloudFront mapping)
 
 ---
 ---

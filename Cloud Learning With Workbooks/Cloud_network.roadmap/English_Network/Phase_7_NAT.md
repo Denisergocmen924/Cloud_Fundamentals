@@ -767,7 +767,7 @@ architecture.
 >
 > **🧪 Lab 7 idea (all 🟢):** (1) Note your private address with `ip addr show`, get your public appearance
 > with `curl -s ifconfig.me`, and compare the two. (2) See which interface and gateway you go out through
-> with `ip route get 8.8.8.8` (4.3.2) — that is the device doing the NAT. (3) Repeat `curl -s ifconfig.me`
+> with `ip route get 8.8.8.8` (4.3.1) — that is the device doing the NAT. (3) Repeat `curl -s ifconfig.me`
 > while connected to your phone's hotspot; did the public IP change? (4) Open your home router's interface
 > and find the NAT/connection table (usually under "NAT table", "Active connections" or "Session list") — see
 > the table from 7.1.2 **in the flesh**. (5) Run `curl -4 example.com` and `curl -6 example.com`; do both

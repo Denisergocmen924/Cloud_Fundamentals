@@ -182,8 +182,8 @@ Faz 7'nin tamamı buraya bağlanır. Dört kapı vardır ve her biri farklı bir
 |---|---|---|---|
 | **Internet Gateway (IGW)** | VPC'yi internete bağlar; public IP'li trafiği çift yönlü taşır | **Çift yönlü** | Faz 7.3.2 |
 | **NAT Gateway** | Private subnet'in **çıkmasını** sağlar, girişe izin vermez | **Sadece giden** | Faz 7.2 (PAT) |
-| **Egress-only IGW** | IPv6 için NAT GW'nin karşılığı — sadece giden | **Sadece giden** | Faz 7.5.3 |
-| **VPC Endpoint** | AWS servislerine **internete çıkmadan** erişim | VPC içi | Faz 7.3.4 |
+| **Egress-only IGW** | IPv6 için NAT GW'nin karşılığı — sadece giden | **Sadece giden** | Faz 7.5.2 |
+| **VPC Endpoint** | AWS servislerine **internete çıkmadan** erişim | VPC içi | Faz 7.3.3 |
 
 Üç noktayı aklında tut:
 
@@ -308,7 +308,7 @@ Faz 8.5.1'de gördüğün ayrım burada bir ürün seçimine dönüşür:
 |---|---|---|
 | Katman | **L7** — HTTP'yi anlar | **L4** — sadece TCP/UDP |
 | Karar verirken bakar | Path, host header, cookie | IP ve port |
-| TLS | Sonlandırır (8.4.4) | Geçirebilir veya sonlandırır |
+| TLS | Sonlandırır (8.4.2) | Geçirebilir veya sonlandırır |
 | İstemci IP'si | `X-Forwarded-For` başlığında | **Korunur** (paket seviyesinde) |
 | Sabit IP | Yok (DNS adı) | **Var** (her AZ için) |
 | Hız | Biraz daha yavaş (içerik okur) | Çok hızlı |
@@ -319,7 +319,7 @@ isteklerini bir hedefe, `/static/*` isteklerini başka bir hedefe göndermek ist
 bunu ancak içeriği okuyabilen bir cihaz yapabilir. Ama HTTP dışı bir protokol taşıyorsan (veritabanı,
 oyun sunucusu, kendi protokolün) veya sabit IP gerekiyorsa NLB'dir.
 
-Ve Faz 8.4.4'teki uyarıyı hatırla: ALB TLS'i sonlandırdığı için **arkadaki sunucu istemcinin IP'sini
+Ve Faz 8.4.2'teki uyarıyı hatırla: ALB TLS'i sonlandırdığı için **arkadaki sunucu istemcinin IP'sini
 göremez**, `X-Forwarded-For` başlığından okur. Oturum ve log analizi bu başlığa bağlıdır. NLB'de böyle
 bir sorun yoktur çünkü paketleri açmaz.
 
@@ -331,7 +331,7 @@ adresi dünyanın birçok noktasından duyurulur, kullanıcı en yakınına gide
 
 İki pratik not:
 
-- **Cache invalidation pahalıdır ve yavaştır.** Faz 8.5.4'teki çözüm burada da geçerlidir: dosya
+- **Cache invalidation pahalıdır ve yavaştır.** Faz 8.5.2'teki çözüm burada da geçerlidir: dosya
   adına sürüm koy (`app.a3f9c2.js`), invalidation'a hiç ihtiyaç duyma.
 - **Origin'i koru.** CloudFront'un arkasındaki sunucu doğrudan erişilebilir kalırsa, CDN atlanabilir.
   Origin'in SG'sini yalnızca CloudFront'tan gelen trafiğe açmak standart uygulamadır (11.5.2 mantığı).
@@ -348,7 +348,7 @@ adresi dünyanın birçok noktasından duyurulur, kullanıcı en yakınına gide
 | **VPC Peering** | İki VPC | **Örtüşemez** | Faz 2 + 4 (route) |
 | **Transit Gateway** | Çok sayıda VPC + on-prem | **Örtüşemez** | Merkezi router (Faz 4) |
 | **Site-to-Site VPN** | VPC ↔ şirket ağı | Örtüşemez | Faz 7.4 (IPsec) + 4.6 (BGP) |
-| **PrivateLink** | Tek bir **servise** erişim | **Kısıt yok** | Faz 7.3.4 (endpoint) |
+| **PrivateLink** | Tek bir **servise** erişim | **Kısıt yok** | Faz 7.3.3 (endpoint) |
 
 Üçünde ortak olan kısıt, Faz 2'nin doğrudan sonucudur: **CIDR blokları örtüşemez.** Sebebi
 yönlendirmedir (4.3) — iki farklı ağ aynı adres aralığını kullanıyorsa, router `10.0.1.5` hedefli bir
@@ -374,7 +374,7 @@ da olmaz — CIDR çakışması olan iki tarafın haberleşmesinin tek pratik yo
 > iki taraf birbirine hangi CIDR bloklarına sahip olduğunu duyurur ve route table'lar otomatik dolar.
 > Ve Faz 7.4.2'deki tuzak burada tam olarak devrededir: tünel başlıkları paket boyutunu büyüttüğü için
 > efektif MTU düşer, ICMP Fragmentation Needed engelliyse **MTU black hole** oluşur (9.3.1) ve belirti
-> "SSH bağlanıyor ama donuyor" olur. VPN kurulumlarında **MSS clamping** (5.7.4) neredeyse her zaman
+> "SSH bağlanıyor ama donuyor" olur. VPN kurulumlarında **MSS clamping** (5.7.3) neredeyse her zaman
 > gerekir. Bu üç fazın kesişimi, sahada en çok zaman kaybettiren arıza sınıfıdır.
 
 > **🤔 Düşün 11.3** — İki şirket birleşiyor. Her ikisinin de VPC'si `10.0.0.0/16` kullanıyor ve
@@ -410,7 +410,7 @@ Bu tablo, bu kitabın özetidir. Sol sütunu biliyorsan, sağ sütun sadece bir 
 | IPsec tüneli | 7.4 | **Site-to-Site VPN** |
 | IPv6, egress filtreleme | 7.5 | Dual-stack VPC, **Egress-only IGW** |
 | L7 yönlendirme | 8.1-8.2 | **ALB** |
-| TLS sonlandırma | 8.4.4 | ALB/CloudFront + `X-Forwarded-For` |
+| TLS sonlandırma | 8.4.2 | ALB/CloudFront + `X-Forwarded-For` |
 | Reverse proxy, CDN, anycast | 8.5 | **CloudFront**, Route 53 latency |
 | Stateful firewall | 9.1.3 | **Security Group** |
 | Stateless filtre | 9.1.2 | **Network ACL** |
@@ -430,9 +430,9 @@ Bu tablo, bu kitabın özetidir. Sol sütunu biliyorsan, sağ sütun sadece bir 
 | Yeni instance'lar DB'ye bağlanamıyor | SG'de **IP tabanlı** kural var | SG kaynağını SG referansına çevir | 11.5.2 |
 | Failover açtım, trafik eski yere gidiyor | **DNS TTL** | `dig` ile TTL, önce düşür | 11.4, 6.4.3 |
 | Apex'e CNAME yazamıyorum | CNAME apex kısıtı | **Alias** kaydı kullan | 11.4, 6.3.3 |
-| Uygulama tüm istemcileri aynı IP görüyor | ALB TLS sonlandırıyor | `X-Forwarded-For` | 11.6.1, 8.4.4 |
+| Uygulama tüm istemcileri aynı IP görüyor | ALB TLS sonlandırıyor | `X-Forwarded-For` | 11.6.1, 8.4.2 |
 | VPN üzerinden büyük transferler donuyor | Tünel MTU / **MSS clamping** | `ping -M do -s ...` | 11.7.1 kutusu, 5.7.3 |
-| S3 trafiği pahalıya geliyor | NAT GW üzerinden geçiyor | **VPC Endpoint** ekle | 11.3.1, 7.3.4 |
+| S3 trafiği pahalıya geliyor | NAT GW üzerinden geçiyor | **VPC Endpoint** ekle | 11.3.1, 7.3.3 |
 | IPv4 ✓ IPv6 ✗ | `::/0` rotası veya kuralı eksik | Route table + SG/NACL | 11.3.1, 7.5.2 |
 
 > **Bu tablodan çıkan ders:** Dikkat et — bu tablodaki arızaların **hiçbiri bulut arızası değildir.**
@@ -609,7 +609,7 @@ Cevaplarını bir kâğıda yaz, sonra cevap anahtarıyla karşılaştır. Hedef
     bağlar: yalnızca uygulama katmanı geçer, patlama yarıçapı küçülür (11.5.2, 9.5.1). — 16. Sebep:
     **DNS TTL** — istemciler ve ara çözümleyiciler eski cevabı cache'liyor (6.4.1). Çözüm: değişiklikten
     **önce** TTL'i düşür, eski TTL süresi kadar bekle, sonra değiştir (6.4.3, 11.4). — 17. Çünkü ALB
-    TLS'i **sonlandırır** ve arkaya kendi bağlantısını açar (8.4.4); sunucunun gördüğü kaynak IP
+    TLS'i **sonlandırır** ve arkaya kendi bağlantısını açar (8.4.2); sunucunun gördüğü kaynak IP
     ALB'nindir. Çözüm: **`X-Forwarded-For`** başlığını oku (veya istemci IP'si kritikse NLB kullan)
     (11.6.1). — 18. Üç örnek yeterli: (i) **VPC = CIDR bloğu** (Faz 2), (ii) **Route table = yönlendirme
     tablosu + LPM** (Faz 4), (iii) **Security Group = stateful firewall** (Faz 9) — SG'nin dönen

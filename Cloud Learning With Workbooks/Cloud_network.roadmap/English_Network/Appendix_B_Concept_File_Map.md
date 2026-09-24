@@ -145,7 +145,7 @@
 | `SOA` | The zone's authority information | The default negative TTL is here | 6.1 |
 | `SRV` | A service's location (host + port) | Used in service discovery | 6.3 |
 
-> **A dangling CNAME (Phase 6.3.4):** If a CNAME's target is deleted but the record stays, someone else can
+> **A dangling CNAME (Phase 6.3.2):** If a CNAME's target is deleted but the record stays, someone else can
 > take that name — **subdomain takeover.** When you delete the resource, delete the DNS record too.
 
 ## B.8 HTTP status codes (Phase 8)

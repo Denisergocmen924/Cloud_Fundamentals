@@ -189,8 +189,8 @@ The whole of Phase 7 connects here. There are four doors and each answers a diff
 |---|---|---|---|
 | **Internet Gateway (IGW)** | Connects the VPC to the internet; carries traffic with public IPs both ways | **Both ways** | Phase 7.3.2 |
 | **NAT Gateway** | Lets a private subnet **get out**, does not allow anything in | **Outbound only** | Phase 7.2 (PAT) |
-| **Egress-only IGW** | The NAT GW equivalent for IPv6 — outbound only | **Outbound only** | Phase 7.5.3 |
-| **VPC Endpoint** | Access to AWS services **without going out to the internet** | Inside the VPC | Phase 7.3.4 |
+| **Egress-only IGW** | The NAT GW equivalent for IPv6 — outbound only | **Outbound only** | Phase 7.5.2 |
+| **VPC Endpoint** | Access to AWS services **without going out to the internet** | Inside the VPC | Phase 7.3.3 |
 
 Keep three points in mind:
 
@@ -315,7 +315,7 @@ The distinction you saw in Phase 8.5.1 turns into a product choice here:
 |---|---|---|
 | Layer | **L7** — understands HTTP | **L4** — only TCP/UDP |
 | Looks at, when deciding | Path, host header, cookie | IP and port |
-| TLS | Terminates it (8.4.4) | Can pass it through or terminate it |
+| TLS | Terminates it (8.4.2) | Can pass it through or terminate it |
 | The client IP | In the `X-Forwarded-For` header | **Preserved** (at packet level) |
 | A fixed IP | No (a DNS name) | **Yes** (one per AZ) |
 | Speed | Slightly slower (it reads the content) | Very fast |
@@ -326,7 +326,7 @@ want to send `/api/*` requests to one target and `/static/*` requests to another
 device that can read the content can do that. But if you are carrying a non-HTTP protocol (a database, a game
 server, your own protocol) or you need a fixed IP, it is the NLB.
 
-And remember the warning from Phase 8.4.4: because the ALB terminates TLS, **the server behind it cannot see
+And remember the warning from Phase 8.4.2: because the ALB terminates TLS, **the server behind it cannot see
 the client's IP**; it reads it from the `X-Forwarded-For` header. Session handling and log analysis depend on
 that header. With an NLB there is no such problem because it does not open the packets.
 
@@ -338,7 +338,7 @@ announced from many points around the world and the user goes to the nearest one
 
 Two practical notes:
 
-- **Cache invalidation is expensive and slow.** The solution from Phase 8.5.4 applies here too: put a version
+- **Cache invalidation is expensive and slow.** The solution from Phase 8.5.2 applies here too: put a version
   in the file name (`app.a3f9c2.js`) and never need invalidation at all.
 - **Protect the origin.** If the server behind CloudFront stays directly reachable, the CDN can be bypassed.
   Opening the origin's SG only to traffic coming from CloudFront is the standard practice (the logic of
@@ -356,7 +356,7 @@ Two practical notes:
 | **VPC Peering** | Two VPCs | **Cannot overlap** | Phases 2 + 4 (routes) |
 | **Transit Gateway** | Many VPCs + on-prem | **Cannot overlap** | A central router (Phase 4) |
 | **Site-to-Site VPN** | VPC ↔ corporate network | Cannot overlap | Phase 7.4 (IPsec) + 4.6 (BGP) |
-| **PrivateLink** | Access to a single **service** | **No constraint** | Phase 7.3.4 (endpoint) |
+| **PrivateLink** | Access to a single **service** | **No constraint** | Phase 7.3.3 (endpoint) |
 
 The constraint the first three share is a direct consequence of Phase 2: **CIDR blocks cannot overlap.** The
 reason is routing (4.3) — if two different networks use the same address range, a router cannot know which one
@@ -382,7 +382,7 @@ Two extra subtleties:
 > **BGP** (4.6.1): the two sides announce to each other which CIDR blocks they own and the route tables fill
 > automatically. And the trap from Phase 7.4.2 is fully in play here: because the tunnel headers make the
 > packet bigger the effective MTU drops, and if ICMP Fragmentation Needed is blocked an **MTU black hole**
-> forms (9.3.1) with the symptom "SSH connects but freezes". In VPN setups **MSS clamping** (5.7.4) is almost
+> forms (9.3.1) with the symptom "SSH connects but freezes". In VPN setups **MSS clamping** (5.7.3) is almost
 > always needed. The intersection of these three phases is the class of fault that wastes the most time in the
 > field.
 
@@ -419,7 +419,7 @@ This table is the summary of this book. If you know the left column, the right c
 | An IPsec tunnel | 7.4 | **Site-to-Site VPN** |
 | IPv6, egress filtering | 7.5 | A dual-stack VPC, **Egress-only IGW** |
 | L7 routing | 8.1-8.2 | **ALB** |
-| TLS termination | 8.4.4 | ALB/CloudFront + `X-Forwarded-For` |
+| TLS termination | 8.4.2 | ALB/CloudFront + `X-Forwarded-For` |
 | Reverse proxy, CDN, anycast | 8.5 | **CloudFront**, Route 53 latency |
 | A stateful firewall | 9.1.3 | **Security Group** |
 | A stateless filter | 9.1.2 | **Network ACL** |
@@ -439,9 +439,9 @@ This table is the summary of this book. If you know the left column, the right c
 | New instances cannot connect to the DB | There is an **IP-based** rule in the SG | Turn the SG source into an SG reference | 11.5.2 |
 | I turned failover on, traffic goes to the old place | **The DNS TTL** | The TTL with `dig`, lower it first | 11.4, 6.4.3 |
 | I cannot write a CNAME at the apex | The CNAME apex restriction | Use an **alias** record | 11.4, 6.3.3 |
-| The application sees all clients as the same IP | The ALB is terminating TLS | `X-Forwarded-For` | 11.6.1, 8.4.4 |
+| The application sees all clients as the same IP | The ALB is terminating TLS | `X-Forwarded-For` | 11.6.1, 8.4.2 |
 | Large transfers freeze over the VPN | The tunnel MTU / **MSS clamping** | `ping -M do -s ...` | the box in 11.7.1, 5.7.3 |
-| S3 traffic is getting expensive | It is going through the NAT GW | Add a **VPC Endpoint** | 11.3.1, 7.3.4 |
+| S3 traffic is getting expensive | It is going through the NAT GW | Add a **VPC Endpoint** | 11.3.1, 7.3.3 |
 | IPv4 ✓ IPv6 ✗ | The `::/0` route or rule is missing | The route table + SG/NACL | 11.3.1, 7.5.2 |
 
 > **The lesson from this table:** Notice — **not one of the faults in this table is a cloud fault.** Every one
@@ -623,7 +623,7 @@ Write your answers on paper, then compare them with the key. Target: 14+ out of 
     **role**: only the application layer gets through and the blast radius shrinks (11.5.2, 9.5.1). — 16. The
     cause: **the DNS TTL** — clients and intermediate resolvers are caching the old answer (6.4.1). The
     solution: lower the TTL **before** the change, wait as long as the old TTL, then change it (6.4.3, 11.4). —
-    17. Because the ALB **terminates** TLS and opens its own connection to the back (8.4.4); the source IP the
+    17. Because the ALB **terminates** TLS and opens its own connection to the back (8.4.2); the source IP the
     server sees is the ALB's. The solution: read the **`X-Forwarded-For`** header (or use an NLB if the client
     IP is critical) (11.6.1). — 18. Three examples are enough: (i) **a VPC = a CIDR block** (Phase 2), (ii) **a
     route table = a routing table + LPM** (Phase 4), (iii) **a Security Group = a stateful firewall** (Phase 9)
