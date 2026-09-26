@@ -464,7 +464,7 @@ than in the lower phases — as long as you read the message correctly.
 ---
 ---
 
-# Answers to the Think questions
+# Phase 8 — Answers to the Think questions
 
 ## Answer 8.1 — Idempotency and resending
 
@@ -548,7 +548,7 @@ every deploy — it is not a structural solution.)
 ---
 ---
 
-# Frequently asked questions
+# Phase 8 — Frequently asked questions
 
 **Q1 — If HTTP is plain text, what changes in HTTPS?** The structure stays **the same** — the same methods,
 the same headers, the same status codes. The only thing that changes is that all of that text passes
@@ -587,7 +587,7 @@ origin (5.5.2).
 ---
 ---
 
-# Test yourself
+# Phase 8 — Test yourself
 
 Write your answers on paper, then compare them with the key. Target: 14+ out of 18.
 
@@ -686,7 +686,7 @@ Write your answers on paper, then compare them with the key. Target: 14+ out of 
 ---
 ---
 
-# Closing and the Bridge to Phase 9
+# Phase 8 — Closing and Bridge to Phase 9
 
 ## What you carry from this phase
 

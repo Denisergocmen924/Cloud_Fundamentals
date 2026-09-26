@@ -1477,7 +1477,7 @@ kurduğun bir mekanizma var.
 
 ---
 
-# Faz 1 — Düşün Sorularının Cevapları
+# Faz 1 — Düşün sorularının cevapları
 
 ## Cevap 1.1 — Terminalde çalışan script cron'da `command not found`
 
@@ -1783,7 +1783,7 @@ ajanı (CloudWatch Agent, Fluent Bit) kullanılır. Bu ajanlar rotation'ı zaten
 
 ---
 
-# Faz 1 — Sık Sorulan Sorular
+# Faz 1 — Sık sorulan sorular
 
 ### S1. Terminal, konsol, shell, TTY — hepsi aynı şey değil mi?
 
@@ -1863,7 +1863,7 @@ satırında değil, ortam değişkeninde veya dosyada tutmaktır (Faz 9, Faz 12'
 
 ---
 
-# Faz 1 — Kendini Sına
+# Faz 1 — Kendini sına
 
 Cevaplarını yazmadan önce bölümlere dönme. Bölüm C'deki soruları mümkünse makinende deneyerek
 cevapla. Zorlandığın soruların numarası, tekrar etmen gereken bölümü gösterir.
@@ -1910,7 +1910,7 @@ cevapla. Zorlandığın soruların numarası, tekrar etmen gereken bölümü gö
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 **1.** Terminal, klavyeyi alıp karakterleri ekrana çizen programdır; komut anlamaz. Shell,
 yazılan satırı yorumlayıp programları çalıştıran programdır (bash). Prompt: `ubuntu` = kullanıcı,

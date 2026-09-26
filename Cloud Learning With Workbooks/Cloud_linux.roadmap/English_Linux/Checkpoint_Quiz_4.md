@@ -190,7 +190,7 @@ job of security?
 
 ---
 
-## Answer Key
+## Answer key
 
 **1.** `nohup python app.py &` runs the process with the identity of the user who started it; usually, "to be
 quick," it is run with `sudo`, i.e. as **root**. If a process running as root is compromised, the attacker

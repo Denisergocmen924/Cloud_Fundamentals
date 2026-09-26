@@ -808,7 +808,7 @@ levels.*
 
 ---
 
-# Phase 3 — Answers to the Think Questions
+# Phase 3 — Answers to the Think questions
 
 ## Answer 3.1 — Write every line, or buffer and then write?
 
@@ -1069,7 +1069,7 @@ Better:        1 × 2 TB gp3, IOPS and throughput raised directly
 > prevent, and is that scenario really my responsibility in this environment?"*
 
 ---
-# Phase 3 — Frequently Asked Questions
+# Phase 3 — Frequently asked questions
 
 > **Q1: SSDs are very fast now. Do we still need cache layers (Redis, page cache)?**
 >
@@ -1182,7 +1182,7 @@ Better:        1 × 2 TB gp3, IOPS and throughput raised directly
 
 ---
 
-# Phase 3 — Test Yourself
+# Phase 3 — Test yourself
 
 **Part A — Fundamentals (1–7)**
 
@@ -1224,7 +1224,7 @@ Better:        1 × 2 TB gp3, IOPS and throughput raised directly
 
 ---
 
-## Answer Key
+## Answer key
 
 **1.** (a) **Seek time** ~4–9 ms — the head moving to the right track; (b) **Rotational latency**
 ~4.2 ms — the sector coming under the head; (c) **Transfer** ~0.01 ms. **Seek + rotation dominate** —
@@ -1383,4 +1383,4 @@ thanks to DMA" but never defined DMA. Phase 4 fills exactly this gap.
 
 ---
 
-*Phase 3 complete.* → **[Phase 4 — System Buses and I/O](Phase_4_Buses_and_IO.md)**
+> **Navigation:** [◀ Phase 2 — Memory Hierarchy](Phase_2_Memory_Hierarchy.md) · **Phase 3** · [Phase 4 — System Buses and I/O ▶](Phase_4_Buses_and_IO.md)

@@ -1305,7 +1305,7 @@ mekanizma.
 
 ---
 
-# Faz 2 — Düşün Sorularının Cevapları
+# Faz 2 — Düşün sorularının cevapları
 
 ## Cevap 2.1 — Redis/CDN/tarayıcı cache'i ile CPU cache'i
 
@@ -1584,7 +1584,7 @@ Sadece bellek fiziği açısından:
 > Faz 7.3 ve Faz 7.5'te bu kararı sistematik bir çerçeveye oturtacağız.
 
 ---
-# Faz 2 — Sık Sorulan Sorular
+# Faz 2 — Sık sorulan sorular
 
 > **S1: Daha çok RAM almak her zaman performansı artırır mı?**
 >
@@ -1694,7 +1694,7 @@ Sadece bellek fiziği açısından:
 
 ---
 
-# Faz 2 — Kendini Sına
+# Faz 2 — Kendini sına
 
 Cevaplarını yazmadan önce bölümlere dönme. Zorlandığın soruların numarası, tekrar etmen
 gereken bölümü gösterir.
@@ -1740,7 +1740,7 @@ gereken bölümü gösterir.
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 **1.** Hızlı bellek pahalı ve küçük, ucuz bellek yavaş ve büyüktür; hiyerarşi bu iki
 gerçeği **yerellik sayesinde** birleştirir — küçük hızlı katman, büyük yavaş katmanın
@@ -1904,4 +1904,4 @@ C zamanla, gerçek sistemlerle uğraştıkça oturur.
 
 ---
 
-*Faz 2 tamamlandı.* → **[Faz 3 — Depolama](Faz_3_Depolama.md)**
+> **Navigasyon:** [◀ Faz 1 — CPU Mimarisi](Faz_1_CPU_Mimarisi.md) · **Faz 2** · [Faz 3 — Depolama ▶](Faz_3_Depolama.md)

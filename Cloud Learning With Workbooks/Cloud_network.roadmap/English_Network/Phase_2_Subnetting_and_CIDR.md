@@ -773,7 +773,7 @@ Question you missed → section to go back to:
 ---
 ---
 
-# Phase 2 — Closing and the bridge to Phase 3
+# Phase 2 — Closing and Bridge to Phase 3
 
 ## What you carry from this phase
 

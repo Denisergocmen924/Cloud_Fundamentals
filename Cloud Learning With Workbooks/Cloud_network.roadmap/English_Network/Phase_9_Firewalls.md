@@ -520,7 +520,7 @@ backwards from the symptom.
 ---
 ---
 
-# Answers to the Think questions
+# Phase 9 — Answers to the Think questions
 
 ## Answer 9.1 — Forgetting the return
 
@@ -618,7 +618,7 @@ internet, SSM Session Manager or a bastion is used (9.5.1).
 ---
 ---
 
-# Frequently asked questions
+# Phase 9 — Frequently asked questions
 
 **Q1 — Should I use DROP or REJECT?** On the outward-facing surface, **DROP** (it gives no information and
 slows scanning down, 9.2.3). On the internal network **REJECT** is usually better: applications get an
@@ -658,7 +658,7 @@ same class of problem as in 7.2.1). This is a **concurrency** limit, not a speed
 ---
 ---
 
-# Test yourself
+# Phase 9 — Test yourself
 
 Write your answers on paper, then compare them with the key. Target: 14+ out of 18.
 
@@ -760,7 +760,7 @@ Write your answers on paper, then compare them with the key. Target: 14+ out of 
 ---
 ---
 
-# Closing and the Bridge to Phase 10
+# Phase 9 — Closing and Bridge to Phase 10
 
 ## What you carry from this phase
 

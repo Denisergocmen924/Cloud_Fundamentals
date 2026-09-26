@@ -643,7 +643,7 @@ EFA ile    : tur başına ~5 μs                 → GPU'lar hesaplar
 
 ---
 
-# Faz 5 — Düşün Sorularının Cevapları
+# Faz 5 — Düşün sorularının cevapları
 
 ## Cevap 5.1
 
@@ -782,7 +782,7 @@ tek başına zararsız görünen bir desen, RTT 0,3 ms'den 90 ms'ye çıkınca f
 
 ---
 
-# Faz 5 — Sık Sorulan Sorular
+# Faz 5 — Sık sorulan sorular
 
 > **S1: "Ağ kartım 10 Gbps ama `iperf3` 9,4 Gbps gösteriyor. Kart bozuk mu?"**
 >
@@ -896,7 +896,7 @@ tek başına zararsız görünen bir desen, RTT 0,3 ms'den 90 ms'ye çıkınca f
 
 ---
 
-# Faz 5 — Kendini Sına
+# Faz 5 — Kendini sına
 
 ## Bölüm A — Temel
 
@@ -956,7 +956,7 @@ ilerlersin?
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 ### Bölüm A
 
@@ -1199,4 +1199,4 @@ konuşuyorlar — hem bant genişliği hem gecikme kat kat kötü.
 
 ---
 
-*Faz 5 tamamlandı.* → **[Faz 6 — Sanallaştırma Donanımı](Faz_6_Sanallastirma_Donanimi.md)**
+> **Navigasyon:** [◀ Faz 4 — Sistem Bus'ları ve I/O](Faz_4_Bus_ve_IO.md) · **Faz 5** · [Faz 6 — Sanallaştırma Donanımı ▶](Faz_6_Sanallastirma_Donanimi.md)

@@ -930,7 +930,7 @@ ve kondansatörden oluşan hücresi. Alan farkı doğrudan maliyet ve kapasite f
 ---
 ---
 
-# Faz 0 — Düşün Sorularının Cevapları
+# Faz 0 — Düşün sorularının cevapları
 
 ## Cevap 0.1 — `chmod 755` neden `rwxr-xr-x`?
 
@@ -1156,7 +1156,7 @@ bunun en zayıf sebebi. Gerçek sebepler:
 **İlgili bölüm:** 0.4.4 · **Devamı:** Faz 2.4, 2.6, 2.7
 
 ---
-# Faz 0 — Sık Sorulan Sorular
+# Faz 0 — Sık sorulan sorular
 
 Bu bölüm, fazı işlerken doğal olarak akla gelen ama anlatının akışını bozacağı için oraya
 sığmayan soruları toplar.
@@ -1252,7 +1252,7 @@ değil; gerektiğinde bakarsın.
 
 ---
 
-# Faz 0 — Kendini Sına
+# Faz 0 — Kendini sına
 
 Cevaplar hemen altında. Önce hepsini cevaplamayı dene, sonra bak.
 
@@ -1296,7 +1296,7 @@ yer açısından karşılaştır.
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 **1.** `1101 0110` → **214** (128+64+16+4+2), hex: `1101`=D, `0110`=6 → **`0xD6`**
 · *bölüm 0.1.3*
@@ -1375,7 +1375,7 @@ aktifken bütçe bol olduğu için tek çekirdek yüksek turbo frekansına çık
 
 ---
 
-### Puanlama
+## Puanlama
 
 | Doğru sayısı | Ne yapmalı |
 |---|---|

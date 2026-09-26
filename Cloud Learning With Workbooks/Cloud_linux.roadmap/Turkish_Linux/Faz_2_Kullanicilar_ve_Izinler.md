@@ -1461,7 +1461,7 @@ bağlar:
 ---
 ---
 
-# Faz 2 — Düşün Sorularının Cevapları
+# Faz 2 — Düşün sorularının cevapları
 
 ## Cevap 2.1 — Gruba eklendim ama hâlâ erişemiyorum
 
@@ -1690,7 +1690,7 @@ TARGET SOURCE      FSTYPE OPTIONS
 ---
 ---
 
-# Faz 2 — Sık Sorulan Sorular
+# Faz 2 — Sık sorulan sorular
 
 ### S1. `sudo`, `sudo -i`, `sudo -s` ve `su -` arasındaki fark ne?
 
@@ -1773,7 +1773,7 @@ yetkisine çevirmenin yolu, SSM Session Manager veya Instance Connect ile makine
 ---
 ---
 
-# Faz 2 — Kendini Sına
+# Faz 2 — Kendini sına
 
 Aşağıdaki 18 soruyu cevapla. Cevap anahtarı ve puanlama hemen altındadır. Amaç ezber değil,
 mekanizmayı muhakeme edebilmek.
@@ -1833,7 +1833,7 @@ okusun/güncellesin, ama sadece sahibi silsin. Hangi octal modu kullanırsın?
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 **1.** `750` — rwx=7, r-x=5, ---=0. · *2.2.1*
 

@@ -497,7 +497,7 @@ that table.
 ---
 ---
 
-# Answers to the Think questions
+# Phase 7 — Answers to the Think questions
 
 ## Answer 7.1 — The port pool is exhausted
 
@@ -587,7 +587,7 @@ together.
 ---
 ---
 
-# Frequently asked questions
+# Phase 7 — Frequently asked questions
 
 **Q1 — What exactly is the difference between NAT and PAT?** **NAT (1:1)** maps one external address to each
 internal address — there is no address saving, only translation (an Elastic IP assignment in the cloud works
@@ -628,7 +628,7 @@ the firewall stays — and the responsibility moves to the right place, to expli
 ---
 ---
 
-# Test yourself
+# Phase 7 — Test yourself
 
 Write your answers on paper, then compare them with the key. Target: 14+ out of 18.
 
@@ -728,7 +728,7 @@ Write your answers on paper, then compare them with the key. Target: 14+ out of 
 ---
 ---
 
-# Closing and the Bridge to Phase 8
+# Phase 7 — Closing and Bridge to Phase 8
 
 ## What you carry from this phase
 

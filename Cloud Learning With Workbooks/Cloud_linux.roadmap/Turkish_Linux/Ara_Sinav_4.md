@@ -178,7 +178,7 @@ adlandırır, ve neden "açığı önlemek" değil "hasarı sınırlamak" güven
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 **1.** `nohup python app.py &` süreci onu başlatan kullanıcının kimliğiyle koşar; genellikle "hızlı olsun" diye
 `sudo` ile, yani **root** çalıştırılır. Root çalışan bir süreç ele geçirilirse saldırgan anında tüm makineyi

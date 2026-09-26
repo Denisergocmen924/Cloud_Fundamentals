@@ -456,7 +456,7 @@ This table is the summary of this book. If you know the left column, the right c
 ---
 ---
 
-# Answers to the Think questions
+# Phase 11 — Answers to the Think questions
 
 ## Answer 11.1 — A public IP is not a path
 
@@ -520,7 +520,7 @@ expensive to reverse.**
 ---
 ---
 
-# Frequently asked questions
+# Phase 11 — Frequently asked questions
 
 **Q1 — What exactly is the difference between a VPC and a subnet?** A VPC is an **address space** (a CIDR
 block) and belongs to a region. A subnet is a piece of that block and is in **exactly one AZ** (11.2.1).
@@ -557,7 +557,7 @@ service they have never seen before.
 ---
 ---
 
-# Test yourself
+# Phase 11 — Test yourself
 
 Write your answers on paper, then compare them with the key. Target: 14+ out of 18.
 

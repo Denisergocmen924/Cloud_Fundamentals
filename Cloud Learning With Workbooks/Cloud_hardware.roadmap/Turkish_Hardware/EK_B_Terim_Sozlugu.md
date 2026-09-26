@@ -479,3 +479,7 @@ trafikte kesmeden verimlidir.
 ---
 
 *Ek B sonu.* → **[Ek A — Referans Tabloları](EK_A_Referans_Tablolari.md)** · **[README](README.md)**
+
+---
+
+> **Navigasyon:** [◀ Ek A — Referans Tabloları](EK_A_Referans_Tablolari.md) · **Ek B** · [README ▶](README.md)

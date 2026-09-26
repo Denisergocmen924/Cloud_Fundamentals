@@ -902,7 +902,7 @@ cgroup: in cgroup v2, `/sys/fs/cgroup/memory.max` and `memory.current`. · *4.2.
 ---
 ---
 
-# Phase 4 — Closing and bridge to Phase 5
+# Phase 4 — Closing and Bridge to Phase 5
 
 ## What you carry from this phase
 

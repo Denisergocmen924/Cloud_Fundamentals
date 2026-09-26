@@ -1273,7 +1273,7 @@ container image (Alpine), while `uname -r` is a syscall asked of the kernel (the
 
 ---
 
-# Phase 0 — Closing and bridge to Phase 1
+# Phase 0 — Closing and Bridge to Phase 1
 
 ## What you carry from this phase
 

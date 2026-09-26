@@ -175,7 +175,7 @@ nedir? Bu, iki fazın hangi kavramlarını aynı anda gösteriyor?
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 **1.** **Varsayılan geçidin (router'ın) MAC adresini arar.** Çünkü L3 kararı "hedef benim ağımda değil,
 gateway'e göndereceğim" der (4.1.1); ama o paketi kabloya koymak için bir L2 frame'i gerekir ve frame'in

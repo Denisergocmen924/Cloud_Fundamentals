@@ -1251,7 +1251,7 @@ upper bound. · *3.3.2*
 ---
 ---
 
-# Phase 3 — Closing and bridge to Phase 4
+# Phase 3 — Closing and Bridge to Phase 4
 
 ## What you carry from this phase
 

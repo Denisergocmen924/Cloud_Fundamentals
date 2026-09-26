@@ -179,7 +179,7 @@ Why is filtering `stat` values that start with `D` the Phase 3 side of an "I/O b
 
 ---
 
-## Answer Key
+## Answer key
 
 Each answer ends with the **phase intersection** the question sits at.
 

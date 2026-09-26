@@ -2008,7 +2008,7 @@ or a file.) · *1.5.1, Answer 1.6*
 
 ---
 
-# Phase 1 — Closing and bridge to Phase 2
+# Phase 1 — Closing and Bridge to Phase 2
 
 ## What you carry from this phase
 

@@ -486,3 +486,7 @@ operations (read-read-write-write).
 ---
 
 *End of Appendix B.* → **[Appendix A — Reference Tables](Appendix_A_Reference_Tables.md)** · **[README](README_en.md)**
+
+---
+
+> **Navigation:** [◀ Appendix A — Reference Tables](Appendix_A_Reference_Tables.md) · **Appendix B** · [README ▶](README_en.md)

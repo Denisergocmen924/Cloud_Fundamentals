@@ -877,7 +877,7 @@ takes the form of a decision mistake:
 
 ---
 
-# Phase 7 — Answers to the Think Questions
+# Phase 7 — Answers to the Think questions
 
 ## Answer 7.1
 
@@ -1158,7 +1158,7 @@ Result        : ≈ 0.24  →  ~76% savings
 
 ---
 
-# Phase 7 — Frequently Asked Questions
+# Phase 7 — Frequently asked questions
 
 > **Q1: "How do I know which instance type to choose — is there a shortcut?"**
 >
@@ -1269,7 +1269,7 @@ Result        : ≈ 0.24  →  ~76% savings
 
 ---
 
-# Phase 7 — Test Yourself
+# Phase 7 — Test yourself
 
 ## Part A — Fundamentals
 
@@ -1341,7 +1341,7 @@ Write the capacity plan: how many instances, which model, which risks?
 
 ---
 
-## Answer Key
+## Answer key
 
 ### Part A
 
@@ -1773,3 +1773,7 @@ data structure (5×). **None of the biggest performance gains in this map requir
 *Phase 7 complete. **The hardware roadmap is finished.***
 
 → **[Back to the start of the map](README_en.md)** · **[Appendix A — Reference Tables](Appendix_A_Reference_Tables.md)** · **[Appendix B — Glossary](Appendix_B_Glossary.md)**
+
+---
+
+> **Navigation:** [◀ Phase 6 — Virtualization Hardware](Phase_6_Virtualization_Hardware.md) · **Phase 7** · [Back to the start of the map ▶](README_en.md)

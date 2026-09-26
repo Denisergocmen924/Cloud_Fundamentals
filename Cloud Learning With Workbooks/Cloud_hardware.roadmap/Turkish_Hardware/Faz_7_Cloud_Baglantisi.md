@@ -872,7 +872,7 @@ hatası biçiminde olur:
 
 ---
 
-# Faz 7 — Düşün Sorularının Cevapları
+# Faz 7 — Düşün sorularının cevapları
 
 ## Cevap 7.1
 
@@ -1150,7 +1150,7 @@ Sonuç        : ≈ 0,24  →  ~%76 tasarruf
 
 ---
 
-# Faz 7 — Sık Sorulan Sorular
+# Faz 7 — Sık sorulan sorular
 
 > **S1: "Hangi instance tipini seçeceğimi nasıl bilirim — bir kısayol var mı?"**
 >
@@ -1260,7 +1260,7 @@ Sonuç        : ≈ 0,24  →  ~%76 tasarruf
 
 ---
 
-# Faz 7 — Kendini Sına
+# Faz 7 — Kendini sına
 
 ## Bölüm A — Temel
 
@@ -1331,7 +1331,7 @@ Kapasite planını yaz: kaç instance, hangi model, hangi riskler?
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 ### Bölüm A
 
@@ -1756,3 +1756,7 @@ gerektirmedi.**
 *Faz 7 tamamlandı. **Hardware yol haritası bitti.***
 
 → **[Haritanın başına dön](README.md)** · **[Ek A — Referans Tabloları](EK_A_Referans_Tablolari.md)** · **[Ek B — Terim Sözlüğü](EK_B_Terim_Sozlugu.md)**
+
+---
+
+> **Navigasyon:** [◀ Faz 6 — Sanallaştırma Donanımı](Faz_6_Sanallastirma_Donanimi.md) · **Faz 7** · [Haritanın başı ▶](README.md)

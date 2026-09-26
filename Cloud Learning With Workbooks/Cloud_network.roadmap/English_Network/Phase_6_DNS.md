@@ -447,7 +447,7 @@ quickly.
 ---
 ---
 
-# Answers to the Think questions
+# Phase 6 — Answers to the Think questions
 
 ## Answer 6.1 — The layers `dig` does not see
 
@@ -528,7 +528,7 @@ logs has dropped to zero — that is the most reliable criterion.
 ---
 ---
 
-# Frequently asked questions
+# Phase 6 — Frequently asked questions
 
 **Q1 — Why does DNS use UDP, and what happens if an answer is lost?** Because DNS is typically a
 **single-packet question and answer**, and the cost of establishing a handshake is far higher than asking a
@@ -574,7 +574,7 @@ internal names resolve only from inside the VPC.
 ---
 ---
 
-# Test yourself
+# Phase 6 — Test yourself
 
 Write your answers on paper, then compare them with the key. Target: 14+ out of 18.
 
@@ -676,7 +676,7 @@ Write your answers on paper, then compare them with the key. Target: 14+ out of 
 ---
 ---
 
-# Closing and the Bridge to Phase 7
+# Phase 6 — Closing and Bridge to Phase 7
 
 ## What you carry from this phase
 

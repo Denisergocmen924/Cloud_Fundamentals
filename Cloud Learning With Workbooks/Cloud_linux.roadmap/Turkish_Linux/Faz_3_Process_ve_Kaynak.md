@@ -876,7 +876,7 @@ belirtisidir. Aşağıdaki tablo, sahada göreceğin belirtileri bu fazın mekan
 ---
 ---
 
-# Faz 3 — Düşün Sorularının Cevapları
+# Faz 3 — Düşün sorularının cevapları
 
 ## Cevap 3.1 — Arka plandaki `sleep` neden ölmedi, PPID neden 1'e döndü
 
@@ -982,7 +982,7 @@ cevabı hep buradadır — sistemin RAM'ine değil, **cgroup limitine** bak.
 ---
 ---
 
-# Faz 3 — Sık Sorulan Sorular
+# Faz 3 — Sık sorulan sorular
 
 ### S1. `ps`, `top` ve `htop` arasında ne zaman hangisini kullanmalıyım?
 
@@ -1056,7 +1056,7 @@ de olabilir (Cevap 3.2).
 ---
 ---
 
-# Faz 3 — Kendini Sına
+# Faz 3 — Kendini sına
 
 Aşağıdaki 18 soruyu cevapla. Cevap anahtarı ve puanlama hemen altındadır. Amaç ezber değil,
 "sistem şu an ne yapıyor" sorusunu modelle cevaplayabilmek.
@@ -1115,7 +1115,7 @@ doğrular, hangi kavramla açıklarsın?
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 **1.** PPID = ebeveyn process'in PID'si; her process'i başlatan başka bir process vardır. PPID `1`
 ise process'in orijinal ebeveyni ölmüş ve process systemd (PID 1) tarafından evlat edinilmiştir. ·
@@ -1272,14 +1272,3 @@ sezgisi. Faz 3'ün process modeli oraya doğrudan bağlanır:
 ---
 
 > **Navigasyon:** [◀ Ara Sınav 1](Ara_Sinav_1.md) · **Faz 3** · [Faz 4 — Bellek, I/O ve Performans ▶](Faz_4_Bellek_IO_Performans.md)
-
-
-
-
-
-
-
-
-
-
-

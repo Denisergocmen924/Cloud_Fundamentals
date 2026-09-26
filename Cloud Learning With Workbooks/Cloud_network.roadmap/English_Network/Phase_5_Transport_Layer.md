@@ -862,7 +862,7 @@ Write your answers on paper, then compare them with the key. Target: 14+ out of 
 ---
 ---
 
-# Phase 5 — Closing and the Bridge to Phase 6
+# Phase 5 — Closing and Bridge to Phase 6
 
 ## What you carry out of this phase
 

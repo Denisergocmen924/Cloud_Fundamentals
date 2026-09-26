@@ -488,7 +488,7 @@ one is caught.
 ---
 ---
 
-# Answers to the Think questions
+# Phase 10 — Answers to the Think questions
 
 ## Answer 10.1 — The eliminating power of two commands
 
@@ -552,7 +552,7 @@ got the REJECT (10.4.3).
 ---
 ---
 
-# Frequently asked questions
+# Phase 10 — Frequently asked questions
 
 **Q1 — Do I have to apply the methodology from the beginning every time?** No — if the symptom gives you
 evidence you can start from there. If you got "connection refused", L1–L4 is already proved (9.2.3) and you go
@@ -591,7 +591,7 @@ the application and the right place is the application logs (10.4.3).
 ---
 ---
 
-# Test yourself
+# Phase 10 — Test yourself
 
 Write your answers on paper, then compare them with the key. Target: 14+ out of 18.
 
@@ -685,7 +685,7 @@ Write your answers on paper, then compare them with the key. Target: 14+ out of 
 ---
 ---
 
-# Closing and the Bridge to Phase 11
+# Phase 10 — Closing and Bridge to Phase 11
 
 ## What you carry from this phase
 

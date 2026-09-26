@@ -187,7 +187,7 @@ command grow?
 
 ---
 
-## Answer Key
+## Answer key
 
 **1.** An `fstab` line becomes a **`.mount` unit** on the systemd side (systemd-fstab-generator reads `fstab`
 at boot and produces one `.mount` unit per line; its name is derived from the mount point, e.g. `/data` →

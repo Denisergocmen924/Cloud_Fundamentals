@@ -184,7 +184,7 @@ Hangi iki komutu hangi sırayla çalıştırırsın (Faz 6.6.2), ve her komut ç
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 **1.** Bir `fstab` satırı systemd tarafında bir **`.mount` unit'ine** dönüşür (systemd-fstab-generator
 boot'ta `fstab`'ı okuyup her satır için bir `.mount` unit üretir; adı mount point'ten türetilir, örn.

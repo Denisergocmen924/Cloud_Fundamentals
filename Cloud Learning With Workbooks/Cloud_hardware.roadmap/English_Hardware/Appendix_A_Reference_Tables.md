@@ -595,3 +595,7 @@ STEP 5 — NONE OF THEM (6 min) → WAITING BOUND
 ---
 
 *End of Appendix A.* → **[Appendix B — Glossary](Appendix_B_Glossary.md)** · **[README](README_en.md)**
+
+---
+
+> **Navigation:** [◀ README](README_en.md) · **Appendix A** · [Appendix B — Glossary ▶](Appendix_B_Glossary.md)

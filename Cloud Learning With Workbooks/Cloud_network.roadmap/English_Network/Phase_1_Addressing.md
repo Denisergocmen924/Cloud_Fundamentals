@@ -849,7 +849,7 @@ Question you missed → section to go back to:
 ---
 ---
 
-# Phase 1 — Closing and the bridge to Phase 2
+# Phase 1 — Closing and Bridge to Phase 2
 
 ## What you carry from this phase
 

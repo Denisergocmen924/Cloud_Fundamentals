@@ -906,7 +906,7 @@ doğru katmanı düşünebilmek.
 
 ---
 
-# Faz 0 — Düşün Sorularının Cevapları
+# Faz 0 — Düşün sorularının cevapları
 
 ## Cevap 0.1 — EC2'de ve container'da `uname -r` kimin çekirdeğini gösterir?
 
@@ -1092,7 +1092,7 @@ hata verip durur.
 
 ---
 
-# Faz 0 — Sık Sorulan Sorular
+# Faz 0 — Sık sorulan sorular
 
 Bu bölüm, fazı işlerken doğal olarak akla gelen ama anlatının akışını bozacağı için oraya
 sığmayan soruları toplar.
@@ -1170,7 +1170,7 @@ manual bölümü syscall'lara ayrılmıştır).
 
 ---
 
-# Faz 0 — Kendini Sına
+# Faz 0 — Kendini sına
 
 Cevaplarını yazmadan önce bölümlere dönme. Zorlandığın soruların numarası, tekrar etmen
 gereken bölümü gösterir.
@@ -1209,7 +1209,7 @@ gereken bölümü gösterir.
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 **1.** **Soyutlama** (program "dosyaya yaz" der, diskin türünü bilmez), **paylaştırma** (birkaç
 CPU çekirdeği yüzlerce process arasında bölünür), **koruma** (bir programın hatası diğerinin

@@ -160,7 +160,7 @@ process çalıştırır)?
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 Her cevabın sonunda o sorunun **hangi fazların kesişiminde** durduğu belirtilmiştir.
 

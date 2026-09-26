@@ -537,7 +537,7 @@ access the other's memory and devices — they are the arrow in the diagram in P
 > instances.
 
 ---
-# Phase 4 — Answers to the Think Questions
+# Phase 4 — Answers to the Think questions
 
 ## Answer 4.1 — GPU utilization 25–35%, VRAM full
 
@@ -673,7 +673,7 @@ netstat -s | grep -i -E "overflow|dropped|pruned"
 
 ---
 
-# Phase 4 — Frequently Asked Questions
+# Phase 4 — Frequently asked questions
 
 > **Q1: Does the PCIe generation really make a difference? Isn't Gen3 enough?**
 >
@@ -749,7 +749,7 @@ netstat -s | grep -i -E "overflow|dropped|pruned"
 
 ---
 
-# Phase 4 — Test Yourself
+# Phase 4 — Test yourself
 
 **Part A — Fundamentals (1–6)**
 
@@ -790,7 +790,7 @@ netstat -s | grep -i -E "overflow|dropped|pruned"
 
 ---
 
-## Answer Key
+## Answer key
 
 **1. Address bus:** which address to access (its width determines the amount of addressable
 memory). **Data bus:** the data itself (its width determines how many bits are carried at
@@ -942,4 +942,4 @@ of interrupts, DMA and buffers right where you left them:
 
 ---
 
-*Phase 4 complete.* → **[Phase 5 — Network Hardware](Phase_5_Network_Hardware.md)**
+> **Navigation:** [◀ Phase 3 — Storage](Phase_3_Storage.md) · **Phase 4** · [Phase 5 — Network Hardware ▶](Phase_5_Network_Hardware.md)

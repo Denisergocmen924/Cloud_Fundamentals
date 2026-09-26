@@ -591,3 +591,7 @@ ADIM 5 — HİÇBİRİ (6 dk)      → BEKLEME BOUND
 ---
 
 *Ek A sonu.* → **[Ek B — Terim Sözlüğü](EK_B_Terim_Sozlugu.md)** · **[README](README.md)**
+
+---
+
+> **Navigasyon:** [◀ README](README.md) · **Ek A** · [Ek B — Terim Sözlüğü ▶](EK_B_Terim_Sozlugu.md)

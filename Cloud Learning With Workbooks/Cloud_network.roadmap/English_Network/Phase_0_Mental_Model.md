@@ -574,7 +574,7 @@ Question you missed → section to go back to:
 ---
 ---
 
-# Phase 0 — Closing and the bridge to Phase 1
+# Phase 0 — Closing and Bridge to Phase 1
 
 ## What you carry from this phase
 

@@ -807,7 +807,7 @@ Disk3: [P][D][F]
 > gerçek bir olayda değil, şimdi öğrenmek gerekir.
 
 ---
-# Faz 3 — Düşün Sorularının Cevapları
+# Faz 3 — Düşün sorularının cevapları
 
 ## Cevap 3.1 — Her satırı yazmak mı, tamponlayıp yazmak mı?
 
@@ -1073,7 +1073,7 @@ Daha iyi:     1 × 2 TB gp3, IOPS ve throughput doğrudan yükseltilmiş
 > önlüyor, ve o senaryo bu ortamda gerçekten benim sorumluluğumda mı?"*
 
 ---
-# Faz 3 — Sık Sorulan Sorular
+# Faz 3 — Sık sorulan sorular
 
 > **S1: SSD'ler artık çok hızlı. Cache katmanlarına (Redis, page cache) hâlâ gerek var mı?**
 >
@@ -1187,7 +1187,7 @@ Daha iyi:     1 × 2 TB gp3, IOPS ve throughput doğrudan yükseltilmiş
 
 ---
 
-# Faz 3 — Kendini Sına
+# Faz 3 — Kendini sına
 
 **Bölüm A — Temel (1–7)**
 
@@ -1229,7 +1229,7 @@ Daha iyi:     1 × 2 TB gp3, IOPS ve throughput doğrudan yükseltilmiş
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 **1.** (a) **Seek time** ~4–9 ms — kafanın doğru track'e hareketi; (b) **Rotational
 latency** ~4,2 ms — sektörün kafanın altına gelmesi; (c) **Transfer** ~0,01 ms. **Baskın
@@ -1398,4 +1398,4 @@ dolduruyor.
 
 ---
 
-*Faz 3 tamamlandı.* → **[Faz 4 — Sistem Bus'ları ve I/O](Faz_4_Bus_ve_IO.md)**
+> **Navigasyon:** [◀ Faz 2 — Bellek Hiyerarşisi](Faz_2_Bellek_Hiyerarsisi.md) · **Faz 3** · [Faz 4 — Sistem Bus'ları ve I/O ▶](Faz_4_Bus_ve_IO.md)

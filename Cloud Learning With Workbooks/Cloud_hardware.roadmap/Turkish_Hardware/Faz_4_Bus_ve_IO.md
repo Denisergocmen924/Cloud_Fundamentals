@@ -535,7 +535,7 @@ oktur.
 > bilgi genelde görünmez; bare metal ve `.metal` instance'larda anlamlıdır.
 
 ---
-# Faz 4 — Düşün Sorularının Cevapları
+# Faz 4 — Düşün sorularının cevapları
 
 ## Cevap 4.1 — GPU kullanımı %25–35, VRAM dolu
 
@@ -671,7 +671,7 @@ netstat -s | grep -i -E "overflow|dropped|pruned"
 
 ---
 
-# Faz 4 — Sık Sorulan Sorular
+# Faz 4 — Sık sorulan sorular
 
 > **S1: PCIe nesli gerçekten fark eder mi? Gen3 yeterli değil mi?**
 >
@@ -748,7 +748,7 @@ netstat -s | grep -i -E "overflow|dropped|pruned"
 
 ---
 
-# Faz 4 — Kendini Sına
+# Faz 4 — Kendini sına
 
 **Bölüm A — Temel (1–6)**
 
@@ -786,7 +786,7 @@ netstat -s | grep -i -E "overflow|dropped|pruned"
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 **1. Address bus:** hangi adrese erişileceği (genişliği adreslenebilir bellek miktarını
 belirler). **Data bus:** taşınan verinin kendisi (genişliği tek seferde taşınan bit
@@ -935,4 +935,4 @@ bırakmadığın yerden alacak:
 
 ---
 
-*Faz 4 tamamlandı.* → **[Faz 5 — Ağ Donanımı](Faz_5_Ag_Donanimi.md)**
+> **Navigasyon:** [◀ Faz 3 — Depolama](Faz_3_Depolama.md) · **Faz 4** · [Faz 5 — Ağ Donanımı ▶](Faz_5_Ag_Donanimi.md)

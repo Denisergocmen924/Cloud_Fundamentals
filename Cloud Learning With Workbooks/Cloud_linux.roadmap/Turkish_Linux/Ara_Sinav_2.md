@@ -176,7 +176,7 @@ Bu zincir hangi fazların araçlarını birleştiriyor?
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 Her cevabın sonunda o sorunun **hangi fazların kesişiminde** durduğu belirtilmiştir.
 

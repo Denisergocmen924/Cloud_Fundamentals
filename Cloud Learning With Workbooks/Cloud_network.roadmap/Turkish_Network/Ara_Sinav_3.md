@@ -184,7 +184,7 @@ Chain INPUT (policy DROP 1204 packets, 96K bytes)
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 **1.** Doğrudan **TCP'nin durum bilgisine** dayanır (5.2.1): SYN bir bağlantının başlangıcı, SYN-ACK
 cevabı, ACK ise kuruluşudur. Stateful firewall bu bayrakları okuyup bağlantıyı bir tabloya yazar ve

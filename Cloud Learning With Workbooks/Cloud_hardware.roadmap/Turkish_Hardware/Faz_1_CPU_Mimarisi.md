@@ -959,7 +959,7 @@ katmanına dokunmadan kazanç almanın en hızlı yoludur.
 ---
 ---
 
-# Faz 1 — Düşün Sorularının Cevapları
+# Faz 1 — Düşün sorularının cevapları
 
 ## Cevap 1.1 — ARM64 daha çok register'a rağmen nasıl daha kısa talimat kullanıyor?
 
@@ -1213,7 +1213,7 @@ Bu komut, wheel'ı olmayan paketleri **tek seferde** listeler. Beş dakikada cev
 **İlgili bölüm:** 1.6.2, 1.6.4
 
 ---
-# Faz 1 — Sık Sorulan Sorular
+# Faz 1 — Sık sorulan sorular
 
 ### S1. `nproc` bana 8 diyor. Bu 8 çekirdek mi, 8 thread mi?
 
@@ -1319,7 +1319,7 @@ detay ama bir hot loop'ta ölçülebilir fark yaratır.
 
 ---
 
-# Faz 1 — Kendini Sına
+# Faz 1 — Kendini sına
 
 **1.** CPU'nun beş temel bileşenini say ve her birinin işini bir cümleyle yaz.
 
@@ -1363,7 +1363,7 @@ detay ama bir hot loop'ta ölçülebilir fark yaratır.
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 **1.** **ALU** (hesap yapar) · **Register'lar** (ALU'nun çalıştığı geçici veri kapları) ·
 **Program Counter** (sıradaki talimatın adresi) · **Instruction Register** (şu anki
@@ -1453,7 +1453,7 @@ monitoring/güvenlik **ajanlarının** arm64 sürümü. · *1.6.4*
 
 ---
 
-### Puanlama
+## Puanlama
 
 | Doğru sayısı | Ne yapmalı |
 |---|---|

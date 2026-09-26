@@ -627,7 +627,7 @@ Question you missed → section to return to:
 ---
 ---
 
-# Phase 3 — Closing and the Bridge to Phase 4
+# Phase 3 — Closing and Bridge to Phase 4
 
 ## What you carry out of this phase
 

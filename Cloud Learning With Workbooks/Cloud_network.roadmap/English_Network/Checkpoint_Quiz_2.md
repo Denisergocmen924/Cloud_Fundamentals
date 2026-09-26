@@ -180,7 +180,7 @@ destination MAC of that packet's **frame**? Which concepts from two phases does 
 
 ---
 
-## Answer Key
+## Answer key
 
 **1.** It looks for **the default gateway's (the router's) MAC address.** Because the L3 decision says "the
 destination is not on my network, I will send it to the gateway" (4.1.1); but to put that packet on the wire

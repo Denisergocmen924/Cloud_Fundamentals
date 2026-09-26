@@ -954,7 +954,7 @@ differences.*
 ---
 ---
 
-# Phase 0 — Answers to the Think Questions
+# Phase 0 — Answers to the Think questions
 
 ## Answer 0.1 — Why is `chmod 755` `rwxr-xr-x`?
 
@@ -1183,7 +1183,7 @@ reason. The real reasons:
 **Related section:** 0.4.4 · **Continued in:** Phase 2.4, 2.6, 2.7
 
 ---
-# Phase 0 — Frequently Asked Questions
+# Phase 0 — Frequently asked questions
 
 This section collects questions that naturally come up while working through the phase but
 don't fit into the narrative without breaking its flow.
@@ -1285,7 +1285,7 @@ truth table is not a problem; you can look it up when you need it.
 
 ---
 
-# Phase 0 — Test Yourself
+# Phase 0 — Test yourself
 
 The answers are right below. Try to answer all of them first, then look.
 
@@ -1330,7 +1330,7 @@ they are used.
 
 ---
 
-## Answer Key
+## Answer key
 
 **1.** `1101 0110` → **214** (128+64+16+4+2), hex: `1101`=D, `0110`=6 → **`0xD6`**
 · *section 0.1.3*
@@ -1410,7 +1410,7 @@ is plentiful, so a single core can climb to the high turbo frequency.
 
 ---
 
-### Scoring
+## Scoring
 
 | Correct answers | What to do |
 |---|---|

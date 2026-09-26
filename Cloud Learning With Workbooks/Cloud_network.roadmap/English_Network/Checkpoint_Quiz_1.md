@@ -183,7 +183,7 @@ them all the same size — what is the name of that technique?
 
 ---
 
-## Answer Key
+## Answer key
 
 At the end of every answer, the **intersection of phases** that question stands at is stated.
 

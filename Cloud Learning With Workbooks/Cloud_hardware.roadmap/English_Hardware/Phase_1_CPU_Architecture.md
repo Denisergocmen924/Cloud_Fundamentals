@@ -965,7 +965,7 @@ get a gain without touching the application layer.
 ---
 ---
 
-# Phase 1 — Answers to the Think Questions
+# Phase 1 — Answers to the Think questions
 
 ## Answer 1.1 — How does ARM64 use shorter instructions despite having more registers?
 
@@ -1218,7 +1218,7 @@ This command lists the packages without wheels **in one go.** You get the answer
 
 ---
 
-# Phase 1 — Frequently Asked Questions
+# Phase 1 — Frequently asked questions
 
 ### Q1. `nproc` tells me 8. Is that 8 cores or 8 threads?
 
@@ -1324,7 +1324,7 @@ but it makes a measurable difference in a hot loop.
 
 ---
 
-# Phase 1 — Test Yourself
+# Phase 1 — Test yourself
 
 **1.** Name the five basic components of a CPU and describe the job of each in one sentence.
 
@@ -1369,7 +1369,7 @@ physical cores?
 
 ---
 
-## Answer Key
+## Answer key
 
 **1.** **ALU** (does the computation) · **Registers** (temporary data containers the ALU works on) ·
 **Program Counter** (address of the next instruction) · **Instruction Register** (holds the current
@@ -1456,7 +1456,7 @@ monitoring/security **agents**. · *section 1.6.4*
 
 ---
 
-### Scoring
+## Scoring
 
 | Correct answers | What to do |
 |---|---|

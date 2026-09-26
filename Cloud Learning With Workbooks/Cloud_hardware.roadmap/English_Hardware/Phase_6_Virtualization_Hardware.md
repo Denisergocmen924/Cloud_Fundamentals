@@ -873,7 +873,7 @@ convenience plus VM isolation.
 
 ---
 
-# Phase 6 — Answers to the Think Questions
+# Phase 6 — Answers to the Think questions
 
 ## Answer 6.1
 
@@ -1110,7 +1110,7 @@ attacker.
 
 ---
 
-# Phase 6 — Frequently Asked Questions
+# Phase 6 — Frequently asked questions
 
 > **Q1: "Is 1 vCPU = 1 physical core?"**
 >
@@ -1215,7 +1215,7 @@ attacker.
 
 ---
 
-# Phase 6 — Test Yourself
+# Phase 6 — Test yourself
 
 ## Part A — Fundamentals
 
@@ -1281,7 +1281,7 @@ would you decide?
 
 ---
 
-## Answer Key
+## Answer key
 
 ### Part A
 
@@ -1557,4 +1557,4 @@ Phase 6 into real cloud decisions.
 
 ---
 
-*Phase 6 complete.* → **[Phase 7 — Cloud Connection](Phase_7_Cloud_Connection.md)**
+> **Navigation:** [◀ Phase 5 — Network Hardware](Phase_5_Network_Hardware.md) · **Phase 6** · [Phase 7 — Cloud Connection ▶](Phase_7_Cloud_Connection.md)

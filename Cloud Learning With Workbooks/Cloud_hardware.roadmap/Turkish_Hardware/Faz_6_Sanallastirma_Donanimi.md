@@ -872,7 +872,7 @@ VM izolasyonu.
 
 ---
 
-# Faz 6 — Düşün Sorularının Cevapları
+# Faz 6 — Düşün sorularının cevapları
 
 ## Cevap 6.1
 
@@ -1106,7 +1106,7 @@ bir saldırgana karşı değil.
 
 ---
 
-# Faz 6 — Sık Sorulan Sorular
+# Faz 6 — Sık sorulan sorular
 
 > **S1: "1 vCPU = 1 fiziksel çekirdek mi?"**
 >
@@ -1210,7 +1210,7 @@ bir saldırgana karşı değil.
 
 ---
 
-# Faz 6 — Kendini Sına
+# Faz 6 — Kendini sına
 
 ## Bölüm A — Temel
 
@@ -1277,7 +1277,7 @@ Nasıl karar verirsin?
 
 ---
 
-## Cevap Anahtarı
+## Cevap anahtarı
 
 ### Bölüm A
 
@@ -1556,4 +1556,4 @@ kararlarına çevirir.
 
 ---
 
-*Faz 6 tamamlandı.* → **[Faz 7 — Cloud Bağlantısı](Faz_7_Cloud_Baglantisi.md)**
+> **Navigasyon:** [◀ Faz 5 — Ağ Donanımı](Faz_5_Ag_Donanimi.md) · **Faz 6** · [Faz 7 — Cloud Bağlantısı ▶](Faz_7_Cloud_Baglantisi.md)

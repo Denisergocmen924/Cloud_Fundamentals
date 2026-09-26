@@ -1299,7 +1299,7 @@ behind it.
 
 ---
 
-# Phase 2 — Answers to the Think Questions
+# Phase 2 — Answers to the Think questions
 
 ## Answer 2.1 — Redis/CDN/browser cache vs the CPU cache
 
@@ -1575,7 +1575,7 @@ From the perspective of memory physics only:
 
 ---
 
-# Phase 2 — Frequently Asked Questions
+# Phase 2 — Frequently asked questions
 
 > **Q1: Does buying more RAM always improve performance?**
 >
@@ -1686,7 +1686,7 @@ From the perspective of memory physics only:
 
 ---
 
-# Phase 2 — Test Yourself
+# Phase 2 — Test yourself
 
 Don't go back to the sections before writing your answers. The numbers of the questions you struggle
 with point to the sections you need to repeat.
@@ -1731,7 +1731,7 @@ with point to the sections you need to repeat.
 
 ---
 
-## Answer Key
+## Answer key
 
 **1.** Fast memory is expensive and small, cheap memory is slow and large; the hierarchy combines
 these two facts **thanks to locality** — the small fast layer holds the frequently used part of the
@@ -1890,4 +1890,4 @@ C settles over time, as you work with real systems.
 
 ---
 
-*Phase 2 complete.* → **[Phase 3 — Storage](Phase_3_Storage.md)**
+> **Navigation:** [◀ Phase 1 — CPU Architecture](Phase_1_CPU_Architecture.md) · **Phase 2** · [Phase 3 — Storage ▶](Phase_3_Storage.md)

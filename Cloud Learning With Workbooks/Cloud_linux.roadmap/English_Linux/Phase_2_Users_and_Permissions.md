@@ -1961,7 +1961,7 @@ Editing the file needs OS `sudo` privilege, not an IAM policy — two separate e
 ---
 ---
 
-# Phase 2 — Closing and bridge to Phase 3
+# Phase 2 — Closing and Bridge to Phase 3
 
 ## What you carry from this phase
 
@@ -2015,8 +2015,3 @@ directly to it:
 ---
 
 > **Navigation:** [◀ Phase 1 — Shell and File System](Phase_1_Shell_and_File_System.md) · **Phase 2** · [Checkpoint Quiz 1 ▶](Checkpoint_Quiz_1.md)
-
-
-
-
-

@@ -644,7 +644,7 @@ With EFA       : ~5 μs per round                        → GPUs compute
 
 ---
 
-# Phase 5 — Answers to the Think Questions
+# Phase 5 — Answers to the Think questions
 
 ## Answer 5.1
 
@@ -784,7 +784,7 @@ goes from 0.3 ms to 90 ms.
 
 ---
 
-# Phase 5 — Frequently Asked Questions
+# Phase 5 — Frequently asked questions
 
 > **Q1: "My network card is 10 Gbps but `iperf3` shows 9.4 Gbps. Is the card broken?"**
 >
@@ -899,7 +899,7 @@ goes from 0.3 ms to 90 ms.
 
 ---
 
-# Phase 5 — Test Yourself
+# Phase 5 — Test yourself
 
 ## Part A — Fundamentals
 
@@ -960,7 +960,7 @@ the expected 4× speedup they got 2.3×. Likely cause and fix?
 
 ---
 
-## Answer Key
+## Answer key
 
 ### Part A
 
@@ -1209,4 +1209,4 @@ Scaling efficiency = 2.3 / 4 = 57.5%
 
 ---
 
-*Phase 5 complete.* → **[Phase 6 — Virtualization Hardware](Phase_6_Virtualization_Hardware.md)**
+> **Navigation:** [◀ Phase 4 — System Buses and I/O](Phase_4_Buses_and_IO.md) · **Phase 5** · [Phase 6 — Virtualization Hardware ▶](Phase_6_Virtualization_Hardware.md)
