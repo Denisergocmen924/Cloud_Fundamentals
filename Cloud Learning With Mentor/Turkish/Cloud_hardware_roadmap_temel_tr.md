@@ -39,7 +39,7 @@ Kritik kural: **Öğrencinin elinde hiç olmayan bir kavramı tahmin ettirmeye �
 
 ## Nasıl okunmalı
 
-Her fazın sonunda o faz bitmeden bir sonrakine geçilmez.
+Bir faz bitmeden bir sonrakine geçilmez.
 Her başlığın yanında `[Derinlik]` etiketi var:
 
 - `[kavram]` → Nasıl çalıştığını sezgisel olarak açıklayabilmek yeterli
@@ -107,7 +107,7 @@ Bu fazın amacı: CPU'nun içinde ne olduğunu, bir talimatın nasıl işlendiğ
 - Cloud bağlantısı: tek thread'li uygulama vs çok thread'li uygulamada hangisi önemli
 
 **1.4 Pipeline**
-- Assembly bandı benzetmesi `[kavram]`
+- Montaj bandı benzetmesi `[kavram]`
 - Pipeline hazard nedir (veri bağımlılığı, dal tahmini) `[kavram]`
 - Neden bazı iş yükleri pipeline'dan daha fazla yararlanır `[kavram]`
 
@@ -274,7 +274,7 @@ ağ kartının CPU ile nasıl çalıştığını, bandwidth ve latency'nin donan
 
 **5.3 Bandwidth ve latency (donanımsal açıdan)**
 - Bandwidth: fiziksel hattın kapasitesi `[mekanizma]`
-- Latency: elektrik sinyalinin tur süresi `[mekanizma]`
+- Latency: bir paketin/isteğin uçtan uca gecikmesi (yayılma + kuyruk + işleme) — bandwidth'ten bağımsız `[mekanizma]`
 - Neden bandwidth yüksek olsa bile latency yüksek olabilir `[mekanizma]`
 - Propagation delay, transmission delay, queuing delay `[kavram]`
 

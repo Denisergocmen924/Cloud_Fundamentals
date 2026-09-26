@@ -62,7 +62,7 @@ Faz 4'ün hangi mekanizması (sanal bellek / lazy allocation) bunu mümkün kıl
 
 **7.** Faz 3'te thread ile process farkını ve vCPU sayısını gördük. 8-thread'li bir uygulama 4-vCPU
 makinede çalışıyor ve load 8. Bu load "sağlıklı tam kapasite" mi yoksa "aşırı yük" mü — cevabı hangi
-tek sayıya (Faz 4) böInce netleşir?
+tek sayıya (Faz 4) bölünce netleşir?
 
 **8.** Swap'ta thrashing (Faz 4) yaşayan bir sistemde process'ler hangi durumda (Faz 3: R/S/D)
 birikir, ve bu neden load'u şişirir ama CPU'yu boşta bırakır? İki fazın kavramını tek cümlede bağla.

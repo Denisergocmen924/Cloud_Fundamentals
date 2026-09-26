@@ -908,12 +908,13 @@ mechanisms:
 **Question:** You typed `sleep 1000 &`, pushed it to the background, closed the terminal. `ps` still
 shows the process and its PPID is 1. What happened?
 
-Two separate things come together here. **First, why the process didn't die:** when the terminal (the
-shell) closes, the kernel sends **SIGHUP** to the processes in that session. SIGHUP's default is
-"terminate" — so in most cases the `sleep` **should** have died too. If it didn't die in your shell,
-`huponexit` is probably off for a job started with `&` (that's Bash's default: on a non-interactive
-shell exit it doesn't send HUP to background jobs), or you detached the job from the session with
-`disown` or `nohup`. So the "didn't die" scenario is the one where SIGHUP **never reached** that job.
+Two separate things come together here. **First, why the process didn't die:** when the terminal
+closes, the kernel sends **SIGHUP** to the shell (the session leader), and Bash passes it on to its jobs.
+SIGHUP's default is "terminate" — so in most cases the `sleep` **should** have died too. If it didn't die,
+you probably left the shell with `exit` / Ctrl-D rather than killing the terminal: Bash's `huponexit`
+option is off by default, so a normal exit sends no HUP to background jobs. (Or you detached the job from
+the session with `disown` or `nohup`.) So the "didn't die" scenario is the one where SIGHUP **never
+reached** that job.
 
 **Second, why PPID became 1:** `sleep`'s parent was your shell. When the shell closed, `sleep` was
 left an orphan. Remember from 3.1.1: the kernel immediately attaches an orphan process to **PID 1

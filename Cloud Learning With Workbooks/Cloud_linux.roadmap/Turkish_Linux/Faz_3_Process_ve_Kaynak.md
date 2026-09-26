@@ -883,12 +883,12 @@ belirtisidir. Aşağıdaki tablo, sahada göreceğin belirtileri bu fazın mekan
 **Soru:** `sleep 1000 &` yazıp arka plana attın, terminali kapattın. `ps` hâlâ process'i gösteriyor
 ve PPID'si 1. Ne oldu?
 
-Aslında burada iki ayrı şey birleşiyor. **Birincisi, process neden ölmedi:** terminal (shell)
-kapandığında çekirdek o oturumdaki process'lere **SIGHUP** gönderir. SIGHUP'ın varsayılanı
-"sonlan"dır — yani çoğu durumda `sleep` de **ölmeliydi.** Eğer senin kabuğunda ölmediyse, muhtemelen
-`&` ile başlatılan iş için `huponexit` kapalıdır (Bash'in varsayılanı odur: interaktif olmayan
-kabuk çıkışında arka plan işlerine HUP göndermez), ya da işi `disown` veya `nohup` ile oturumdan
-kopardın. Yani "ölmedi" senaryosu, SIGHUP'ın o işe **ulaşmadığı** durumdur.
+Aslında burada iki ayrı şey birleşiyor. **Birincisi, process neden ölmedi:** terminal
+kapandığında çekirdek kabuğa (oturum lideri) **SIGHUP** gönderir, Bash da bunu işlerine iletir. SIGHUP'ın
+varsayılanı "sonlan"dır — yani çoğu durumda `sleep` de **ölmeliydi.** Ölmediyse, muhtemelen terminali
+kapatmak yerine kabuktan `exit` / Ctrl-D ile çıktın: Bash'in `huponexit` seçeneği varsayılan olarak
+kapalıdır, bu yüzden normal çıkış arka plan işlerine HUP göndermez. (Ya da işi `disown` veya `nohup` ile
+oturumdan kopardın.) Yani "ölmedi" senaryosu, SIGHUP'ın o işe **ulaşmadığı** durumdur.
 
 **İkincisi, PPID neden 1 oldu:** `sleep`'in ebeveyni senin kabuğundu. Kabuk kapandığında `sleep`
 öksüz kaldı. Faz 3.1.1'den hatırla: çekirdek öksüz bir process'i hemen **PID 1'e (systemd)**

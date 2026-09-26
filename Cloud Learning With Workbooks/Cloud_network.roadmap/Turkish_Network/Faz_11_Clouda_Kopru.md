@@ -698,6 +698,6 @@ katmanda aranacağını biliyorsun. Bulut yolculuğun burada başlıyor.
 
 ---
 
-> **Ekler:** [Ek A — Komut Sözlüğü](EK_A_Komut_Sozlugu.md) · [Ek B — Kavram ve Dosya Haritası](EK_B_Dosya_Kavram_Haritasi.md) · [Ek C — "Bozulunca" Hızlı Başvuru](EK_C_Bozulunca_Hizli_Basvuru.md)
+> **Ekler:** [Ek A — Komut Sözlüğü](EK_A_Komut_Sozlugu.md) · [Ek B — Kavram ve Dosya Haritası](EK_B_Kavram_Dosya_Haritasi.md) · [Ek C — "Bozulunca" Hızlı Başvuru](EK_C_Bozulunca_Hizli_Basvuru.md)
 
 > **Navigasyon:** [◀ Faz 10 — Troubleshooting](Faz_10_Troubleshooting.md) · **Faz 11** · [Ek A — Komut Sözlüğü ▶](EK_A_Komut_Sozlugu.md)

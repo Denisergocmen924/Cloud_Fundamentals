@@ -42,9 +42,9 @@
 
 | Blok / Adres | Ne anlama gelir | Faz |
 |---|---|---|
-| `10.0.0.0/8` | Private (RFC1918) — büyük blok, bulutta en yaygın | 1.3 |
-| `172.16.0.0/12` | Private (RFC1918) — Docker varsayılanları burada | 1.3 |
-| `192.168.0.0/16` | Private (RFC1918) — ev/ofis ağları | 1.3 |
+| `10.0.0.0/8` | Private (RFC 1918) — büyük blok, bulutta en yaygın | 1.3 |
+| `172.16.0.0/12` | Private (RFC 1918) — Docker varsayılanları burada | 1.3 |
+| `192.168.0.0/16` | Private (RFC 1918) — ev/ofis ağları | 1.3 |
 | `127.0.0.0/8` | Loopback — makinenin kendisi (dışarı çıkmaz) | 1.2 |
 | `169.254.0.0/16` | APIPA / link-local — **DHCP başarısız** demektir | 1.5 |
 | `169.254.169.254` | Bulut instance metadata servisi | 11.1 |

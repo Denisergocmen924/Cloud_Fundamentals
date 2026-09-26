@@ -73,7 +73,7 @@ yorum) ve **kâğıt üstü hesaplar** (özellikle Faz 2).
 | Dosya | Ne işe yarar |
 |---|---|
 | [EK_A_Komut_Sozlugu.md](EK_A_Komut_Sozlugu.md) | Tüm komutlar, amacı ve risk işaretiyle (🟢🟡🔴), geçtiği fazla — masaüstünde açık tut |
-| [EK_B_Dosya_Kavram_Haritasi.md](EK_B_Dosya_Kavram_Haritasi.md) | Katmanlar, özel adres blokları, prefix tablosu, portlar, DNS kayıtları, HTTP/ICMP kodları, AWS eşlemesi |
+| [EK_B_Kavram_Dosya_Haritasi.md](EK_B_Kavram_Dosya_Haritasi.md) | Katmanlar, özel adres blokları, prefix tablosu, portlar, DNS kayıtları, HTTP/ICMP kodları, AWS eşlemesi |
 | [EK_C_Bozulunca_Hizli_Basvuru.md](EK_C_Bozulunca_Hizli_Basvuru.md) | Belirti → muhtemel neden → doğrulama komutu → faz; tüm "Bozulunca" tablolarının tek sayfalık birleşimi |
 
 **Şekiller:** Her fazın kilit mekanizması için bir diyagram vardır ([`../diagrams/png/`](../diagrams/png)).

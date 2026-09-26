@@ -221,7 +221,7 @@ izlediği.*
 Şu üç satırlık işi CPU'nun gözünden takip edelim. C'de:
 
 ```c
-int c = a + b;
+long c = a + b;      // 64 bit `long`; aşağıdaki 8 baytlık RAX yüklemeleri değişken boyutuyla uyuşsun
 ```
 
 Derleyicinin ürettiği (basitleştirilmiş) makine talimatları:
@@ -276,7 +276,7 @@ Rakamları koyalım (Faz 2'de detaylandıracağız, şimdilik ölçek hissi yete
 | Register | ~0 (aynı çevrim) | 0 |
 | L1 cache | ~1 ns | ~4 çevrim |
 | L2 cache | ~4 ns | ~12 çevrim |
-| L3 cache | ~15–40 ns | ~45–120 çevrim |
+| L3 cache | ~15–40 ns | ~40–120 çevrim |
 | **Ana bellek (DRAM)** | **~80–100 ns** | **~240–300 çevrim** |
 
 > **Bu tablo bu haritanın en önemli tablolarından biridir.** Şuna dikkat et:

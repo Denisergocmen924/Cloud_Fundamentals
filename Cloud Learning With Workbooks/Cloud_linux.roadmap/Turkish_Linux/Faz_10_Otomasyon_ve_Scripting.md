@@ -45,7 +45,7 @@ idempotency ile cloud-init/user-data → Ansible/Terraform köprüsünü kurabil
 - **Bash scripting temelini** (değişken, koşul, döngü, fonksiyon, exit code `$?`) yazabilecek ve quoting'in
   (`"$var"`) neden hayat kurtardığını mekanizma düzeyinde açıklayabileceksin
 - **Sağlam script** yazabileceksin: `set -euo pipefail` ile hatada erken durma, `trap` ile temizlik, loglama
-- Tırnaksız değişken + boşluklu/boş yol felaketini (`rm -rf "$DIR/"` where `$DIR` boş) tanıyabilecek ve
+- Tırnaksız değişken + boşluklu/boş yol felaketini (`$DIR` boşken `rm -rf $DIR/`) tanıyabilecek ve
   önleyebileceksin
 - **Bash'in nerede bitip Python'un nerede başladığını** karar verebileceksin (~20 satırı geçen mantık,
   JSON/HTTP işleri → Python)
@@ -157,7 +157,7 @@ felaketlerinin büyük kısmını daha doğmadan önler (10.2.3'te bunun `rm -rf
 >
 > Bugün yok — ama script'in yarın başka bir girdiyle, başka bir kullanıcının dosya adıyla, ya da boş bir
 > değişkenle çalışacak. Quoting bir "şimdiki değere" göre değil, "her olası değere" göre yazılır. Boş bir
-> değişken (`$var` where var="") tırnaksızsa **hiç argüman** olur ve komutun anlamını değiştirir; tırnaklıysa
+> değişken (`var=""` iken `$var`) tırnaksızsa **hiç argüman** olur ve komutun anlamını değiştirir; tırnaklıysa
 > **boş bir argüman** olur. İkisi çok farklıdır ve fark tam da felaketlerin çıktığı yerdir. Refleks: istisnasız
 > tırnakla.
 
@@ -187,7 +187,7 @@ set -euo pipefail
 Üç ayrı koruma:
 
 - **`-e`** (errexit): bir komut sıfır-olmayan kod döndürünce script **hemen durur**. Sessiz devam yok.
-- **`-u`** (nounset): tanımsız bir değişken kullanılınca hata ver. `rm -rf "$DIR/"` where `$DIR` yazım
+- **`-u`** (nounset): tanımsız bir değişken kullanılınca hata ver. `rm -rf "$DIR/"` içindeki `$DIR` yazım
   hatasıyla tanımsızsa, `-u` script'i durdurur — köke `rm -rf /` çalıştırmaz.
 - **`-o pipefail`**: bir pipe'ın (`a | b`) herhangi bir aşaması hata verirse tüm pipe hata sayılır. Varsayılan
   olarak yalnızca **son** komutun kodu görülür; bu, `curl ... | tar ...`'da `curl` çöktüğü hâlde başarı sanmaya
@@ -490,7 +490,7 @@ Cevaplarını bir kâğıda yaz, sonra cevap anahtarıyla karşılaştır. Hedef
 
 1. Son komutun başarı/başarısızlık sinyali; script "gerçekten oldu mu" sorusunu buna göre yanıtlar; `0` =
    başarı, sıfır-olmayan = hata (10.1.2). — 2. Tırnaksız değişken kelimelere bölünür + glob genişler; `rm $f`
-   where `f="a b"` → iki dosya; `"$var"` değeri tek parça tutar (10.1.3). — 3. `-e` hatada durur, `-u` tanımsız
+   `f="a b"` iken → iki dosya; `"$var"` değeri tek parça tutar (10.1.3). — 3. `-e` hatada durur, `-u` tanımsız
    değişkende durur, `-o pipefail` pipe'ın herhangi bir aşaması çökünce tüm pipe'ı hata sayar (10.2.1). — 4. Aynı
    işlem kaç kez çalışırsa aynı son durum; `mkdir /x` (ikinci kez hata) vs `mkdir -p /x` (idempotent) (10.4.1).
    — 5. Script nasıl biterse bitsin (normal/hata/sinyal) tetiklenir; garanti temizlik için (geçici dizin/kilit)

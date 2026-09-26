@@ -417,7 +417,7 @@ Bu fazın amacı: tekrarlayan işi güvenilir script'e çevirmek ve buradan IaC 
 **10.2 Sağlam script yazımı**
 - `set -euo pipefail` — hatada erken dur `[uygulama]`
 - `trap` ile temizlik; loglama `[kavram]`
-- **Bozulunca:** tırnaksız değişken + boşluklu yol → felaket; `rm -rf "$DIR/"` where `$DIR` boş
+- **Bozulunca:** tırnaksız değişken + boşluklu yol → felaket; `rm -rf $DIR/` (tırnaksız) — `$DIR` boşsa ya da boşluk içeriyorsa
 
 **10.3 Bash nerede biter, Python nerede başlar**
 - ~20 satırı geçen mantık, JSON/HTTP işleri → Python'a geç `[kavram]`
@@ -498,7 +498,7 @@ Bu fazın amacı: her Linux temelini AWS'teki karşılığına oturtmak. Cloud E
 | Dış dünya + savunma | 7–9 | Ağ (OS), paket, hardening |
 | Usta | 10–12 | Otomasyon + troubleshooting içgüdüsü + cloud köprüsü |
 
-**Standing kurallar (diğer haritalarla aynı):** Türkçe; teknik terimler İngilizce kalır, ilk geçişte parantez içinde Türkçe telaffuz + kısa tanım; tek konu, tek soru; direkt cevap yok (yapıcı Socratic); konu atlama yok; yanlışta yönlendiren değil düzelten müdahale; `[uygulama]` = makinede gör; her fazda "Bozulunca" açısı; bu harita kernel geliştiricisi değil, kararını gerekçelendiren ve arızayı avlayan cloud engineer yetiştirir.
+**Sabit kurallar (diğer haritalarla aynı):** Türkçe; teknik terimler İngilizce kalır, ilk geçişte parantez içinde Türkçe telaffuz + kısa tanım; tek konu, tek soru; direkt cevap yok (yapıcı Socratic); konu atlama yok; yanlışta yönlendiren değil düzelten müdahale; `[uygulama]` = makinede gör; her fazda "Bozulunca" açısı; bu harita kernel geliştiricisi değil, kararını gerekçelendiren ve arızayı avlayan cloud engineer yetiştirir.
 
 ---
 

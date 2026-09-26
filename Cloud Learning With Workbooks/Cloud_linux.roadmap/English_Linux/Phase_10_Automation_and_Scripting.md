@@ -46,7 +46,7 @@ from cloud-init/user-data to Ansible/Terraform.
   `$?`) and explain at a mechanism level why quoting (`"$var"`) saves lives
 - You will be able to write a **robust script**: stop early on error with `set -euo pipefail`, clean up with
   `trap`, logging
-- You will recognize and prevent the unquoted-variable + spaced/empty-path disaster (`rm -rf "$DIR/"` where
+- You will recognize and prevent the unquoted-variable + spaced/empty-path disaster (`rm -rf $DIR/` where
   `$DIR` is empty)
 - You will be able to decide **where Bash ends and Python begins** (logic beyond ~20 lines, JSON/HTTP work →
   Python)

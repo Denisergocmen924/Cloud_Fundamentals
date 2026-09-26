@@ -1296,7 +1296,7 @@ arıza her şeyi bitirir. Üstelik yoğun okuma, tam da o sırada arıza olasıl
 *(3.5.2)*
 
 **14.** **Kuyruk teorisi:** Kullanım oranı arttıkça bekleme süresi doğrusal değil
-üstel artar. %70'te await ≈ 1,5× taban, %95'te ≈ 8×, %99'da ≈ 40×. Son %10'luk
+üstel artar. %50 yüke göre await %80'de ≈ 2,5×, %95'te ≈ 8×, %99'da ≈ 40×. Son %10'luk
 kullanım için ödenen gecikme bedeli orantısızdır. Bu yüzden üretim sistemleri %70–80
 hedef kullanımla planlanır — "boşa giden" kapasite, **gecikme öngörülebilirliğinin
 bedelidir.** *(3.4.4)*

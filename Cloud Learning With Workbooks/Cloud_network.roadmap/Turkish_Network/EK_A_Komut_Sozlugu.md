@@ -1,6 +1,6 @@
 # Ek A — Komut Sözlüğü
 
-> **Navigasyon:** [◀ Faz 11 — Cloud'a Köprü](Faz_11_Clouda_Kopru.md) · **Ek A** · [Ek B — Kavram ve Dosya Haritası ▶](EK_B_Dosya_Kavram_Haritasi.md)
+> **Navigasyon:** [◀ Faz 11 — Cloud'a Köprü](Faz_11_Clouda_Kopru.md) · **Ek A** · [Ek B — Kavram ve Dosya Haritası ▶](EK_B_Kavram_Dosya_Haritasi.md)
 
 ---
 
@@ -121,7 +121,7 @@
 | Komut | Ne yapar | Risk |
 |---|---|---|
 | `curl -s ifconfig.me` | Dışarıdan görünen **public IP**'n (NAT'ın sonucu) | 🟢 |
-| `ip addr` vs yukarıdaki | İçerideki private IP ile karşılaştır (RFC1918) | 🟢 |
+| `ip addr` vs yukarıdaki | İçerideki private IP ile karşılaştır (RFC 1918) | 🟢 |
 | `conntrack -L` | Bağlantı takip tablosu (NAT/stateful kayıtları) | 🟢 |
 | `conntrack -C` | Tablodaki kayıt sayısı (tükenme şüphesi) | 🟢 |
 | `iptables -t nat -L -n -v` | NAT kuralları (MASQUERADE/DNAT) | 🟢 |
@@ -218,4 +218,4 @@ makinede ise ikinci bir oturumu açık tut (Faz 9.5.3).
 
 ---
 
-> **Navigasyon:** [◀ Faz 11 — Cloud'a Köprü](Faz_11_Clouda_Kopru.md) · **Ek A** · [Ek B — Kavram ve Dosya Haritası ▶](EK_B_Dosya_Kavram_Haritasi.md)
+> **Navigasyon:** [◀ Faz 11 — Cloud'a Köprü](Faz_11_Clouda_Kopru.md) · **Ek A** · [Ek B — Kavram ve Dosya Haritası ▶](EK_B_Kavram_Dosya_Haritasi.md)

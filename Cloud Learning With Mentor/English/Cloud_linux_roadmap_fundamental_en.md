@@ -417,7 +417,7 @@ The goal of this phase: turning repetitive work into a reliable script, and from
 **10.2 Robust script writing**
 - `set -euo pipefail` — stop early on error `[application]`
 - Cleanup with `trap`; logging `[concept]`
-- **When it breaks:** an unquoted variable + a path with spaces → disaster; `rm -rf "$DIR/"` where `$DIR` is empty
+- **When it breaks:** an unquoted variable + a path with spaces → disaster; `rm -rf $DIR/` (unquoted) where `$DIR` is empty or contains a space
 
 **10.3 Where Bash ends, where Python begins**
 - Logic exceeding ~20 lines, JSON/HTTP work → move to Python `[concept]`

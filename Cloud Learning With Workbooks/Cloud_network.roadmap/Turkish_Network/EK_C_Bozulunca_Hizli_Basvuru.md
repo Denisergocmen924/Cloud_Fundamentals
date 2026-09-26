@@ -1,6 +1,6 @@
 # Ek C — "Bozulunca" Hızlı Başvuru
 
-> **Navigasyon:** [◀ Ek B — Kavram ve Dosya Haritası](EK_B_Dosya_Kavram_Haritasi.md) · **Ek C** · [Faz 11 — Cloud'a Köprü ▶](Faz_11_Clouda_Kopru.md)
+> **Navigasyon:** [◀ Ek B — Kavram ve Dosya Haritası](EK_B_Kavram_Dosya_Haritasi.md) · **Ek C** · [Faz 11 — Cloud'a Köprü ▶](Faz_11_Clouda_Kopru.md)
 
 ---
 
@@ -120,7 +120,7 @@ Panik yapma, rastgele kural açma. Aşağıdan yukarı ele:
 | Private makine güncelleme alamıyor | NAT Gateway veya rota yok | `ip route`, route table `0.0.0.0/0` | 7.3, 11.3 |
 | VPN kurulu ama trafik akmıyor | Tünel ayakta, **rota tanımlı değil** | `ip route`, tünel arayüzü | 7.4 |
 | VPN'de büyük paketler düşüyor | Tünel başlığı MTU'yu düşürdü | `ping -M do`, MSS clamping | 7.4, 5.7 |
-| İki ağ birleşti, IP'ler çakışıyor | Aynı RFC1918 bloğu iki tarafta | CIDR planı, yeniden adresleme | 7.3, 11.7 |
+| İki ağ birleşti, IP'ler çakışıyor | Aynı RFC 1918 bloğu iki tarafta | CIDR planı, yeniden adresleme | 7.3, 11.7 |
 | IPv6'da çalışıyor, IPv4'te çalışmıyor (veya tersi) | Dual-stack'te tek taraf yapılandırılmış | `curl -4` / `curl -6` ile ayrıştır | 7.5 |
 
 ## C.9 HTTP ve TLS (Faz 8)
@@ -169,4 +169,4 @@ Panik yapma, rastgele kural açma. Aşağıdan yukarı ele:
 
 ---
 
-> **Navigasyon:** [◀ Ek B — Kavram ve Dosya Haritası](EK_B_Dosya_Kavram_Haritasi.md) · **Ek C** · [Faz 11 — Cloud'a Köprü ▶](Faz_11_Clouda_Kopru.md)
+> **Navigasyon:** [◀ Ek B — Kavram ve Dosya Haritası](EK_B_Kavram_Dosya_Haritasi.md) · **Ek C** · [Faz 11 — Cloud'a Köprü ▶](Faz_11_Clouda_Kopru.md)

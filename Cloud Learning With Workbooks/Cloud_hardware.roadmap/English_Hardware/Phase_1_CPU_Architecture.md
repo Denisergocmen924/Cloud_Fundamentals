@@ -224,7 +224,7 @@ five RISC stages):
 Let's follow this three-line job through the CPU's eyes. In C:
 
 ```c
-int c = a + b;
+long c = a + b;      // 64-bit `long`, so the 8-byte RAX loads below match the variable size
 ```
 
 The (simplified) machine instructions the compiler produces:
@@ -279,7 +279,7 @@ Let's put in the numbers (we'll go into detail in Phase 2; for now a sense of sc
 | Register | ~0 (same cycle) | 0 |
 | L1 cache | ~1 ns | ~4 cycles |
 | L2 cache | ~4 ns | ~12 cycles |
-| L3 cache | ~15–40 ns | ~45–120 cycles |
+| L3 cache | ~15–40 ns | ~40–120 cycles |
 | **Main memory (DRAM)** | **~80–100 ns** | **~240–300 cycles** |
 
 > **This table is one of the most important tables in this map.** Notice this:

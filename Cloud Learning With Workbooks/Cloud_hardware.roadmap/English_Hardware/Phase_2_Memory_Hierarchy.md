@@ -1742,7 +1742,7 @@ smallest unit of transfer. That's why sequential access brings neighboring data 
 while random access wastes most of what it fetches. *(2.3.5)*
 
 **3.** (a) **Ownership:** L1/L2 are private to the core; L3 is shared by all cores. (b) **Latency:**
-~4 / ~14 / ~50+ cycles. (c) **Content split:** L1 is split into data and instructions; L2/L3 are
+~4–5 / ~12–20 / ~40–120 cycles. (c) **Content split:** L1 is split into data and instructions; L2/L3 are
 unified. *(2.3.2–2.3.4)*
 
 **4. Temporal:** you'll soon access again the data you just accessed — e.g. a loop variable.

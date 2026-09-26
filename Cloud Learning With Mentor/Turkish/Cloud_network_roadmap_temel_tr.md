@@ -476,7 +476,7 @@ Bu fazın amacı: her fundamental'i AWS karşılığına oturtmak. SAA hedefine 
 | Güvenilirlik + çevre | 5–9 | Transport, DNS, NAT, firewall — "packet neden düştü" |
 | Usta | 10–11 | Troubleshooting içgüdüsü + cloud köprüsü |
 
-**Standing kurallar (fiziksel katman haritasıyla aynı):** Türkçe; teknik terimler İngilizce
+**Sabit kurallar (fiziksel katman haritasıyla aynı):** Türkçe; teknik terimler İngilizce
 kalır, ilk geçişte parantez içinde Türkçe telaffuz + kısa tanım; tek konu, tek soru; direkt
 cevap yok; konu atlama yok; yanlışta yönlendiren soru.
 

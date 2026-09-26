@@ -274,7 +274,7 @@ how the network card works with the CPU, and the hardware basis of bandwidth and
 
 **5.3 Bandwidth and latency (from a hardware standpoint)**
 - Bandwidth: the capacity of the physical line `[mechanism]`
-- Latency: the round-trip time of the electrical signal `[mechanism]`
+- Latency: the end-to-end delay of one packet/request (propagation + queuing + processing), independent of bandwidth `[mechanism]`
 - Why latency can be high even when bandwidth is high `[mechanism]`
 - Propagation delay, transmission delay, queuing delay `[concept]`
 

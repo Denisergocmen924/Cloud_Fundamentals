@@ -1287,7 +1287,7 @@ ends everything. On top of that, the heavy reads raise the failure probability e
 *(3.5.2)*
 
 **14.** **Queueing theory:** As utilization rises, waiting time grows not linearly but exponentially.
-At 70% await ≈ 1.5× base, at 95% ≈ 8×, at 99% ≈ 40×. The latency price paid for the last 10% of
+Relative to 50% load, await is ≈ 2.5× at 80%, ≈ 8× at 95%, ≈ 40× at 99%. The latency price paid for the last 10% of
 utilization is disproportionate. That's why production systems are planned for 70–80% target
 utilization — the "wasted" capacity is **the price of latency predictability.** *(3.4.4)*
 

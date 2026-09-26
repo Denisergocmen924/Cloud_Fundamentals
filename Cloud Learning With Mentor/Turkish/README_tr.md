@@ -69,7 +69,7 @@ Her başlığın yanındaki etiket, o konuyu **ne kadar** öğrenmen gerektiğin
 - ⚠️ Bazı Lab'lar sistemi kalıcı değiştirir (mount, fstab, servis). Yıkıcı
   adımlarda mentor önce uyarır.
 
-### 6. Faydalı komutlar
+### 6. Faydalı ipuçları
 - **"direkt söyle"** → Socratic soruyu bırak, doğrudan anlat.
 - **"Bozulunca"** ekseni her fazda vardır: "bu bilgi arızalanınca sistemde nasıl
   görünür?" — arıza içgüdüsünü buradan kur.

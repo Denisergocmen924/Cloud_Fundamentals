@@ -1751,7 +1751,7 @@ birimi budur. Bu yüzden sıralı erişim neredeyse bedava komşu veri getirir, 
 ise getirdiğinin çoğunu israf eder. *(2.3.5)*
 
 **3.** (a) **Sahiplik:** L1/L2 çekirdeğe özel, L3 tüm çekirdekler tarafından paylaşılır.
-(b) **Gecikme:** ~4 / ~14 / ~50+ çevrim. (c) **İçerik ayrımı:** L1 veri ve talimat olarak
+(b) **Gecikme:** ~4–5 / ~12–20 / ~40–120 çevrim. (c) **İçerik ayrımı:** L1 veri ve talimat olarak
 ayrık, L2/L3 birleşik. *(2.3.2–2.3.4)*
 
 **4. Zamansal:** Az önce eriştiğin veriye yakında tekrar erişeceksin — örn. bir döngü
