@@ -51,7 +51,7 @@ boot sequence must be deterministic. How does device names being able to shift b
 `fstab` mount is a "fragile node" in systemd's dependency graph (Phase 5: After/Requires)?
 
 **4.** In Phase 5 we said "failures before PID 1 are invisible to `systemctl`/`journalctl` — look at the
-console." An `fstab` error (Phase 6) drops the machine into rescue mode. Is this failure **visible** with
+console." An `fstab` error (Phase 6) drops the machine into emergency mode. Is this failure **visible** with
 `journalctl -xb` or not — and why does your answer depend on which stage of the boot chain (Phase 5) it hung
 at?
 

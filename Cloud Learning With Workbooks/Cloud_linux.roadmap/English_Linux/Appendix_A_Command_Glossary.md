@@ -91,8 +91,8 @@
 | `lsblk` | Block-device tree (disk, partition, mount) | 🟢 |
 | `df -h` | Filesystem usage ratios | 🟢 |
 | `du -sh <dir>` | Directory size | 🟢 |
-| `mount /dev/xxx /mnt` | Mounts a filesystem (running state) | 🔴 |
-| `umount /mnt` | Unmounts | 🔴 |
+| `mount /dev/xxx /mnt` | Mounts a filesystem (running state) | 🟡 |
+| `umount /mnt` | Unmounts | 🟡 |
 | `mkfs.ext4 /dev/xxx` | Creates a filesystem (**erases data!**) | 🔴 |
 | `blkid` | Devices' UUIDs | 🟢 |
 | `findmnt` | Shows the mount tree | 🟢 |

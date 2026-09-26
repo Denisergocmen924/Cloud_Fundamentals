@@ -360,7 +360,7 @@ Sağ üst ve sol alt hücreler tüm kafa karışıklığının kaynağıdır. "T
 hatalardan biri. Doğru kalıp genellikle ikisini birden yapmaktır: `systemctl enable --now nginx`
 (`--now` = hem enable hem start).
 
-> **🔧 Makinende gör** 🔴 — enable/start farkını canlı deneyle (test makinesinde)
+> **🔧 Makinende gör** 🟢 — enable/start farkını gör (sadece sorgu)
 >
 > ```
 > $ systemctl is-enabled cron        # boot'ta açılır mı?
@@ -369,8 +369,8 @@ hatalardan biri. Doğru kalıp genellikle ikisini birden yapmaktır: `systemctl 
 > active
 > ```
 >
-> **Geri alma:** Bu iki komut 🟢 (sadece sorar). Ama gerçek deney için bir servisi `enable` edip
-> **başlatmadan** reboot etmek istersen, deneyden sonra ilk durumu geri koy: eğer servis başta
+> Bu iki komut sadece sorar. **Gerçek deney** — bir servisi `enable` edip **başlatmadan** reboot etmek —
+> 🔴'dir (boot durumunu değiştirir). **Geri alma:** deneyden sonra ilk durumu geri koy: eğer servis başta
 > `disabled` idiyse `sudo systemctl disable <servis>` ile eski hâline döndür. Enable ettiğin bir
 > servisi geri almak: `sudo systemctl disable --now <servis>` (hem boot işaretini kaldırır hem şimdi
 > durdurur).
@@ -751,7 +751,7 @@ başarıyla bitti, artık ayakta bir process yok." Bunu `failed` ile karıştır
 Zincirin hangi halkasında olduğunu düşün (5.7). SSH yoksa OS büyük olasılıkla tam ayağa kalkmadı —
 yani arıza GRUB/initramfs/erken boot'ta olabilir ve OS araçlarına (systemctl) ulaşamazsın. Cloud'da
 yol: **konsol çıktısına** bak (EC2 System Log / Serial Console). Orada `initramfs` istemi mi, bir unit
-beklemesi mi, yoksa `fstab` kaynaklı kurtarma modu mu (Faz 6) görürsün. Belirti, halkayı; halka, aracı
+beklemesi mi, yoksa `fstab` kaynaklı emergency mode mu (Faz 6) görürsün. Belirti, halkayı; halka, aracı
 belirler.
 
 ---
@@ -923,7 +923,7 @@ AMI'den çalışan bir sunucuya nasıl dönüştüğünü (cloud-init + user-dat
 ## Faz 6 bunun neresine bağlanıyor
 
 Bu fazda bir arıza türünden kaçındık ama tam açmadık: **`fstab`'daki yanlış bir satır makineyi boot'ta
-kurtarma moduna düşürür.** 5.7 tablosunda "instance açılmıyor" satırlarının bir kısmı aslında bir
+emergency moduna düşürür.** 5.7 tablosunda "instance açılmıyor" satırlarının bir kısmı aslında bir
 **disk/mount** sorunudur — ve mount, systemd'nin `.mount` unit'lerinin dünyasıdır. Faz 6 tam buraya
 girer: bir diskin ham blok cihazdan (`/dev/nvme0n1`) mount edilmiş, kalıcı bir dosya sistemine nasıl
 geldiğini, `/etc/fstab`'ın boot'u nasıl kilitleyebildiğini, ve bir EBS volume'ünü **boot'u

@@ -8,7 +8,7 @@
 
 Phase 5 gave you how a machine **comes to exist**: the boot chain, systemd, services coming up.
 At the end of that phase we mentioned one failure class in passing: **a wrong line in `/etc/fstab`
-drops the machine into rescue mode at boot.** Some of the "instance won't boot" rows in the 5.7 table
+drops the machine into emergency mode at boot.** Some of the "instance won't boot" rows in the 5.7 table
 were really a **disk/mount** problem. This phase opens exactly that box: what a mount is, why `fstab`
 can lock up boot, and how a disk goes from raw to a usable filesystem.
 
@@ -48,7 +48,7 @@ inode exhaustion).
 - You'll be able to describe partitions, `mkfs` (formatting), `mount`/`umount`, mount points, and the flow
   of a disk from raw to usable
 - You'll be able to explain what `/etc/fstab` is, how it's read at boot, and **why a wrong line drops the
-  machine into rescue mode**
+  machine into emergency mode**
 - You'll be able to tell apart ext4 and xfs (the two common cloud filesystems) in broad strokes; and know
   what journaling is for (recovering from a half-finished write)
 - You'll be able to explain what an inode is; how **inodes** can run out while disk space remains; and the
@@ -236,7 +236,7 @@ UUID=8f3b...c2                              /data         ext4    defaults      
 stable**: if you attach a second disk to an instance, or attach disks in a different order, the names the
 kernel assigns can shift — yesterday's `nvme1n1` can be today's `nvme2n1`. If you wrote a device name in
 `fstab` and the name shifted, systemd can't find that name at boot, the mount fails, and (depending on
-options) the machine drops into **rescue mode**. A UUID (*Universally Unique Identifier*) is an identity
+options) the machine drops into **emergency mode**. A UUID (*Universally Unique Identifier*) is an identity
 written into the filesystem itself, unique to that disk and **unchanging** — whatever device name the disk
 gets, the UUID stays the same. You learn it with `blkid`.
 
@@ -454,7 +454,7 @@ sequence is exactly the cloud version of the four steps in 6.2.1:
 
 ![Figure 6.1 — Cloud storage flow: an EBS block device becoming a persistent mount via mkfs → mount → fstab (UUID); lsblk sees the device immediately but df sees it only after mount; a wrong fstab line locks up boot.](../diagrams/png/lx-6-01-storage-stack.png)
 
-This six-line flow is the entirety of the "add a disk to the instance" task and is this phase's output.
+This short flow is the entirety of the "add a disk to the instance" task and is this phase's output.
 Don't memorize it — know **why** each step is there: `lsblk` (is the block device present, 6.1), `mkfs`
 (build the filesystem, 6.2/6.3), `mount` (attach to the tree, 6.2), `blkid`+UUID+`nofail` (don't lock up
 boot, 6.2.3), `mount -a` (verify).
@@ -539,7 +539,7 @@ to the directory tree. After that `df` shows it.
 (a) Almost certainly this happened: `fstab` was written by **device name** (`/dev/nvme1n1`). On reboot the
 names the kernel gives disks shifted (perhaps another volume was also attached), so at boot `/dev/nvme1n1`
 either didn't exist or pointed to a different disk. Since there was no `nofail` option, when the mount
-failed systemd halted boot and dropped into rescue/maintenance mode — SSH never started because the system
+failed systemd halted boot and dropped into emergency mode — SSH never started because the system
 never reached the multi-user target (5.3.4). (b) Two separate choices would have prevented this disaster:
 **(1) use a UUID instead of the device name** — the UUID is unique to the disk and unchanging, so name
 shifts don't affect it (6.2.3); **(2) add the `nofail` option** — so even if the disk isn't found for some
@@ -547,7 +547,7 @@ reason, boot doesn't stop, only that mount is skipped and the machine stays reac
 standard cloud practice.
 **Related section:** 6.2.3 · **Continues in:** the `mount -a` verify habit in 6.6.1.
 
-## Answer 6.3 — Growing the disk targets the wrong layer; the culprit is inodes
+## Answer 6.4 — Growing the disk targets the wrong layer; the culprit is inodes
 
 (a) Growing the disk most likely won't fix this because `df -h /var` says **61%** — so the **data-block**
 budget isn't full, there's plenty of space. The only thing that squares with a "No space" error is the
@@ -558,13 +558,6 @@ root-cause class is **inode exhaustion**: a large number of very small files hav
 (cache, queue, log fragments). The fix isn't to grow the disk but to clean up those small files and fix the
 behavior producing them.
 **Related section:** 6.4.2 · **Continues in:** 6.7 failure table (row 2).
-
-## Answer 6.4 — (this number is the 6.4 Think question; its answer shares the theme of 6.3 above)
-
-Answer 6.3 above is the answer to the scenario in the 6.4 Think box (the numbering follows the section
-number). Summary: a "No space" error while `df -h` shows plenty of room = an inode-class failure; the proof
-is `df -i`; the fix is to clean up small files, not to grow the disk.
-**Related section:** 6.4.2 · **Continues in:** 6.7.
 
 ## Answer 6.6 — Only the bottom layer (EBS) grew; partition and filesystem lagged
 

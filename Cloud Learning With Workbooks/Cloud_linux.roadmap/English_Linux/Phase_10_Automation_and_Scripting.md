@@ -224,8 +224,9 @@ rm -rf $DIR/                  # ❌ unquoted
 
 Three separate disaster scenarios:
 
-1. **`DIR` is empty** (typo, undefined variable): it becomes `rm -rf /` — **deletes the whole system.** `set
-   -u` catches this; quoting + `set -u` together save lives.
+1. **`DIR` is empty or undefined** (typo, unset variable): it becomes `rm -rf /` — **deletes the whole system.**
+   `set -u` catches the *undefined* case only (a typo in the name); a variable set to `""` slips through, so
+   add `[ -n "$DIR" ]` (or `${DIR:?}`). Quoting + `set -u` + that check together save lives.
 2. **`DIR` contains a space** (`/var/tmp/my cache`): `rm -rf /var/tmp/my cache/` → Bash sees two arguments:
    `/var/tmp/my` and `cache/` — deletes the wrong directories.
 3. **`DIR` contains a glob** or expands: unexpected files match.
@@ -243,15 +244,21 @@ rm -rf "$DIR"/                # ✅ quoted
 >
 > ```
 > $ DIR="/var/tmp/test space"
-> $ echo rm -rf $DIR/          # ❌ unquoted: see how many words it splits into
-> rm -rf /var/tmp/test space/
-> $ echo rm -rf "$DIR"/        # ✅ quoted: a single argument
-> rm -rf /var/tmp/test space/
+> $ printf '[%s]\n' rm -rf $DIR/     # ❌ unquoted: one line per argument
+> [rm]
+> [-rf]
+> [/var/tmp/test]
+> [space/]
+> $ printf '[%s]\n' rm -rf "$DIR"/   # ✅ quoted: the path stays one argument
+> [rm]
+> [-rf]
+> [/var/tmp/test space/]
 > ```
 >
-> Putting `echo` in front of `rm` before running it shows what would **actually** run without deleting
-> anything. This "dry-run" habit is the single most valuable safety reflex of this phase. See with your own
-> eyes how the unquoted version splits into two arguments on one line.
+> Putting `printf '[%s]\n'` in front of the command's arguments (plain `echo` would print both versions
+> identically) shows what would **actually** be passed without deleting anything. This "dry-run" habit is
+> the single most valuable safety reflex of this phase. See with your own eyes how the unquoted version
+> splits into two arguments.
 
 > **🤔 Think 10.2** — A colleague's script, **without** `set -e`, is: `cd "$WORKDIR"` then `rm -rf ./*`.
 > `WORKDIR` points to a directory that no longer exists (deleted). (a) When `cd` fails and there is no `set
@@ -388,8 +395,8 @@ table connects the symptom to the cause:
 looks for files `/tmp/a` and `b.txt` (neither exists), errors; or copies unexpected files. `cp "$SRC" "$DST"`
 sees two arguments and copies the right file. (b) When `SRC=""` (empty), unquoted `cp $SRC $DST` produces **no
 argument** for `SRC` — the command becomes `cp /backup/`, a single-argument `cp` errors (or worse, misbehaves).
-`cp "$SRC" "$DST"` passes an empty argument (`cp "" "/backup/"`) — still an error but predictable behavior, and
-catchable with `set -u`. (c) The rule: **put every variable expansion inside double quotes without exception**
+`cp "$SRC" "$DST"` passes an empty argument (`cp "" "/backup/"`) — still an error but predictable behavior (and if
+the variable was *unset* rather than `""`, `set -u` would catch it). (c) The rule: **put every variable expansion inside double quotes without exception**
 (`"$var"`) — because quoting keeps the value as a single piece "under every possible input"; leaving splitting
 unquoted is done only when you deliberately want it.
 **Related section:** 10.1.3 · **Continues in:** 10.2.3 (`rm -rf` disaster).

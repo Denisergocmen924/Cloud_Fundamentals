@@ -147,7 +147,7 @@ Default: deny (incoming), allow (outgoing)
 To          Action  From
 22/tcp      ALLOW   Anywhere
 ```
-Uygulama 8000 portunda ama listede yok. Host firewall açısından ne oluyor (Faz 7.4.4), ve bu SG'den ayrı bir
+Uygulama 8000 portunda ama listede yok. Host firewall açısından ne oluyor (Faz 7.5.1), ve bu SG'den ayrı bir
 katman olduğu için (Faz 9) neden **her ikisini de** kontrol etmen gerekir?
 
 **19.** `sudo journalctl -k | grep apparmor` çıktısı:
@@ -244,7 +244,7 @@ adresini doğrulamaz. Bir sonraki komut: `sudo ss -tulpn` — servisin hangi adr
 (bind adresi kapısı), ardından SG ve ufw kontrolü. · *Faz 8.2 × Faz 7.4* — **18.** Host firewall varsayılan
 `deny (incoming)` ve listede yalnızca 22 var; 8000 **açık değil**, yani ufw gelen 8000 trafiğini düşürür. SG
 ayrı, bulut seviyesi bir katman olduğundan (Faz 9 defense in depth), 8000 hem SG'de hem ufw'de açık olmalıdır —
-biri bile kapalıysa erişilemez. Bu yüzden "erişilemiyor"da **her iki** firewall'u da kontrol et. · *Faz 7.4.4 ×
+biri bile kapalıysa erişilemez. Bu yüzden "erişilemiyor"da **her iki** firewall'u da kontrol et. · *Faz 7.5.1 ×
 Faz 9.1.2* — **19.** `apparmor="DENIED"` satırı arızanın **MAC katmanında** (AppArmor) olduğunu kanıtlar — DAC
 izinleri (`ls -l`) doğru olsa bile profil bu yola erişimi reddediyor. Doğru çözüm profili kapatmak (`aa-disable`)
 değildir, çünkü o zaman o servisin ikinci kilidini tümüyle kaybedersin; doğrusu profile `/var/www/data/` yolunu
@@ -275,7 +275,7 @@ Kaçırdığın soru → dönmen gereken köprü:
 | 1, 11 | `nohup` vs unit + root patlama yarıçapı (8.2 × 9.1) |
 | 2, 17 | Beş kapı × `systemctl status` yeşil (7.4 × 8.2) |
 | 3, 16 | Bind adresi × yüzey daraltma (7.4.2 × 9.2) |
-| 4, 18 | SG vs ufw bağımsız katmanlar (7.4.4 × 9.1.2) |
+| 4, 18 | SG vs ufw bağımsız katmanlar (7.5.1 × 9.1.2) |
 | 5 | daemon-reload × güvenlik değişikliği (8.2.2 × 9) |
 | 6 | IAM role × SSH/SSM kimlik (7.3.4 × 9.6.2) |
 | 7 | baked AMI × hardened AMI (8.4 × 9.3.2) |

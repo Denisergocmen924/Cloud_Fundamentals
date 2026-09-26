@@ -8,7 +8,7 @@
 
 Faz 5 sana makinenin nasıl **var olduğunu** verdi: boot zinciri, systemd, servislerin ayağa kalkması.
 O fazın sonunda bir arıza türünden söz edip geçtik: **`/etc/fstab`'daki yanlış bir satır makineyi
-boot'ta kurtarma moduna düşürür.** 5.7 tablosundaki "instance açılmıyor" satırlarının bir kısmı aslında
+boot'ta emergency moduna düşürür.** 5.7 tablosundaki "instance açılmıyor" satırlarının bir kısmı aslında
 bir **disk/mount** sorunuydu. Bu faz tam olarak o kutuyu açıyor: mount nedir, `fstab` neden boot'u
 kilitleyebilir, ve bir diskin ham hâlden kullanılabilir bir dosya sistemine nasıl geldiği.
 
@@ -237,7 +237,7 @@ UUID=8f3b...c2                              /data         ext4   defaults       
 değildir**: bir instance'a ikinci bir disk eklersen veya diskleri farklı sırada attach edersen,
 çekirdeğin verdiği isimler yer değiştirebilir — dünkü `nvme1n1` bugün `nvme2n1` olabilir. `fstab`'da
 cihaz adı yazdıysan ve isim kaydıysa, boot'ta systemd o adı bulamaz, mount başarısız olur, ve
-(seçeneklere göre) makine **kurtarma moduna** düşer. UUID (*Universally Unique Identifier*) ise dosya
+(seçeneklere göre) makine **emergency moduna** düşer. UUID (*Universally Unique Identifier*) ise dosya
 sisteminin kendisine yazılı, diske özgü ve **değişmeyen** bir kimliktir — disk hangi cihaz adını alırsa
 alsın UUID aynı kalır. `blkid` ile öğrenilir.
 
@@ -457,7 +457,7 @@ tam olarak 6.2.1'deki dört adımın cloud versiyonudur:
 
 ![Şekil 6.1 — Cloud depolama akışı: bir EBS blok cihazının mkfs → mount → fstab (UUID) ile kalıcı bir mount'a dönüşmesi; lsblk cihazı hemen görür ama df ancak mount'tan sonra görür; yanlış bir fstab satırı boot'u kilitler.](../diagrams/png/lx-6-01-storage-stack.png)
 
-Bu altı satırlık akış, "instance'a disk ekleme" görevinin tamamıdır ve bu fazın çıktısıdır. Ezberleme —
+Bu kısa akış, "instance'a disk ekleme" görevinin tamamıdır ve bu fazın çıktısıdır. Ezberleme —
 her adımın **neden** orada olduğunu bil: `lsblk` (blok cihaz var mı, 6.1), `mkfs` (dosya sistemi kur,
 6.2/6.3), `mount` (ağaca bağla, 6.2), `blkid`+UUID+`nofail` (boot'u kilitleme, 6.2.3), `mount -a`
 (doğrula).
@@ -549,7 +549,7 @@ etkilemez (6.2.3); **(2) `nofail` seçeneğini eklemek** — böylece disk bir s
 durmaz, sadece o mount atlanır ve makine erişilebilir kalır. İkisi birlikte cloud'da standart pratiktir.
 **İlgili bölüm:** 6.2.3 · **Devamı:** 6.6.1'deki `mount -a` doğrulama alışkanlığı.
 
-## Cevap 6.3 — Diski büyütmek yanlış katmanı hedefler; suçlu inode
+## Cevap 6.4 — Diski büyütmek yanlış katmanı hedefler; suçlu inode
 
 (a) Diski büyütmek bu sorunu büyük olasılıkla çözmez çünkü `df -h /var` **%61** diyor — yani **veri
 bloğu** bütçesi dolu değil, bol yer var. "No space" hatasıyla çelişen tek şey ikinci, gizli bütçedir:
@@ -559,13 +559,6 @@ kullanımını gösterir. (c) Beklenti: `IUse%` **%100** çıkar. O zaman gerçe
 tükenmesidir**: bir yerde çok sayıda çok küçük dosya birikmiş (cache, kuyruk, log parçaları). Çözüm
 diski büyütmek değil, o küçük dosyaları temizlemek ve onları üreten davranışı düzeltmektir.
 **İlgili bölüm:** 6.4.2 · **Devamı:** 6.7 arıza tablosu (satır 2).
-
-## Cevap 6.4 — (bu numara 6.4 Düşün sorusudur; cevabı yukarıda 6.3 ile aynı temayı işler)
-
-Yukarıdaki Cevap 6.3, 6.4 Düşün kutusundaki senaryonun cevabıdır (numaralandırma bölüm numarasını
-izler). Özet: `df -h` bol yer gösterirken "No space" hatası = inode sınıfı arıza; kanıt `df -i`; çözüm
-küçük dosyaları temizlemek, diski büyütmek değil.
-**İlgili bölüm:** 6.4.2 · **Devamı:** 6.7.
 
 ## Cevap 6.6 — Sadece alt katman (EBS) büyüdü; partition ve dosya sistemi geride kaldı
 

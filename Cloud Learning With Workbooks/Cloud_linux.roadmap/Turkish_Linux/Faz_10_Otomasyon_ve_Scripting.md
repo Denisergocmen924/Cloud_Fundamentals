@@ -222,8 +222,9 @@ rm -rf $DIR/                  # ❌ tırnaksız
 
 Üç ayrı felaket senaryosu:
 
-1. **`DIR` boş** (yazım hatası, tanımsız değişken): `rm -rf /` olur — **tüm sistemi siler.** `set -u` bunu
-   yakalar; tırnak + `set -u` birlikte hayat kurtarır.
+1. **`DIR` boş veya tanımsız** (yazım hatası, atanmamış değişken): `rm -rf /` olur — **tüm sistemi siler.**
+   `set -u` yalnızca *tanımsız* durumu yakalar (isimdeki yazım hatası); `""` atanmış değişken kaçar, bu
+   yüzden `[ -n "$DIR" ]` (veya `${DIR:?}`) ekle. Tırnak + `set -u` + bu kontrol birlikte hayat kurtarır.
 2. **`DIR` boşluk içeriyor** (`/var/tmp/my cache`): `rm -rf /var/tmp/my cache/` → Bash iki argüman görür:
    `/var/tmp/my` ve `cache/` — yanlış dizinleri siler.
 3. **`DIR` glob içeriyor** ya da genişliyor: beklenmedik dosyalar eşleşir.
@@ -241,15 +242,20 @@ rm -rf "$DIR"/                # ✅ tırnaklı
 >
 > ```
 > $ DIR="/var/tmp/test space"
-> $ echo rm -rf $DIR/          # ❌ tırnaksız: kaç kelimeye bölünüyor gör
-> rm -rf /var/tmp/test space/
-> $ echo rm -rf "$DIR"/        # ✅ tırnaklı: tek argüman
-> rm -rf /var/tmp/test space/
+> $ printf '[%s]\n' rm -rf $DIR/     # ❌ tırnaksız: argüman başına bir satır
+> [rm]
+> [-rf]
+> [/var/tmp/test]
+> [space/]
+> $ printf '[%s]\n' rm -rf "$DIR"/   # ✅ tırnaklı: yol tek argüman kalır
+> [rm]
+> [-rf]
+> [/var/tmp/test space/]
 > ```
 >
-> `rm`'i çalıştırmadan önüne `echo` koymak, gerçekte **ne** çalışacağını hiçbir şey silmeden gösterir. Bu
-> "dry-run" alışkanlığı, bu fazın tek en değerli güvenlik refleksidir. Tırnaksız versiyonun tek satırda iki
-> argümana bölündüğünü kendi gözünle gör.
+> Komutun argümanlarının önüne `printf '[%s]\n'` koymak (düz `echo` iki hâli de aynı basardı), hiçbir şey
+> silmeden gerçekte **ne** geçirileceğini gösterir. Bu "dry-run" alışkanlığı, bu fazın tek en değerli
+> güvenlik refleksidir. Tırnaksız versiyonun iki argümana bölündüğünü kendi gözünle gör.
 
 > **🤔 Düşün 10.2** — Bir meslektaşın script'i `set -e` **olmadan** şöyle: `cd "$WORKDIR"` sonra
 > `rm -rf ./*`. `WORKDIR` var olmayan bir dizine işaret ediyor (silinmiş). (a) `cd` başarısız olunca `set -e`
@@ -385,7 +391,7 @@ sebebe bağlar:
 `cp "$SRC" "$DST"` ise iki argüman görür ve doğru dosyayı kopyalar. (b) `SRC=""` (boş) iken tırnaksız
 `cp $SRC $DST`, `SRC` **hiç argüman üretmez** — komut `cp /backup/` olur, tek argümanlı `cp` hata verir (ya da
 daha kötüsü, yanlış davranır). `cp "$SRC" "$DST"` ise boş bir argüman geçirir (`cp "" "/backup/"`) — yine hata
-ama davranış öngörülebilir ve `set -u` ile yakalanabilir. (c) Kural: **her değişken genişletmesini istisnasız
+ama davranış öngörülebilir (değişken `""` değil de *tanımsız* olsaydı `set -u` yakalardı). (c) Kural: **her değişken genişletmesini istisnasız
 çift tırnak içine al** (`"$var"`) — çünkü tırnak değeri "her olası girdide" tek parça tutar; bölmeyi tırnaksız
 bırakmak yalnızca bilerek istediğinde yapılır.
 **İlgili bölüm:** 10.1.3 · **Devamı:** 10.2.3 (`rm -rf` felaketi).

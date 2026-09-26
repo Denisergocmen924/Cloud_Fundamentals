@@ -64,7 +64,7 @@ Don't panic, don't reboot. Take it in order:
 | Service won't start | Config error / dependency / permission | `journalctl -u <service> -e` | 8 |
 | Service gone after reboot | Not enabled (running ≠ persistent) | `systemctl is-enabled <service>` | 5 |
 | Service keeps restarting | Application crashing (Restart=on-failure) | `journalctl -u <service> -f` | 8 |
-| Unit file changed but no effect | daemon-reload not run | `systemctl daemon-reload` | 5 |
+| Unit file changed but no effect | daemon-reload not run | `systemctl daemon-reload` | 8 |
 | Crash before PID 1 (GRUB/initramfs) | systemctl/journal can't see it | Read the console | 5 |
 | Boot very slow | A service hanging | `systemd-analyze blame` | 5 |
 

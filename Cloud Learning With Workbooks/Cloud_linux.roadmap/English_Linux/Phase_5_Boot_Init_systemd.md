@@ -364,7 +364,7 @@ running" (`start`ed) but "it was gone after a reboot" (not `enable`d) — one of
 in production. The correct pattern is usually to do both: `systemctl enable --now nginx` (`--now` = both
 enable and start).
 
-> **🔧 See it on your machine** 🔴 — try the enable/start difference live (on a test machine)
+> **🔧 See it on your machine** 🟢 — look at the enable/start difference (query only)
 >
 > ```
 > $ systemctl is-enabled cron        # does it come up on boot?
@@ -373,8 +373,8 @@ enable and start).
 > active
 > ```
 >
-> **Undo:** These two commands are 🟢 (they only query). But if you want the real experiment — `enable`
-> a service **without** starting it and reboot — put the original state back afterwards: if the service
+> These two commands only query. The **real experiment** — `enable` a service **without** starting it and
+> reboot — is 🔴 (it changes the boot state). **Undo:** put the original state back afterwards: if the service
 > was `disabled` to begin with, restore it with `sudo systemctl disable <service>`. To undo a service
 > you enabled: `sudo systemctl disable --now <service>` (removes the boot marker and stops it now).
 
@@ -758,7 +758,7 @@ no process up anymore." Don't confuse this with `failed`; `failed` is a real err
 Think about which link of the chain you're on (5.7). No SSH means the OS most likely didn't fully come up
 — so the failure may be at GRUB/initramfs/early boot and you can't reach OS tools (systemctl). In the
 cloud, the path: look at the **console output** (EC2 System Log / Serial Console). There you'll see
-whether it's an `initramfs` prompt, a unit wait, or an `fstab`-caused rescue mode (Phase 6). The symptom
+whether it's an `initramfs` prompt, a unit wait, or an `fstab`-caused emergency mode (Phase 6). The symptom
 determines the link; the link determines the tool.
 
 ---
@@ -933,7 +933,7 @@ explain how an EC2 transforms from an AMI into a running server (cloud-init + us
 ## Where Phase 6 connects to this
 
 We dodged one failure type in this phase without fully opening it: **a wrong line in `fstab` drops the
-machine into rescue mode on boot.** Some of the "instance won't boot" rows in the 5.7 table are actually
+machine into emergency mode on boot.** Some of the "instance won't boot" rows in the 5.7 table are actually
 a **disk/mount** problem — and mount is the world of systemd's `.mount` units. Phase 6 goes right here:
 you'll see how a disk comes from a raw block device (`/dev/nvme0n1`) to a mounted, persistent
 filesystem, how `/etc/fstab` can lock up the boot, and how to persistently mount an EBS volume **without

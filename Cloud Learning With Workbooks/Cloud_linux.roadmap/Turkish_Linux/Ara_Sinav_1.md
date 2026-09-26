@@ -225,8 +225,8 @@ kabuğun `usermod`'dan sonra yazılan yeni `docker` grubundan haberi yok. Çöz�
 (mevcut kabukta yeni grup bağlamı) ya da tam çıkış-giriş. `id` eski listeyi, `id ubuntu` yeni
 listeyi gösterir — fark tam da sorunun kaynağıdır. · *Faz 2, Cevap 2.1*
 
-**12.** Çekirdek **grup** sınıfına baktı ve reddetti: sen sahip değilsin (`root` sahip), `adm`
-grubunda da değilsin, dolayısıyla "diğer" sınıfına düştün ve diğer için hiçbir izin yok (`----`).
+**12.** Çekirdek sınıfları sırayla (sahip, sonra grup) eledi ve **diğer** sınıfında reddetti: sen sahip değilsin
+(`root` sahip), `adm` grubunda da değilsin, dolayısıyla "diğer" sınıfına düştün ve diğer için hiçbir izin yok (`---`).
 Çözümler: (a) kalıcı — `sudo usermod -aG adm ubuntu` (sonra yeniden giriş) ile `adm` grubuna gir;
 (b) tek seferlik — `sudo cat /var/log/app/app.log` ya da `sudo less ...`. · *Faz 2, 2.2.1–2.2.3*
 

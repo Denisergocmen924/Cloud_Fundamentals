@@ -234,9 +234,9 @@ shell has no knowledge of the new `docker` group written after `usermod`. Fix: `
 group context in the current shell) or a full logout/login. `id` shows the old list, `id ubuntu` the
 new — the difference is exactly the source of the problem. · *Phase 2, Answer 2.1*
 
-**12.** The kernel looked at the **group** class and refused: you're not the owner (`root` is), and
-you're not in the `adm` group either, so you fall into the "other" class, and there is no permission
-for other (`----`). Solutions: (a) lasting — `sudo usermod -aG adm ubuntu` (then log in again) to
+**12.** The kernel walked the classes in order — owner, then group — and refused at the **other** class: you're
+not the owner (`root` is) and not in the `adm` group either, so you fall into "other", and there is no
+permission for other (`---`). Solutions: (a) lasting — `sudo usermod -aG adm ubuntu` (then log in again) to
 join the `adm` group; (b) one-off — `sudo cat /var/log/app/app.log` or `sudo less ...`. · *Phase 2,
 2.2.1–2.2.3*
 

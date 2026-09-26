@@ -231,8 +231,8 @@ erişilebilir olsun.
 > **🤔 Düşün 8.2** — Bir uygulamayı `myapp.service` olarak yazdın, `systemctl start myapp` dedin, çalıştı.
 > Sonra unit dosyasında `ExecStart` satırını düzelttin ve tekrar `systemctl restart myapp` dedin ama
 > değişiklik **etkili olmadı** — servis hâlâ eski komutla çalışıyor. (a) Hangi tek komutu atladın? (b) Bu
-> arıza, Faz 7'deki hangi "çalışan durum vs kalıcı tanım" ayrımının (örn. `ip addr` vs netplan, `mount` vs
-> fstab) bir kardeşidir?
+> arıza, Faz 6 ve 7'deki hangi "çalışan durum vs kalıcı tanım" ayrımının (Faz 6: `mount` vs fstab, Faz 7:
+> `ip addr` vs netplan) bir kardeşidir?
 >
 > *(Cevap: fazın sonunda)*
 
@@ -324,8 +324,8 @@ girdi ama düzgün çalışmıyor). Aşağıdaki tablo belirtiyi doğru katmana 
 > bulamıyor" ve "beklenmedik sürüm" arızalarının kökenidir. İkincisi, Faz 7'den taşınan çizginin bir üst
 > basamağı: **kurulu olmak ≠ servis olarak çalışıyor olmak**. Bir paketi kurmak dosyaları diske koyar; onu
 > systemd'nin yönettiği, çökünce toparlanan, boot'ta başlayan bir servise çeviren şey, senin yazdığın unit
-> ve `enable`'dır. Ve unutma: bir unit'i her değiştirdiğinde `daemon-reload` — bu, Faz 7'deki `mount` vs
-> fstab, `ip addr` vs netplan ayrımının aynısıdır: **çalışan durum** ile **kalıcı tanım** ayrı katmanlardır.
+> ve `enable`'dır. Ve unutma: bir unit'i her değiştirdiğinde `daemon-reload` — bu, Faz 6'daki `mount` vs
+> fstab ve Faz 7'deki `ip addr` vs netplan ayrımının aynısıdır: **çalışan durum** ile **kalıcı tanım** ayrı katmanlardır.
 
 ---
 ---
@@ -347,7 +347,7 @@ mevcut) yeniden indirir. Tek bir paketi bile güncellemez/kurmaz — sadece "nel
 (a) **`sudo systemctl daemon-reload`**'u atladın. Unit dosyasını diskte değiştirdin ama systemd hâlâ
 belleğe önceden okuduğu **eski tanımı** kullanıyor; `restart` o eski tanımla yeniden başlattı. `daemon-reload`
 systemd'ye "unit dosyalarını diskten yeniden oku" der; ondan sonra `restart` yeni `ExecStart`'ı kullanır.
-Doğru sıra: dosyayı düzelt → `daemon-reload` → `restart`. (b) Bu, Faz 7'deki (ve Faz 6'daki) **çalışan durum
+Doğru sıra: dosyayı düzelt → `daemon-reload` → `restart`. (b) Bu, Faz 6'daki (`mount` vs fstab) ve Faz 7'deki (`ip addr` vs netplan) **çalışan durum
 vs kalıcı tanım** ayrımının tam kardeşidir: systemd'nin bellekteki aktif tanımı = "çalışan durum"; diskteki
 `.service` dosyası = "kalıcı tanım". Tıpkı `ip addr` (çalışan) vs netplan (kalıcı), veya `mount` (çalışan)
 vs fstab (kalıcı) gibi — diski değiştirmek, çalışan durumu otomatik güncellemez; arada bir "yeniden oku"

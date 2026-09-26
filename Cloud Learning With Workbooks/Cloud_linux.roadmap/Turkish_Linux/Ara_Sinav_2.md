@@ -212,10 +212,10 @@ acil bir bellek kurtarma işlemidir; çekirdek nazik davranmaz çünkü sistem z
 dokunulana kadar tek fiziksel sayfa bile harcanmaz — RSS 500 MB kalır. 20 GB sadece "söz verilen"
 alandır; 8 GB makinede çalışması normaldir çünkü gerçekte tuttuğu 500 MB'dir. · *Faz 3.7 × Faz 4.1*
 
-**7.** "Sağlıklı tam kapasite." Load, **core sayısına** bölünerek okunur (Faz 4.4.1): 4 vCPU'da load
-8 → kabaca kapasitenin 2 katı, yani sıkışık — ama "aşırı yük" olup olmadığı `%Cpu` satırına bağlıdır.
-`us` yüksekse gerçekten CPU-bound (8-thread'li uygulama 4 çekirdeği doldurup kuyruk yapmış olabilir);
-`wa` yüksekse load'un kaynağı I/O'dur. Netleşme: load / `nproc` = 8/4 = 2. · *Faz 3.3 × Faz 4.4*
+**7.** **Aşırı yük; sağlıklı tam kapasite değil.** Load, **core sayısına** bölünerek okunur (Faz 4.4.1):
+load / `nproc` = 8/4 = 2 — ortalama çekirdek başına iki görev çalışıyor ya da bekliyor; sağlıklı tam
+kapasite yaklaşık 1'dir. Hangi tür aşırı yük olduğu `%Cpu` satırına bağlıdır: `us` yüksekse gerçekten
+CPU-bound (8-thread'li uygulama 4 çekirdeği doldurup kuyruk yapmış); `wa` yüksekse load'un kaynağı I/O'dur. · *Faz 3.3 × Faz 4.4*
 
 **8.** Thrashing'de process'ler **D** durumunda birikir: aktif bellek sayfaları swap'a inip çıkarken
 process'ler disk (swap) I/O'sunu bekler (Faz 4.3.1). D-state load'a sayıldığı için load şişer (Faz

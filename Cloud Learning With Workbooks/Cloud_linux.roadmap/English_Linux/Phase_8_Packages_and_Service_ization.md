@@ -240,8 +240,8 @@ is Phase 7.4.2's lesson: be reachable from outside.
 > **🤔 Think 8.2** — You wrote an application as `myapp.service`, said `systemctl start myapp`, and it ran.
 > Then you fixed the `ExecStart` line in the unit file and said `systemctl restart myapp` again but the
 > change **didn't take effect** — the service still runs with the old command. (a) Which single command did
-> you skip? (b) Which "running state vs persistent definition" distinction from Phase 7 (e.g. `ip addr` vs
-> netplan, `mount` vs fstab) is this failure a sibling of?
+> you skip? (b) Which "running state vs persistent definition" distinction from Phases 6 and 7 (`mount` vs
+> fstab, `ip addr` vs netplan) is this failure a sibling of?
 >
 > *(Answer: at the end of the phase)*
 
@@ -336,7 +336,7 @@ right layer:
 > from the line carried over from Phase 7: **being installed ≠ running as a service**. Installing a package
 > places files on disk; what turns it into a service managed by systemd, one that recovers on crash and
 > starts on boot, is the unit you wrote and `enable`. And remember: every time you change a unit,
-> `daemon-reload` — this is the same as Phase 7's `mount` vs fstab, `ip addr` vs netplan distinction: the
+> `daemon-reload` — this is the same as Phase 6's `mount` vs fstab and Phase 7's `ip addr` vs netplan distinction: the
 > **running state** and the **persistent definition** are separate layers.
 
 ---
@@ -360,7 +360,7 @@ package. The right order is always: **`apt update` → then `install`/`upgrade`*
 using the **old definition** it read into memory earlier; `restart` restarted with that old definition.
 `daemon-reload` tells systemd "re-read the unit files from disk"; after it, `restart` uses the new
 `ExecStart`. The right order: fix the file → `daemon-reload` → `restart`. (b) This is an exact sibling of
-the **running state vs persistent definition** distinction from Phase 7 (and Phase 6): systemd's active
+the **running state vs persistent definition** distinction from Phase 6 (`mount` vs fstab) and Phase 7 (`ip addr` vs netplan): systemd's active
 in-memory definition = the "running state"; the `.service` file on disk = the "persistent definition." Just
 like `ip addr` (running) vs netplan (persistent), or `mount` (running) vs fstab (persistent) — changing the
 disk doesn't automatically update the running state; there's a "re-read" step in between (`daemon-reload` /

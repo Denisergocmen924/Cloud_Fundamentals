@@ -218,10 +218,10 @@ physical page is spent until that space is touched — RSS stays 500 MB. The 20 
 space; running on an 8 GB machine is normal because what it actually holds is 500 MB. · *Phase 3.7 ×
 Phase 4.1*
 
-**7.** "Healthy full capacity." Load is read by dividing by the **core count** (Phase 4.4.1): load 8 on
-4 vCPU → roughly 2× capacity, so tight — but whether it's "overload" depends on the `%Cpu` line. If
-`us` is high it's genuinely CPU-bound (the 8-thread app may have filled 4 cores and queued); if `wa` is
-high the source of load is I/O. The settling number: load / `nproc` = 8/4 = 2. · *Phase 3.3 × Phase 4.4*
+**7.** **Overload, not healthy full capacity.** Load is read by dividing by the **core count** (Phase 4.4.1):
+load / `nproc` = 8/4 = 2 — on average two tasks per core are running or waiting, whereas healthy full
+capacity is about 1. Which kind of overload depends on the `%Cpu` line: if `us` is high it's genuinely
+CPU-bound (the 8-thread app filled 4 cores and queued); if `wa` is high the source of load is I/O. · *Phase 3.3 × Phase 4.4*
 
 **8.** In thrashing, processes pile up in **D** state: as active memory pages swap in and out, processes
 wait on disk (swap) I/O (Phase 4.3.1). Since D-state counts toward load, load inflates (Phase 3.2.1);

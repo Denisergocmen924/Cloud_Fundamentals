@@ -157,7 +157,7 @@ To          Action  From
 22/tcp      ALLOW   Anywhere
 ```
 The application is on port 8000 but it is not in the list. What is happening from the host firewall's
-perspective (Phase 7.4.4), and because this is a separate layer from the SG (Phase 9), why must you check
+perspective (Phase 7.5.1), and because this is a separate layer from the SG (Phase 9), why must you check
 **both**?
 
 **19.** `sudo journalctl -k | grep apparmor` output:
@@ -195,7 +195,7 @@ job of security?
 **1.** `nohup python app.py &` runs the process with the identity of the user who started it; usually, "to be
 quick," it is run with `sudo`, i.e. as **root**. If a process running as root is compromised, the attacker
 instantly takes the whole machine — the blast radius is maximal. A systemd unit, by contrast, confines the
-process to a limited identity with `User=appuser`; `nohup` offers this control at all, so it structurally
+process to a limited identity with `User=appuser`; `nohup` offers no such control, so it structurally
 violates least privilege. · *Phase 8.2 × Phase 9.1* — **2.** `systemctl status` verifies only the **fifth gate**
 (is the process up, is it running correctly); it **never sees** DNS, SG, host firewall, or the bind address.
 That is why "green but unreachable" is exactly the intersection: the service (Phase 8) is fine but one of the
@@ -264,7 +264,7 @@ and running); it does not verify DNS, SG, host firewall, or the bind address. Th
 ufw. · *Phase 8.2 × Phase 7.4* — **18.** The host firewall's default is `deny (incoming)` and only 22 is in the
 list; 8000 is **not open**, so ufw drops incoming 8000 traffic. Because the SG is a separate, cloud-level layer
 (Phase 9 defense in depth), 8000 must be open in **both** the SG and ufw — if even one is closed, it is
-unreachable. So on "unreachable" check **both** firewalls. · *Phase 7.4.4 × Phase 9.1.2* — **19.** The
+unreachable. So on "unreachable" check **both** firewalls. · *Phase 7.5.1 × Phase 9.1.2* — **19.** The
 `apparmor="DENIED"` line proves the failure is at the **MAC layer** (AppArmor) — even though the DAC permissions
 (`ls -l`) are correct, the profile denies access to this path. The correct fix is not to turn off the profile
 (`aa-disable`), because then you lose that service's second lock entirely; the right fix is to add the
@@ -296,7 +296,7 @@ Missed question → bridge to return to:
 | 1, 11 | `nohup` vs unit + root blast radius (8.2 × 9.1) |
 | 2, 17 | Five gates × `systemctl status` green (7.4 × 8.2) |
 | 3, 16 | Bind address × surface reduction (7.4.2 × 9.2) |
-| 4, 18 | SG vs ufw independent layers (7.4.4 × 9.1.2) |
+| 4, 18 | SG vs ufw independent layers (7.5.1 × 9.1.2) |
 | 5 | daemon-reload × security change (8.2.2 × 9) |
 | 6 | IAM role × SSH/SSM identity (7.3.4 × 9.6.2) |
 | 7 | baked AMI × hardened AMI (8.4 × 9.3.2) |

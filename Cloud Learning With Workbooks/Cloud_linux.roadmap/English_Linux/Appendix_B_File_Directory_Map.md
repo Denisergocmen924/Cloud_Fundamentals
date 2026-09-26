@@ -58,7 +58,7 @@
 | `/etc/systemd/system/` | Custom systemd unit files | 5, 8 |
 | `/etc/logrotate.d/` | Log-rotation rules | 11 |
 | `/etc/apparmor.d/` | AppArmor profiles (MAC) | 9 |
-| `/etc/crontab`, `/etc/cron.d/` | Scheduled tasks | 10 |
+| `/etc/crontab`, `/etc/cron.d/` | Scheduled tasks | 5 |
 
 ## B.3 Log files /var/log (Phase 5, 11)
 
@@ -68,7 +68,7 @@
 |---|---|---|
 | `/var/log/syslog` | General system logs (Debian/Ubuntu) | 11 |
 | `/var/log/auth.log` | Authentication: SSH, sudo, failed logins | 9, 11 |
-| `/var/log/kern.log` | Kernel messages (`dmesg` reads this too) | 4, 11 |
+| `/var/log/kern.log` | Kernel messages (a copy of the ring buffer that `dmesg` reads directly; written by rsyslog) | 4, 11 |
 | `/var/log/cloud-init-output.log` | cloud-init/user-data output (AWS boot) | 5, 10, 12 |
 | `/var/log/dpkg.log` | Package install/remove history | 8 |
 | `journalctl` (not a file) | systemd journal — central log | 5, 11 |

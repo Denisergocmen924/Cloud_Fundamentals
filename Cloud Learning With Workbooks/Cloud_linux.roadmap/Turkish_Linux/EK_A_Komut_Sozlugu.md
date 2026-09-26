@@ -91,8 +91,8 @@
 | `lsblk` | Blok cihaz ağacı (disk, bölüm, mount) | 🟢 |
 | `df -h` | Dosya sistemi doluluk oranları | 🟢 |
 | `du -sh <dizin>` | Dizin boyutu | 🟢 |
-| `mount /dev/xxx /mnt` | Dosya sistemini bağlar (çalışan durum) | 🔴 |
-| `umount /mnt` | Bağlantıyı kaldırır | 🔴 |
+| `mount /dev/xxx /mnt` | Dosya sistemini bağlar (çalışan durum) | 🟡 |
+| `umount /mnt` | Bağlantıyı kaldırır | 🟡 |
 | `mkfs.ext4 /dev/xxx` | Dosya sistemi oluşturur (**veri siler!**) | 🔴 |
 | `blkid` | Cihazların UUID'leri | 🟢 |
 | `findmnt` | Mount ağacını gösterir | 🟢 |

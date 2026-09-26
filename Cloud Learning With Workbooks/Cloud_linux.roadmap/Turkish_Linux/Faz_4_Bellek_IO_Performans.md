@@ -189,7 +189,7 @@ aynı fiziksel sayfaları bağlar. Ama her process'in RSS'i bu paylaşılan sayf
 sayar**. Yani aynı 50 MB'lık `libc`, 10 process'in RSS toplamında 500 MB gibi görünür — oysa fiziksel
 RAM'de tek 50 MB var.
 
-Aynı durum `fork`'ta da geçerli (Faz 3.1.2 hatırla): `fork` ile doğan çocuk, ebeveynin bellek
+Aynı durum `fork`'ta da geçerli (Faz 1.1.2 hatırla): `fork` ile doğan çocuk, ebeveynin bellek
 sayfalarını başta **paylaşır** (Copy-on-Write). Ebeveyn ve çocuk aynı sayfaya yazana kadar tek kopya
 kullanılır. Yani ebeveyn + çocuğun RSS toplamı, gerçek fiziksel kullanımdan büyük görünür.
 
@@ -283,7 +283,7 @@ OOM riski başlar.
 > uzaktan hâlidir: varsayılan hesap çoğu zaman cache'i "kullanımda" sayar; doğrusu için
 > `mem_available_percent` benzeri bir metrik kullanılır.
 
-> **🤔 Düşün 4.2** — Bir monitoring paneli "RAM kullanımı %94" diye kırmızı alarm veriyor. Sunucuya
+> **🤔 Düşün 4.2** — Bir monitoring paneli "RAM kullanımı %88" diye kırmızı alarm veriyor. Sunucuya
 > girip `free -h` çalıştırıyorsun: `used` 2 GB, `buff/cache` 12 GB, `available` 11 GB, total 16 GB.
 > Alarm haklı mı? Bir cümleyle ne dersin, ve gerçekten alarm vermesi gereken durum ne olurdu?
 >
@@ -596,18 +596,18 @@ bulma; bu her zaman abartır.**
 
 ---
 
-## Cevap 4.2 — "%94 RAM" alarmı haklı mı
+## Cevap 4.2 — "%88 RAM" alarmı haklı mı
 
-**Soru:** Panel "RAM %94" alarmı veriyor. `free -h`: `used` 2 GB, `buff/cache` 12 GB, `available` 11
+**Soru:** Panel "RAM %88" alarmı veriyor. `free -h`: `used` 2 GB, `buff/cache` 12 GB, `available` 11
 GB, total 16 GB. Alarm haklı mı?
 
-**Hayır, alarm yanlış okuyor.** %94, muhtemelen `(total − free) / total` formülünden geliyor — yani
+**Hayır, alarm yanlış okuyor.** %88, muhtemelen `(total − free) / total` formülünden geliyor — yani
 page cache'i "kullanımda" sayıyor. Ama gerçek tabloya bak: process'lerin gerçekten tuttuğu
 (`used`) sadece 2 GB, geri kalan 12 GB **page cache** (geri alınabilir), ve çekirdeğin kendi tahmini
 `available` = 11 GB (total'in ~%69'u). Yani sistem baskı altında **değil**; yeni bir uygulama
 başlatırsan swap'a inmeden 11 GB verilebilir (4.2.1, 4.2.2).
 
-Doğru cümle: "RAM %94 dolu görünüyor ama bunun 12 GB'ı geri alınabilir page cache; gerçek müsait
+Doğru cümle: "RAM %88 dolu görünüyor ama bunun 12 GB'ı geri alınabilir page cache; gerçek müsait
 bellek 11 GB, sistem rahat." **Gerçekten alarm vermesi gereken durum:** `available` toplamın küçük
 bir yüzdesine (örneğin %10'un altına) düştüğünde — çünkü asıl bellek baskısını `available` ölçer,
 `used`/`free` değil. Alarmın eşiği `used` değil `available` üzerine kurulmalı.
@@ -772,7 +772,7 @@ durumda ve neyi bekliyor?
 **13.** Bir monitoring paneli "RAM %95" kırmızı alarm veriyor. Sunucuda `free -h`: used 2 GB,
 buff/cache 13 GB, available 12 GB. Alarm haklı mı, bir cümleyle ne dersin?
 
-**14.** İki sunucunun ikisinde de load 8.0. A: `%Cpu 95 us`. B: `%Cpu 80 wa`. Hangisi CPU-bound,
+**14.** İki sunucunun ikisinde de load 8.0. A: `%Cpu 95 us`. B: `%Cpu 82 wa`. Hangisi CPU-bound,
 hangisi I/O-bound, ve hangisine vCPU eklemek boşuna?
 
 **15.** Gece 3'te en çok RAM tutan `postgres` OOM ile öldü. İlk sorman gereken iki şey ne, ve gerçek
@@ -837,7 +837,7 @@ cache'i korumak için process belleğini erken swap'a atar; düşük = mümkün 
 alınabilir); `available` 12 GB → sistem rahat. Doğru: "%95 dolu görünüyor ama çoğu geri alınabilir
 cache, gerçek müsait 12 GB." Alarm `available` üzerine kurulmalı. · *4.2.2*
 
-**14.** **A = CPU-bound** (`us` %95, CPU dolu); **B = I/O-bound** (`wa` %80, CPU boşta, disk
+**14.** **A = CPU-bound** (`us` %95, CPU dolu); **B = I/O-bound** (`wa` %82, CPU boşta, disk
 bekliyor). **B'ye vCPU eklemek boşuna** — CPU zaten boşta; ona hızlı disk gerekir. A'ya ise disk
 almak boşuna. · *4.4.2, 4.6.1*
 

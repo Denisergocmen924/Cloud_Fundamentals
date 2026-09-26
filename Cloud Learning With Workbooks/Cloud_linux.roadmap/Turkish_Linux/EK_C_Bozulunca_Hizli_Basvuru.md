@@ -64,7 +64,7 @@ Panik yapma, yeniden başlatma. Sırayla ele:
 | Servis başlamıyor | Config hatası / bağımlılık / izin | `journalctl -u <servis> -e` | 8 |
 | Reboot sonrası servis gelmedi | enable edilmemiş (çalışan ≠ kalıcı) | `systemctl is-enabled <servis>` | 5 |
 | Servis sürekli restart ediyor | Uygulama çöküyor (Restart=on-failure) | `journalctl -u <servis> -f` | 8 |
-| Birim dosyası değişti ama etkisiz | daemon-reload yapılmadı | `systemctl daemon-reload` | 5 |
+| Birim dosyası değişti ama etkisiz | daemon-reload yapılmadı | `systemctl daemon-reload` | 8 |
 | PID 1'den önce çökme (GRUB/initramfs) | systemctl/journal göremez | Konsolu oku | 5 |
 | Boot çok yavaş | Bir servis takılıyor | `systemd-analyze blame` | 5 |
 

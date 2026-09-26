@@ -608,7 +608,7 @@ içinde `mv`, veriye hiç dokunmadan sadece bu kaydı bir dizinden alıp diğeri
 bir dosya sistemine (örneğin `/` diskinden `/data` diskine) taşırken ise veriyi baştan sona
 **kopyalayıp** eskisini siler; bu yüzden yavaştır.
 
-> **🔧 Makinende gör** 🟢 — `mv` veriyi taşımaz
+> **🔧 Makinende gör** 🟡 — `mv` veriyi taşımaz
 >
 > ```
 > $ touch deneme.txt

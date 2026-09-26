@@ -52,7 +52,7 @@ mount'unun systemd'nin bağımlılık grafiğinde (Faz 5: After/Requires) neden 
 nasıl açıklar?
 
 **4.** Faz 5'te "PID 1'den önceki arızalar `systemctl`/`journalctl`'e görünmez, konsola bak" dedik. Bir
-`fstab` hatası (Faz 6) makineyi kurtarma moduna düşürüyor. Bu arıza `journalctl -xb` ile **görülebilir
+`fstab` hatası (Faz 6) makineyi emergency moduna düşürüyor. Bu arıza `journalctl -xb` ile **görülebilir
 mi**, yoksa görülemez mi — ve cevabın neden boot zincirinin (Faz 5) hangi aşamada takıldığına bağlı?
 
 **5.** Faz 6'da `nofail` seçeneğinin bir veri diskinde boot'u kurtardığını gördük. Faz 5'in dilinde

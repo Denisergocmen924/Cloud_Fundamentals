@@ -193,7 +193,7 @@ virtual spaces. But each process's RSS counts these shared pages **toward its ow
 50 MB `libc` looks like 500 MB in the sum of 10 processes' RSS — while there is a single 50 MB in
 physical RAM.
 
-The same holds for `fork` (recall Phase 3.1.2): a child born from `fork` initially **shares** the
+The same holds for `fork` (recall Phase 1.1.2): a child born from `fork` initially **shares** the
 parent's memory pages (Copy-on-Write). A single copy is used until the parent and child write to a
 page. So the sum of the parent's + child's RSS looks larger than the real physical usage.
 
@@ -288,7 +288,7 @@ OOM risk begins.
 > metric is the remote version of this fallacy: the default calculation often counts cache as "in
 > use"; for the right value, a metric like `mem_available_percent` is used.
 
-> **🤔 Think 4.2** — A monitoring panel raises a red alarm "RAM usage 94%". You log into the server and
+> **🤔 Think 4.2** — A monitoring panel raises a red alarm "RAM usage 88%". You log into the server and
 > run `free -h`: `used` 2 GB, `buff/cache` 12 GB, `available` 11 GB, total 16 GB. Is the alarm right?
 > What do you say in one sentence, and what would the situation that **should** raise an alarm actually
 > be?
@@ -611,18 +611,18 @@ divides the shared portion by the number of processes), or `used` in `free` at t
 
 ---
 
-## Answer 4.2 — Is the "94% RAM" alarm right?
+## Answer 4.2 — Is the "88% RAM" alarm right?
 
-**Question:** A panel raises a "RAM 94%" alarm. `free -h`: `used` 2 GB, `buff/cache` 12 GB, `available`
+**Question:** A panel raises a "RAM 88%" alarm. `free -h`: `used` 2 GB, `buff/cache` 12 GB, `available`
 11 GB, total 16 GB. Is the alarm right?
 
-**No, the alarm is misreading.** The 94% probably comes from the formula `(total − free) / total` —
+**No, the alarm is misreading.** The 88% probably comes from the formula `(total − free) / total` —
 that is, it counts page cache as "in use". But look at the real table: what processes actually hold
 (`used`) is only 2 GB, the remaining 12 GB is **page cache** (reclaimable), and the kernel's own
 estimate `available` = 11 GB (~69% of total). So the system is **not** under pressure; if you start a
 new app, 11 GB can be given without swapping (4.2.1, 4.2.2).
 
-The correct sentence: "RAM looks 94% full, but 12 GB of that is reclaimable page cache; real available
+The correct sentence: "RAM looks 88% full, but 12 GB of that is reclaimable page cache; real available
 memory is 11 GB, the system is relaxed." **The situation that should actually raise an alarm:** when
 `available` drops to a small percentage of total (say, below 10%) — because real memory pressure is
 measured by `available`, not by `used`/`free`. The alarm's threshold should be built on `available`,
@@ -788,7 +788,7 @@ processes in and what are they waiting for?
 **13.** A monitoring panel raises a red "RAM 95%" alarm. On the server, `free -h`: used 2 GB, buff/cache
 13 GB, available 12 GB. Is the alarm right, what do you say in one sentence?
 
-**14.** Both of two servers have load 8.0. A: `%Cpu 95 us`. B: `%Cpu 80 wa`. Which is CPU-bound, which
+**14.** Both of two servers have load 8.0. A: `%Cpu 95 us`. B: `%Cpu 82 wa`. Which is CPU-bound, which
 is I/O-bound, and for which is adding vCPUs pointless?
 
 **15.** At 3 a.m. the `postgres` process holding the most RAM died via OOM. What are the two things you
@@ -855,7 +855,7 @@ on servers. · *4.3.1*
 `available` is 12 GB → the system is relaxed. Correct: "looks 95% full but most is reclaimable cache,
 real available is 12 GB." The alarm should be built on `available`. · *4.2.2*
 
-**14.** **A = CPU-bound** (`us` 95%, CPU full); **B = I/O-bound** (`wa` 80%, CPU idle, waiting on disk).
+**14.** **A = CPU-bound** (`us` 95%, CPU full); **B = I/O-bound** (`wa` 82%, CPU idle, waiting on disk).
 **Adding vCPUs is pointless for B** — the CPU is already idle; it needs a fast disk. For A, getting a
 disk is pointless. · *4.4.2, 4.6.1*
 

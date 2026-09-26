@@ -58,7 +58,7 @@
 | `/etc/systemd/system/` | Özel systemd birim dosyaları | 5, 8 |
 | `/etc/logrotate.d/` | Log döndürme kuralları | 11 |
 | `/etc/apparmor.d/` | AppArmor profilleri (MAC) | 9 |
-| `/etc/crontab`, `/etc/cron.d/` | Zamanlanmış görevler | 10 |
+| `/etc/crontab`, `/etc/cron.d/` | Zamanlanmış görevler | 5 |
 
 ## B.3 Log dosyaları /var/log (Faz 5, 11)
 
@@ -68,7 +68,7 @@
 |---|---|---|
 | `/var/log/syslog` | Genel sistem logları (Debian/Ubuntu) | 11 |
 | `/var/log/auth.log` | Kimlik doğrulama: SSH, sudo, başarısız giriş | 9, 11 |
-| `/var/log/kern.log` | Çekirdek mesajları (`dmesg` de okur) | 4, 11 |
+| `/var/log/kern.log` | Çekirdek mesajları (`dmesg`'in doğrudan okuduğu ring buffer'ın rsyslog'un yazdığı kopyası) | 4, 11 |
 | `/var/log/cloud-init-output.log` | cloud-init/user-data çıktısı (AWS boot) | 5, 10, 12 |
 | `/var/log/dpkg.log` | Paket kurulum/kaldırma geçmişi | 8 |
 | `journalctl` (dosya değil) | systemd journal — merkezî log | 5, 11 |

@@ -597,7 +597,7 @@ the data; it just takes this entry from one directory and puts it into another. 
 file system (for example from the `/` disk to the `/data` disk), it **copies** the data from start to end
 and deletes the old one; that is why it is slow.
 
-> **🔧 See it on your machine** 🟢 — `mv` does not move data
+> **🔧 See it on your machine** 🟡 — `mv` does not move data
 >
 > ```
 > $ touch test.txt
