@@ -1,6 +1,6 @@
 # Phase 8 — Packages, Software and Service-ization
 
-> **Navigation:** [◀ Phase 7 — Networking and Connectivity](Phase_7_Networking_and_Connectivity.md) · **Phase 8** · [Phase 9 — Security and Hardening ▶](Phase_9_Security_and_Hardening.md)
+> **Navigation:** [◀ Phase 7 — Networking (OS Layer)](Phase_7_Networking_and_Connectivity.md) · **Phase 8** · [Phase 9 — Security and Hardening ▶](Phase_9_Security_and_Hardening.md)
 
 ---
 
@@ -547,4 +547,4 @@ it do if it's compromised?" Building and protecting are two sides of the same co
 
 ---
 
-> **Navigation:** [◀ Phase 7 — Networking and Connectivity](Phase_7_Networking_and_Connectivity.md) · **Phase 8** · [Phase 9 — Security and Hardening ▶](Phase_9_Security_and_Hardening.md)
+> **Navigation:** [◀ Phase 7 — Networking (OS Layer)](Phase_7_Networking_and_Connectivity.md) · **Phase 8** · [Phase 9 — Security and Hardening ▶](Phase_9_Security_and_Hardening.md)

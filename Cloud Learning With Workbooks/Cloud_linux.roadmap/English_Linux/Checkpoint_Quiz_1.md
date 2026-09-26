@@ -1,6 +1,6 @@
 # Checkpoint Quiz 1 — Phases 0–2: Model, Shell, and Access
 
-> **Navigation:** [◀ Phase 2 — Users and Permissions](Phase_2_Users_and_Permissions.md) · **Checkpoint Quiz 1** · [Phase 3 — Processes and Resources ▶](Phase_3_Processes_and_Resources.md)
+> **Navigation:** [◀ Phase 2 — Users, Permissions and Identity](Phase_2_Users_and_Permissions.md) · **Checkpoint Quiz 1** · [Phase 3 — Processes and Resources ▶](Phase_3_Processes_and_Resources.md)
 
 ---
 
@@ -336,4 +336,4 @@ containers).
 
 ---
 
-> **Navigation:** [◀ Phase 2 — Users and Permissions](Phase_2_Users_and_Permissions.md) · **Checkpoint Quiz 1** · [Phase 3 — Processes and Resources ▶](Phase_3_Processes_and_Resources.md)
+> **Navigation:** [◀ Phase 2 — Users, Permissions and Identity](Phase_2_Users_and_Permissions.md) · **Checkpoint Quiz 1** · [Phase 3 — Processes and Resources ▶](Phase_3_Processes_and_Resources.md)

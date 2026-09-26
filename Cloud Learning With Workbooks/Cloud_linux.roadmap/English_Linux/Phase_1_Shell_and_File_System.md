@@ -1,6 +1,6 @@
 # Phase 1 — Shell and File System: Finding Your Way in Linux
 
-> **Navigation:** [◀ Phase 0 — Mental Model](Phase_0_Mental_Model.md) · **Phase 1** · [Phase 2 — Users and Permissions ▶](Phase_2_Users_and_Permissions.md)
+> **Navigation:** [◀ Phase 0 — Mental Model](Phase_0_Mental_Model.md) · **Phase 1** · [Phase 2 — Users, Permissions and Identity ▶](Phase_2_Users_and_Permissions.md)
 
 ---
 
@@ -2060,4 +2060,4 @@ In Phase 2 we get into users, groups and permissions. You will see these connect
 
 ---
 
-> **Navigation:** [◀ Phase 0 — Mental Model](Phase_0_Mental_Model.md) · **Phase 1** · [Phase 2 — Users and Permissions ▶](Phase_2_Users_and_Permissions.md)
+> **Navigation:** [◀ Phase 0 — Mental Model](Phase_0_Mental_Model.md) · **Phase 1** · [Phase 2 — Users, Permissions and Identity ▶](Phase_2_Users_and_Permissions.md)

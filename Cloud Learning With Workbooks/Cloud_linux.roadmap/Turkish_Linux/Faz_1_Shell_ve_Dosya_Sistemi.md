@@ -1,6 +1,6 @@
 # Faz 1 — Shell ve Dosya Sistemi: Linux'ta Yol Bulmak
 
-> **Navigasyon:** [◀ Faz 0 — Zihinsel Model](Faz_0_Zihinsel_Model.md) · **Faz 1** · [Faz 2 — Kullanıcılar ve İzinler ▶](Faz_2_Kullanicilar_ve_Izinler.md)
+> **Navigasyon:** [◀ Faz 0 — Zihinsel Model](Faz_0_Zihinsel_Model.md) · **Faz 1** · [Faz 2 — Kullanıcılar, İzinler ve Kimlik ▶](Faz_2_Kullanicilar_ve_Izinler.md)
 
 ---
 
@@ -2078,4 +2078,4 @@ Faz 2'de kullanıcılara, gruplara ve izinlere giriyoruz. Şu bağlantıları g�
 
 ---
 
-> **Navigasyon:** [◀ Faz 0 — Zihinsel Model](Faz_0_Zihinsel_Model.md) · **Faz 1** · [Faz 2 — Kullanıcılar ve İzinler ▶](Faz_2_Kullanicilar_ve_Izinler.md)
+> **Navigasyon:** [◀ Faz 0 — Zihinsel Model](Faz_0_Zihinsel_Model.md) · **Faz 1** · [Faz 2 — Kullanıcılar, İzinler ve Kimlik ▶](Faz_2_Kullanicilar_ve_Izinler.md)

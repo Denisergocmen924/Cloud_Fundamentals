@@ -1,6 +1,6 @@
 # Phase 7 — Networking (OS Layer): The Server's Outside World
 
-> **Navigation:** [◀ Checkpoint Quiz 3](Checkpoint_Quiz_3.md) · **Phase 7** · [Phase 8 — Packages and Service-ization ▶](Phase_8_Packages_and_Service_ization.md)
+> **Navigation:** [◀ Checkpoint Quiz 3](Checkpoint_Quiz_3.md) · **Phase 7** · [Phase 8 — Packages, Software and Service-ization ▶](Phase_8_Packages_and_Service_ization.md)
 
 ---
 
@@ -712,4 +712,4 @@ cloud and safely opening it to the outside world.
 
 ---
 
-> **Navigation:** [◀ Checkpoint Quiz 3](Checkpoint_Quiz_3.md) · **Phase 7** · [Phase 8 — Packages and Service-ization ▶](Phase_8_Packages_and_Service_ization.md)
+> **Navigation:** [◀ Checkpoint Quiz 3](Checkpoint_Quiz_3.md) · **Phase 7** · [Phase 8 — Packages, Software and Service-ization ▶](Phase_8_Packages_and_Service_ization.md)

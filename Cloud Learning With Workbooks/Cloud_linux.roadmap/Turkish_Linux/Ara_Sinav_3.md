@@ -1,6 +1,6 @@
 # Ara Sınav 3 — Faz 5–6: Boot, systemd ve Depolama
 
-> **Navigasyon:** [◀ Faz 6 — Depolama ve Dosya Sistemleri](Faz_6_Depolama_ve_Dosya_Sistemleri.md) · **Ara Sınav 3** · [Faz 7 — Ağ ve Bağlantı ▶](Faz_7_Ag_ve_Baglanti.md)
+> **Navigasyon:** [◀ Faz 6 — Depolama ve Dosya Sistemleri](Faz_6_Depolama_ve_Dosya_Sistemleri.md) · **Ara Sınav 3** · [Faz 7 — Ağ (OS Katmanı) ▶](Faz_7_Ag_ve_Baglanti.md)
 
 ---
 
@@ -300,4 +300,4 @@ göreceksin — bu kez disk yerine port ve güvenlik grubu üzerinden.
 
 ---
 
-> **Navigasyon:** [◀ Faz 6 — Depolama ve Dosya Sistemleri](Faz_6_Depolama_ve_Dosya_Sistemleri.md) · **Ara Sınav 3** · [Faz 7 — Ağ ve Bağlantı ▶](Faz_7_Ag_ve_Baglanti.md)
+> **Navigasyon:** [◀ Faz 6 — Depolama ve Dosya Sistemleri](Faz_6_Depolama_ve_Dosya_Sistemleri.md) · **Ara Sınav 3** · [Faz 7 — Ağ (OS Katmanı) ▶](Faz_7_Ag_ve_Baglanti.md)

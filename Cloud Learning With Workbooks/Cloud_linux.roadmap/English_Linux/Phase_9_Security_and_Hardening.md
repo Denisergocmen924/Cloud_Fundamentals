@@ -1,6 +1,6 @@
 # Phase 9 — Security and Hardening
 
-> **Navigation:** [◀ Phase 8 — Packages and Service-ization](Phase_8_Packages_and_Service_ization.md) · **Phase 9** · [Checkpoint Quiz 4 ▶](Checkpoint_Quiz_4.md)
+> **Navigation:** [◀ Phase 8 — Packages, Software and Service-ization](Phase_8_Packages_and_Service_ization.md) · **Phase 9** · [Checkpoint Quiz 4 ▶](Checkpoint_Quiz_4.md)
 
 ---
 
@@ -603,4 +603,4 @@ these three phases as different faces of a single event.
 
 ---
 
-> **Navigation:** [◀ Phase 8 — Packages and Service-ization](Phase_8_Packages_and_Service_ization.md) · **Phase 9** · [Checkpoint Quiz 4 ▶](Checkpoint_Quiz_4.md)
+> **Navigation:** [◀ Phase 8 — Packages, Software and Service-ization](Phase_8_Packages_and_Service_ization.md) · **Phase 9** · [Checkpoint Quiz 4 ▶](Checkpoint_Quiz_4.md)

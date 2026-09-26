@@ -160,7 +160,7 @@ Gerçek iş de böyledir: hiçbir arıza tek bir fazın içinde kalmaz.
 [ ] Faz 6  — Depolama ve Dosya Sistemleri        ← fstab tuzağı burada
 [ ] ✅ Ara Sınav 3 (Faz 5–6)
 [ ] Faz 7  — Ağ (OS Katmanı)
-[ ] Faz 8  — Paketler ve Servisleştirme
+[ ] Faz 8  — Paketler, Yazılım ve Servisleştirme
 [ ] Faz 9  — Güvenlik ve Sertleştirme
 [ ] ✅ Ara Sınav 4 (Faz 7–9)
 [ ] Faz 10 — Otomasyon ve Scripting

@@ -1,6 +1,6 @@
 # Faz 9 — Güvenlik ve Sertleştirme (Hardening)
 
-> **Navigasyon:** [◀ Faz 8 — Paketler ve Servisleştirme](Faz_8_Paketler_ve_Servislestirme.md) · **Faz 9** · [Ara Sınav 4 ▶](Ara_Sinav_4.md)
+> **Navigasyon:** [◀ Faz 8 — Paketler, Yazılım ve Servisleştirme](Faz_8_Paketler_ve_Servislestirme.md) · **Faz 9** · [Ara Sınav 4 ▶](Ara_Sinav_4.md)
 
 ---
 
@@ -582,5 +582,5 @@ Sınav, bu üç fazın tek bir olayın farklı yüzleri olduğunu görüp görem
 
 ---
 
-> **Navigasyon:** [◀ Faz 8 — Paketler ve Servisleştirme](Faz_8_Paketler_ve_Servislestirme.md) · **Faz 9** · [Ara Sınav 4 ▶](Ara_Sinav_4.md)
+> **Navigasyon:** [◀ Faz 8 — Paketler, Yazılım ve Servisleştirme](Faz_8_Paketler_ve_Servislestirme.md) · **Faz 9** · [Ara Sınav 4 ▶](Ara_Sinav_4.md)
 

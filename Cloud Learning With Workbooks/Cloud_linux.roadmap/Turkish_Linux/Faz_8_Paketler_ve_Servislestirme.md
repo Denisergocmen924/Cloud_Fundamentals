@@ -1,6 +1,6 @@
 # Faz 8 — Paketler, Yazılım ve Servisleştirme
 
-> **Navigasyon:** [◀ Faz 7 — Ağ ve Bağlantı](Faz_7_Ag_ve_Baglanti.md) · **Faz 8** · [Faz 9 — Güvenlik ve Sertleştirme ▶](Faz_9_Guvenlik_ve_Sertlestirme.md)
+> **Navigasyon:** [◀ Faz 7 — Ağ (OS Katmanı)](Faz_7_Ag_ve_Baglanti.md) · **Faz 8** · [Faz 9 — Güvenlik ve Sertleştirme ▶](Faz_9_Guvenlik_ve_Sertlestirme.md)
 
 ---
 
@@ -524,5 +524,5 @@ iki yüzüdür.
 
 ---
 
-> **Navigasyon:** [◀ Faz 7 — Ağ ve Bağlantı](Faz_7_Ag_ve_Baglanti.md) · **Faz 8** · [Faz 9 — Güvenlik ve Sertleştirme ▶](Faz_9_Guvenlik_ve_Sertlestirme.md)
+> **Navigasyon:** [◀ Faz 7 — Ağ (OS Katmanı)](Faz_7_Ag_ve_Baglanti.md) · **Faz 8** · [Faz 9 — Güvenlik ve Sertleştirme ▶](Faz_9_Guvenlik_ve_Sertlestirme.md)
 

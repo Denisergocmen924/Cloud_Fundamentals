@@ -1,6 +1,6 @@
 # Faz 7 — Ağ (OS Katmanı): Sunucunun Dış Dünyası
 
-> **Navigasyon:** [◀ Ara Sınav 3](Ara_Sinav_3.md) · **Faz 7** · [Faz 8 — Paketler ve Servisleştirme ▶](Faz_8_Paketler_ve_Servislestirme.md)
+> **Navigasyon:** [◀ Ara Sınav 3](Ara_Sinav_3.md) · **Faz 7** · [Faz 8 — Paketler, Yazılım ve Servisleştirme ▶](Faz_8_Paketler_ve_Servislestirme.md)
 
 ---
 
@@ -675,7 +675,7 @@ ayağa kaldırıp dış dünyaya güvenle açmanın tüm zinciri tamamlanır.
 
 ---
 
-> **Navigasyon:** [◀ Ara Sınav 3](Ara_Sinav_3.md) · **Faz 7** · [Faz 8 — Paketler ve Servisleştirme ▶](Faz_8_Paketler_ve_Servislestirme.md)
+> **Navigasyon:** [◀ Ara Sınav 3](Ara_Sinav_3.md) · **Faz 7** · [Faz 8 — Paketler, Yazılım ve Servisleştirme ▶](Faz_8_Paketler_ve_Servislestirme.md)
 
 
 

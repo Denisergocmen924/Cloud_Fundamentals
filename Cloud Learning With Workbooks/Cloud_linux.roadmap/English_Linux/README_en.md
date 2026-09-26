@@ -158,7 +158,7 @@ Real work is like that too: no failure stays inside a single phase.
 ```
 [ ] Phase 0  — Mental Model
 [ ] Phase 1  — Shell and File System
-[ ] Phase 2  — Users, Permissions, and Identity
+[ ] Phase 2  — Users, Permissions and Identity
 [ ] ✅ Checkpoint Quiz 1 (Phases 0–2)
 [ ] Phase 3  — Process and Resource Management
 [ ] Phase 4  — Memory, I/O, and Performance Intuition   ← the most misread metrics
@@ -167,7 +167,7 @@ Real work is like that too: no failure stays inside a single phase.
 [ ] Phase 6  — Storage and File Systems                 ← the fstab trap is here
 [ ] ✅ Checkpoint Quiz 3 (Phases 5–6)
 [ ] Phase 7  — Networking (OS Layer)
-[ ] Phase 8  — Packages and Servicing
+[ ] Phase 8  — Packages, Software and Service-ization
 [ ] Phase 9  — Security and Hardening
 [ ] ✅ Checkpoint Quiz 4 (Phases 7–9)
 [ ] Phase 10 — Automation and Scripting

@@ -1,6 +1,6 @@
 # Ara Sınav 1 — Faz 0–2: Model, Shell ve Erişim
 
-> **Navigasyon:** [◀ Faz 2 — Kullanıcılar ve İzinler](Faz_2_Kullanicilar_ve_Izinler.md) · **Ara Sınav 1** · [Faz 3 — Process ve Kaynak ▶](Faz_3_Process_ve_Kaynak.md)
+> **Navigasyon:** [◀ Faz 2 — Kullanıcılar, İzinler ve Kimlik](Faz_2_Kullanicilar_ve_Izinler.md) · **Ara Sınav 1** · [Faz 3 — Process ve Kaynak ▶](Faz_3_Process_ve_Kaynak.md)
 
 ---
 
@@ -322,4 +322,4 @@ altındaki gerçek) göreceksin.
 
 ---
 
-> **Navigasyon:** [◀ Faz 2 — Kullanıcılar ve İzinler](Faz_2_Kullanicilar_ve_Izinler.md) · **Ara Sınav 1** · [Faz 3 — Process ve Kaynak ▶](Faz_3_Process_ve_Kaynak.md)
+> **Navigasyon:** [◀ Faz 2 — Kullanıcılar, İzinler ve Kimlik](Faz_2_Kullanicilar_ve_Izinler.md) · **Ara Sınav 1** · [Faz 3 — Process ve Kaynak ▶](Faz_3_Process_ve_Kaynak.md)

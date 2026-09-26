@@ -1,6 +1,6 @@
 # Checkpoint Quiz 3 — Phases 5–6: Boot, systemd and Storage
 
-> **Navigation:** [◀ Phase 6 — Storage and Filesystems](Phase_6_Storage_and_Filesystems.md) · **Checkpoint Quiz 3** · [Phase 7 — Networking and Connectivity ▶](Phase_7_Networking_and_Connectivity.md)
+> **Navigation:** [◀ Phase 6 — Storage and Filesystems](Phase_6_Storage_and_Filesystems.md) · **Checkpoint Quiz 3** · [Phase 7 — Networking (OS Layer) ▶](Phase_7_Networking_and_Connectivity.md)
 
 ---
 
@@ -306,4 +306,4 @@ gap — this time via ports and security groups instead of disks.
 
 ---
 
-> **Navigation:** [◀ Phase 6 — Storage and Filesystems](Phase_6_Storage_and_Filesystems.md) · **Checkpoint Quiz 3** · [Phase 7 — Networking and Connectivity ▶](Phase_7_Networking_and_Connectivity.md)
+> **Navigation:** [◀ Phase 6 — Storage and Filesystems](Phase_6_Storage_and_Filesystems.md) · **Checkpoint Quiz 3** · [Phase 7 — Networking (OS Layer) ▶](Phase_7_Networking_and_Connectivity.md)
