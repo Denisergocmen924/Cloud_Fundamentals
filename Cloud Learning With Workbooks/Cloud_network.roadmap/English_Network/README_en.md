@@ -123,7 +123,7 @@ that output. At the head of the box is one of three marks:
 | 🟡 | **A temporary change.** It goes back to its old state when the machine restarts. |
 | 🔴 | **A permanent change.** Do not do it on a production machine. Do not run it without understanding what it does. |
 
-In this book a 🔴 command **always** comes with its undo step. In networking there is one
+In this book a 🔴 command **always** comes with its undo step (collected in Appendix A.12). In networking there is one
 extra danger: **you can cut off your own access.** Read Phase 9.5.3 before changing a
 firewall or a route on a remote machine.
 

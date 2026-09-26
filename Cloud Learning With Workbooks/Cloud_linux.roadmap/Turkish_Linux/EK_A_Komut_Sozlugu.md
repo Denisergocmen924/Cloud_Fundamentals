@@ -19,6 +19,7 @@
 - [A.8 Güvenlik ve sertleştirme (Faz 9)](#a8-güvenlik-ve-sertleştirme-faz-9)
 - [A.9 Scripting (Faz 10)](#a9-scripting-faz-10)
 - [A.10 Gözlemlenebilirlik ve teşhis (Faz 11)](#a10-gözlemlenebilirlik-ve-teşhis-faz-11)
+- [A.11 Kalıcı değişiklikleri geri alma](#a11-kalıcı-değişiklikleri-geri-alma)
 
 ---
 
@@ -165,6 +166,30 @@
 
 > **Teşhis refleksi (Faz 11.2):** Bir şey bozulunca sıra hep aynı — **log → servis → kaynak → ağ → çekirdek.**
 > Rastgele komut deneme; her adımda kanıt topla, bir sonrakine ancak eldeki katmanı eledikten sonra geç.
+
+## A.11 Kalıcı değişiklikleri geri alma
+
+Yukarıdaki her 🔴 komutun bir geri dönüş yolu vardır — ya da geri dönüşün **olmadığı** açıkça yazılır.
+Değiştirmeden önce **eski durumu kaydet.**
+
+| Komut | Önce kaydet | Geri alma |
+|---|---|---|
+| `chmod` (her mod, `chmod 600 ~/.ssh/id_*` dahil) | `stat -c '%a' <dosya>` | `chmod <eski mod> <dosya>` |
+| `chown user:group <dosya>` | `stat -c '%U:%G' <dosya>` | `chown <eski kullanıcı>:<eski grup> <dosya>` |
+| `sudo <komut>` | — (`sudo` kendi başına bir şey değiştirmez) | `<komut>`'un yaptığını geri al |
+| `setfacl` | `getfacl -R <yol> > acl.bak` | `setfacl -b <dosya>` (tüm ACL'leri sil) veya `setfacl --restore=acl.bak` |
+| `setcap` | `getcap <dosya>` | `setcap -r <dosya>` |
+| `kill` / `kill -9` / `pkill` | `ps -o pid,cmd -p <pid>` | **Process'in bellek durumu geri gelmez.** Yeniden başlat: `systemctl start <servis>`. `kill -9`'dan önce `kill` (TERM) dene |
+| `systemctl enable` / `enable --now` | `systemctl is-enabled <servis>` | `systemctl disable` / `disable --now` |
+| `systemctl disable` | `systemctl is-enabled <servis>` | `systemctl enable` |
+| `mount /dev/xxx /mnt` | `findmnt` | `umount /mnt` |
+| `umount /mnt` | `findmnt /mnt` | Yeniden `mount`; "target is busy" derse tutanı `lsof +f -- /mnt` ile bul |
+| `mkfs.ext4 /dev/xxx` | `lsblk -f` — hedefi iki kez kontrol et | **Geri alma yok — veri gitti.** Sadece **önceden** alınmış snapshot/yedek kurtarır |
+| `ufw allow` / `ufw enable` | `ufw status numbered` | `ufw delete <kural>` / `ufw disable`. SSH üzerindeyken etkinleştirmeden **önce** 22'yi izinle |
+| `apt install <paket>` | `dpkg -l <paket>` | `apt remove <paket>`, sonra `apt autoremove` |
+| `apt remove` / `purge` | `dpkg -L <paket>`, `/etc/<paket>`'i kopyala | `apt install <paket>`. **`purge` yapılandırmayı geri dönüşsüz siler** — önce yedekle |
+| `visudo` / `/etc/sudoers` düzenleme | `cp /etc/sudoers /root/sudoers.bak` | Yedeği geri kopyala. Düzenlerken **ikinci bir root oturumu açık tut** |
+| `auditctl` (kural ekle/sil) | `auditctl -l > rules.bak` | `auditctl -D` (çalışma anı kurallarını temizle); `/etc/audit/rules.d/`'ye yazılmayan kurallar yeniden başlatmada kaybolur |
 
 ---
 

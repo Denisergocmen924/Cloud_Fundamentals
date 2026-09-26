@@ -116,7 +116,8 @@ of that output. Every box starts with one of three markers:
 | 🟡 | **Temporary change.** It goes back to the old state when the machine restarts. |
 | 🔴 | **Permanent change.** Don't do it on a production machine. Don't run it without understanding what it does. |
 
-In this book, commands marked 🔴 **always come with an undo step**.
+In this book, commands marked 🔴 **always come with an undo step** — or with an explicit note that none
+exists (`mkfs`, `apt purge`). All of them are collected in Appendix A.11.
 
 ### 3. Obey the depth labels
 
@@ -134,7 +135,7 @@ Every phase ends with:
 1. **When this phase breaks — failure signatures** — a symptom → mechanism → first place to look table
 2. **Answers to the think questions** — compare them with your own guesses
 3. **Frequently asked questions** — the "but what about…" questions around the phase
-4. **Test yourself** — a 15–21 question test + a full answer key
+4. **Test yourself** — a 16–18 question test + a full answer key
 5. **Closing and bridge** — what is left of this phase, and where the next phase connects to it
 
 If you score below 70% on the test, **instead of repeating the phase**, go back to the

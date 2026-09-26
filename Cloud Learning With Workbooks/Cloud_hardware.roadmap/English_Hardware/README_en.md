@@ -101,7 +101,7 @@ Every phase ends with:
 
 1. **Answers to the think questions** — compare them with your own guesses
 2. **Frequently asked questions** — the "but what about…" questions around the phase
-3. **Test yourself** — a 12–18 question test + a full answer key
+3. **Test yourself** — an 18–22 question test + a full answer key
 4. **Closing and bridge** — what is left of this phase, and where the next phase connects to it
 
 If you score below 70% on the test, **instead of repeating the phase**, go back to the

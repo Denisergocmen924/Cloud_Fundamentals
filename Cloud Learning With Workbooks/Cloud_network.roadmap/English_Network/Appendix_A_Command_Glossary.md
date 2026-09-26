@@ -20,6 +20,7 @@
 - [A.9 Firewalls and filtering (Phase 9)](#a9-firewalls-and-filtering-phase-9)
 - [A.10 Packet capture and diagnosis (Phase 10)](#a10-packet-capture-and-diagnosis-phase-10)
 - [A.11 The cloud side (Phase 11)](#a11-the-cloud-side-phase-11)
+- [A.12 Undo steps for permanent changes](#a12-undo-steps-for-permanent-changes)
 
 ---
 
@@ -201,6 +202,21 @@
 > **The diagnostic reflex (Phase 10.1):** When something breaks the order is always the same — **address →
 > local network → routing → name → port → application.** Do not try commands at random; eliminate one layer
 > at each step and only then climb up.
+
+## A.12 Undo steps for permanent changes
+
+Every 🔴 command above has a way back. **Record the old state first** — and on a remote machine keep a
+second session open (Phase 9.5.3).
+
+| Command | Record first | Undo |
+|---|---|---|
+| `ip link add link eth0 name eth0.10 type vlan id 10` | `ip -d link show` | `ip link del eth0.10` |
+| `ip route del <network>` | `ip route show > routes.bak` | `ip route add <network> via <gw> dev <if>` (from the saved line) |
+| `iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE` | `iptables-save > rules.bak` | `iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE` |
+| `ufw allow 22/tcp` | `ufw status numbered` | `ufw delete allow 22/tcp` |
+| `iptables -I INPUT -p tcp --dport 8080 -j ACCEPT` | `iptables-save > rules.bak` | `iptables -D INPUT -p tcp --dport 8080 -j ACCEPT` |
+| `iptables -P INPUT DROP` | `iptables -S \| head -3` | `iptables -P INPUT ACCEPT` (or `iptables-restore < rules.bak`) |
+| `aws ec2 authorize-security-group-ingress ...` | `aws ec2 describe-security-groups --group-ids <sg>` | `aws ec2 revoke-security-group-ingress ...` with the same arguments |
 
 ---
 

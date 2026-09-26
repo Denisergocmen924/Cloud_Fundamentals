@@ -19,6 +19,7 @@
 - [A.8 Security and hardening (Phase 9)](#a8-security-and-hardening-phase-9)
 - [A.9 Scripting (Phase 10)](#a9-scripting-phase-10)
 - [A.10 Observability and troubleshooting (Phase 11)](#a10-observability-and-troubleshooting-phase-11)
+- [A.11 Undo steps for permanent changes](#a11-undo-steps-for-permanent-changes)
 
 ---
 
@@ -166,6 +167,30 @@
 > **Diagnostic reflex (Phase 11.2):** When something breaks, the order is always the same — **log → service →
 > resource → network → kernel.** Don't try random commands; gather evidence at each layer, and move to the next
 > only after you've ruled out the one in hand.
+
+## A.11 Undo steps for permanent changes
+
+Every 🔴 command above has a way back — or an explicit statement that there is none. **Record the old state
+first**, then change it.
+
+| Command | Record first | Undo |
+|---|---|---|
+| `chmod` (any mode, incl. `chmod 600 ~/.ssh/id_*`) | `stat -c '%a' <file>` | `chmod <old mode> <file>` |
+| `chown user:group <file>` | `stat -c '%U:%G' <file>` | `chown <old user>:<old group> <file>` |
+| `sudo <cmd>` | — (`sudo` itself changes nothing) | Undo whatever `<cmd>` did |
+| `setfacl` | `getfacl -R <path> > acl.bak` | `setfacl -b <file>` (drop all ACLs) or `setfacl --restore=acl.bak` |
+| `setcap` | `getcap <file>` | `setcap -r <file>` |
+| `kill` / `kill -9` / `pkill` | `ps -o pid,cmd -p <pid>` | **No undo for the process's memory state.** Restart it: `systemctl start <service>`. Try `kill` (TERM) before `kill -9` |
+| `systemctl enable` / `enable --now` | `systemctl is-enabled <service>` | `systemctl disable` / `disable --now` |
+| `systemctl disable` | `systemctl is-enabled <service>` | `systemctl enable` |
+| `mount /dev/xxx /mnt` | `findmnt` | `umount /mnt` |
+| `umount /mnt` | `findmnt /mnt` | `mount` again; if "target is busy", find the holder with `lsof +f -- /mnt` |
+| `mkfs.ext4 /dev/xxx` | `lsblk -f` — check the target twice | **No undo — the data is gone.** Only a snapshot/backup taken *before* saves you |
+| `ufw allow` / `ufw enable` | `ufw status numbered` | `ufw delete <rule>` / `ufw disable`. Over SSH, allow port 22 **before** enabling |
+| `apt install <pkg>` | `dpkg -l <pkg>` | `apt remove <pkg>` then `apt autoremove` |
+| `apt remove` / `purge` | `dpkg -L <pkg>`, copy `/etc/<pkg>` | `apt install <pkg>`. **`purge` deletes the config with no undo** — back it up first |
+| `visudo` / edits to `/etc/sudoers` | `cp /etc/sudoers /root/sudoers.bak` | Copy the backup back. Keep a **second root session open** while editing |
+| `auditctl` (add/delete rules) | `auditctl -l > rules.bak` | `auditctl -D` (clear runtime rules); rules not written to `/etc/audit/rules.d/` vanish at reboot |
 
 ---
 

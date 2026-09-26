@@ -20,6 +20,7 @@
 - [A.9 Firewall ve filtreleme (Faz 9)](#a9-firewall-ve-filtreleme-faz-9)
 - [A.10 Paket yakalama ve teşhis (Faz 10)](#a10-paket-yakalama-ve-teşhis-faz-10)
 - [A.11 Bulut tarafı (Faz 11)](#a11-bulut-tarafı-faz-11)
+- [A.12 Kalıcı değişiklikleri geri alma](#a12-kalıcı-değişiklikleri-geri-alma)
 
 ---
 
@@ -199,6 +200,21 @@
 > **Teşhis refleksi (Faz 10.1):** Bir şey bozulunca sıra hep aynı — **adres → yerel ağ → yönlendirme →
 > isim → port → uygulama.** Rastgele komut deneme; her adımda bir katmanı ele ve ancak ondan sonra
 > yukarı çık.
+
+## A.12 Kalıcı değişiklikleri geri alma
+
+Yukarıdaki her 🔴 komutun bir geri dönüş yolu vardır. Değiştirmeden önce **eski durumu kaydet** — uzak
+makinede ise ikinci bir oturumu açık tut (Faz 9.5.3).
+
+| Komut | Önce kaydet | Geri alma |
+|---|---|---|
+| `ip link add link eth0 name eth0.10 type vlan id 10` | `ip -d link show` | `ip link del eth0.10` |
+| `ip route del <ağ>` | `ip route show > routes.bak` | `ip route add <ağ> via <gw> dev <arayüz>` (kaydedilen satırdan) |
+| `iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE` | `iptables-save > rules.bak` | `iptables -t nat -D POSTROUTING -o eth0 -j MASQUERADE` |
+| `ufw allow 22/tcp` | `ufw status numbered` | `ufw delete allow 22/tcp` |
+| `iptables -I INPUT -p tcp --dport 8080 -j ACCEPT` | `iptables-save > rules.bak` | `iptables -D INPUT -p tcp --dport 8080 -j ACCEPT` |
+| `iptables -P INPUT DROP` | `iptables -S \| head -3` | `iptables -P INPUT ACCEPT` (veya `iptables-restore < rules.bak`) |
+| `aws ec2 authorize-security-group-ingress ...` | `aws ec2 describe-security-groups --group-ids <sg>` | Aynı argümanlarla `aws ec2 revoke-security-group-ingress ...` |
 
 ---
 

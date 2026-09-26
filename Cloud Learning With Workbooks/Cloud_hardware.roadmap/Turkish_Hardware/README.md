@@ -96,7 +96,7 @@ Her faz şununla biter:
 
 1. **Düşün sorularının cevapları** — kendi tahminlerinle karşılaştır
 2. **Sık sorulan sorular** — fazın etrafındaki "peki ya şu?" soruları
-3. **Kendini sına** — 12–18 soruluk test + tam cevap anahtarı
+3. **Kendini sına** — 18–22 soruluk test + tam cevap anahtarı
 4. **Kapanış ve köprü** — bu fazdan ne kaldı, sonraki faz bunun neresine bağlanıyor
 
 Testte %70'in altında kaldıysan **fazı tekrar etmek yerine**, yanlış yaptığın sorunun

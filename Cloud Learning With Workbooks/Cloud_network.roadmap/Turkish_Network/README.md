@@ -119,7 +119,7 @@ Kutunun başında üç işaretten biri vardır:
 | 🟡 | **Geçici değişiklik.** Makine yeniden başlayınca eski hâline döner. |
 | 🔴 | **Kalıcı değişiklik.** Üretim makinesinde yapma. Ne yaptığını anlamadan çalıştırma. |
 
-Bu kitapta 🔴 işaretli komutların yanında **her zaman geri alma adımı** yazılıdır. Ağda
+Bu kitapta 🔴 işaretli komutların yanında **her zaman geri alma adımı** yazılıdır (Ek A.12'de toplanmıştır). Ağda
 ekstra bir tehlike vardır: **kendi erişimini kesebilirsin.** Uzak makinede firewall veya
 rota değiştirmeden önce Faz 9.5.3'ü oku.
 

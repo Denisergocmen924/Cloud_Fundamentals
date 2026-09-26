@@ -111,7 +111,8 @@ Kutunun başında üç işaretten biri vardır:
 | 🟡 | **Geçici değişiklik.** Makine yeniden başlayınca eski hâline döner. |
 | 🔴 | **Kalıcı değişiklik.** Üretim makinesinde yapma. Ne yaptığını anlamadan çalıştırma. |
 
-Bu kitapta 🔴 işaretli komutların yanında **her zaman geri alma adımı** yazılıdır.
+Bu kitapta 🔴 işaretli komutların yanında **her zaman geri alma adımı** yazılıdır — ya da geri
+almanın olmadığı açıkça söylenir (`mkfs`, `apt purge`). Hepsi Ek A.11'de toplanmıştır.
 
 ### 3. Derinlik etiketlerine uy
 
@@ -129,7 +130,7 @@ Her faz şununla biter:
 1. **Bu faz bozulunca — arıza imzaları** — belirti → mekanizma → ilk bakılacak yer tablosu
 2. **Düşün sorularının cevapları** — kendi tahminlerinle karşılaştır
 3. **Sık sorulan sorular** — fazın etrafındaki "peki ya şu?" soruları
-4. **Kendini sına** — 15–21 soruluk test + tam cevap anahtarı
+4. **Kendini sına** — 16–18 soruluk test + tam cevap anahtarı
 5. **Kapanış ve köprü** — bu fazdan ne kaldı, sonraki faz bunun neresine bağlanıyor
 
 Testte %70'in altında kaldıysan **fazı tekrar etmek yerine**, yanlış yaptığın sorunun
