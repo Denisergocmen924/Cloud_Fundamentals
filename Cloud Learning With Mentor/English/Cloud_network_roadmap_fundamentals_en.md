@@ -96,7 +96,7 @@ The goal of this phase: to understand why pointing to a device uniquely on the n
 
 **1.4 Port and Socket**
 - Port: separating different services on the same machine `[mechanism]`
-- Well-known ports (22, 53, 80, 443, 3306) `[concept]`
+- Common ports (22, 53, 80, 443, 3306) `[concept]`
 - Socket = the (IP : Port) pair `[concept]`
 - **When it breaks:** what the "port already in use" error means exactly
 

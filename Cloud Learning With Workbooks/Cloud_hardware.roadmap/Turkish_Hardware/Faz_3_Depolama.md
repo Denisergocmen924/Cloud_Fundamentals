@@ -601,7 +601,7 @@ Kapasitenin %99'unda:   await ≈ 40  × taban
 > **%70–80 hedef kullanım** ile planlanır — "boşa giden" %20, aslında gecikme
 > öngörülebilirliği için ödenen bedeldir.
 >
-> Bu fikri Faz 7.5'te kapasite planlamasının merkezine koyacağız.
+> Bu fikri Faz 7.6'da kapasite planlamasının merkezine koyacağız.
 
 ## 3.4.5 EBS tipi seçimi — kararı türet `[uygulama]`
 

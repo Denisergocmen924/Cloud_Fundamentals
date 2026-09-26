@@ -501,7 +501,7 @@ now". The intervention follows from this too: restarting the backend cures the 5
 repeats because the load continues; the real fix is in the cause of the slowdown (the query, the lock,
 scaling).
 
-**Related section:** 8.2.2 · **Next:** Phase 10.4 (performance diagnosis), Phase 10.5 (incident management)
+**Related section:** 8.2.2 · **Next:** Phase 10.1.2 (the six-step method), Phase 10.2.3 (`mtr`: where on the path)
 
 ## Answer 8.3 — A missing intermediate certificate
 

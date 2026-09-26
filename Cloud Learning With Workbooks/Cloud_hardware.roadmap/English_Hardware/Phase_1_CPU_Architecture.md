@@ -1340,7 +1340,7 @@ but it makes a measurable difference in a hot loop.
 
 **7.** Write the performance formula. Which term does software affect?
 
-**8.** An application with IPC 0.3 shows 100% CPU in `top`. What is happening?
+**8.** An application with IPC 0.4 shows 100% CPU in `top`. What is happening?
 
 **9.** Does a pipeline improve latency or throughput? Explain.
 

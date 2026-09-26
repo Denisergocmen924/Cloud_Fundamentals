@@ -375,7 +375,7 @@ Ports fall into three groups:
 | 1024 – 49151 | **Registered** | Allocated to applications (e.g. 3306 MySQL, 5432 PostgreSQL) |
 | 49152 – 65535 | **Ephemeral** | The source port the client picks at random for every connection |
 
-Well-known ports worth memorising — these keep coming at you in the field:
+Ports worth memorising — these keep coming at you in the field (the first four are well-known ports; 3306 and 5432 are *registered* ports, but just as common):
 
 | Port | Service | Where you see it |
 |---|---|---|

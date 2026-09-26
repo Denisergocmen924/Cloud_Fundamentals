@@ -98,7 +98,7 @@ Bu fazın amacı: bir cihazı ağda benzersiz olarak işaret etmenin **iki ayrı
 
 **1.4 Port ve Socket**
 - Port: aynı makinede farklı servisleri ayırma `[mekanizma]`
-- Well-known portlar (22, 53, 80, 443, 3306) `[kavram]`
+- Yaygın portlar (22, 53, 80, 443, 3306) `[kavram]`
 - Socket = (IP : Port) ikilisi `[kavram]`
 - **Bozulunca:** "port zaten kullanımda" hatası tam olarak ne demek
 

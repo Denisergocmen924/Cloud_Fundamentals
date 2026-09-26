@@ -242,7 +242,7 @@ Throughput = IOPS × I/O size
 |---|---|
 | NVMe SSD | Gen3/Gen4 x4 |
 | 10 Gbps NIC | Gen3 x4 |
-| **25 Gbps NIC** | **Gen3 x8** |
+| **25 Gbps NIC** | **Gen3 x4 (3.9 ≥ 3.1 GB/s); x8 for headroom or a dual-port card** |
 | **100 Gbps NIC** | **Gen4 x8 or Gen3 x16** |
 | GPU | Gen4/Gen5 x16 |
 

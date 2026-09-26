@@ -561,9 +561,9 @@ ailesi veya 128 kullanan bir yük dengeleyici/ağ cihazı).
 
 (c) Yolun **değiştiği** anlamına gelir. Sebepler: (i) ECMP — trafik eşit maliyetli birden çok yola
 dağıtılıyor (4.3.1 kutusu); (ii) bir yol koptu ve BGP yeni bir yol duyurdu (4.6.2); (iii) hedef bir
-anycast adresi ve farklı zamanlarda farklı sunuculara düşüyorsun (Faz 8.6 — `8.8.8.8` tam olarak böyle
+anycast adresi ve farklı zamanlarda farklı sunuculara düşüyorsun (Faz 8.5.3 — `8.8.8.8` tam olarak böyle
 çalışır). Bu, internetin yollarının **sabit olmadığının** doğrudan kanıtıdır.
-**İlgili bölüm:** 4.4.1 · **Devamı:** 4.5.1 (traceroute), Faz 8.6 (anycast).
+**İlgili bölüm:** 4.4.1 · **Devamı:** 4.5.1 (traceroute), Faz 8.5.3 (anycast).
 
 ## Cevap 4.5 — `*` satırı arıza değil, cevapsızlıktır
 

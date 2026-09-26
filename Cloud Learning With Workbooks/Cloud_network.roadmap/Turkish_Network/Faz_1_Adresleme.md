@@ -353,7 +353,7 @@ Portlar üç gruba ayrılır:
 | 1024 – 49151 | **Registered** (kayıtlı) | Uygulamalara tahsis edilmiş (örn. 3306 MySQL, 5432 PostgreSQL) |
 | 49152 – 65535 | **Ephemeral** (geçici) | İstemcinin her bağlantı için rastgele aldığı kaynak portu |
 
-Ezberlemeye değer well-known portlar — bunlar sahada sürekli karşına çıkar:
+Ezberlemeye değer portlar — bunlar sahada sürekli karşına çıkar (ilk dördü well-known; 3306 ve 5432 *registered* port, ama en az onlar kadar yaygın):
 
 | Port | Servis | Nerede görürsün |
 |---|---|---|

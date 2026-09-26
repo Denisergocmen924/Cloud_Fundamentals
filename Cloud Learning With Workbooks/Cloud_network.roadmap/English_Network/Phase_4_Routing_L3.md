@@ -588,9 +588,9 @@ family, or a load balancer/network device that uses 128).
 
 (c) It means the path is **changing**. The reasons: (i) ECMP — traffic is being spread over several
 equal-cost paths (the box in 4.3.1); (ii) a path broke and BGP announced a new one (4.6.2); (iii) the
-destination is an anycast address and you are landing on different servers at different times (Phase 8.6 —
+destination is an anycast address and you are landing on different servers at different times (Phase 8.5.3 —
 `8.8.8.8` works exactly like that). This is direct proof that the internet's paths are **not fixed**.
-**Related section:** 4.4.1 · **Next:** 4.5.1 (traceroute), Phase 8.6 (anycast).
+**Related section:** 4.4.1 · **Next:** 4.5.1 (traceroute), Phase 8.5.3 (anycast).
 
 ## Answer 4.5 — A `*` line is not a fault, it is a silence
 

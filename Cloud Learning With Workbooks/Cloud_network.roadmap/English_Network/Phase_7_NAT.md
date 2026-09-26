@@ -559,7 +559,7 @@ of the design. To connect you either hop through a **bastion host** in a public 
 that builds a reverse connection such as **SSM Session Manager** (the instance connects outward itself and
 you join that session — no inbound port is opened at all).
 
-**Related section:** 7.3.1–7.3.3 · **Next:** Phase 9.4 (SG vs NACL), Phase 11.4 (the IGW/NAT GW mapping)
+**Related section:** 7.3.1–7.3.3 · **Next:** Phase 9.4 (SG vs NACL), Phase 11.3 (the IGW/NAT GW mapping)
 
 ## Answer 7.4 — Tunnel + MTU = the classic
 

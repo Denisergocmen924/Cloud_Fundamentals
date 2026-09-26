@@ -1397,7 +1397,7 @@ virtualization.
 ```
 VM approach        : 500 × 1 GB   = 500 GB overhead
 Container approach : 500 × 10 MB  =   5 GB overhead
-Saving             : 495 GB  (a 99× reduction)
+Saving             : 495 GB  (100× less, a 99% reduction)
 ```
 Also: startup time 30–60 s → 50–500 ms, disk overhead from gigabytes to megabytes.
 

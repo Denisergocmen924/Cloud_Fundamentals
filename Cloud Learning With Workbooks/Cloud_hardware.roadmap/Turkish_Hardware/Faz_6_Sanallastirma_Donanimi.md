@@ -1394,7 +1394,7 @@ olur ve her ıska, sanallaştırmasız 4 bellek erişimi yerine **24'e kadar** e
 ```
 VM yaklaşımı        : 500 × 1 GB   = 500 GB ek yük
 Container yaklaşımı : 500 × 10 MB  =   5 GB ek yük
-Tasarruf            : 495 GB  (99 kat azalma)
+Tasarruf            : 495 GB  (100 kat az, %99 azalma)
 ```
 Ayrıca: başlangıç süresi 30–60 s → 50–500 ms, disk ek yükü GB'lardan MB'lara.
 

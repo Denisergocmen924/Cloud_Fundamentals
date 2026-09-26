@@ -64,7 +64,7 @@ This phase uses all seven previous phases at once:
 ```
 m 7 i . 2xlarge
 │ │ │      │
-│ │ │      └─ size (number of vCPUs)
+│ │ │      └─ size (xlarge = 4 vCPU; 2xlarge = 8, each step doubles)
 │ │ └─────── processor: i=Intel, a=AMD, g=Graviton(ARM)
 │ └───────── generation (7 = 7th generation)
 └─────────── family (m = general purpose)
@@ -198,6 +198,9 @@ Cassandra and Elasticsearch already do this — when a node is lost, the data is
 other nodes. **Do not use instance store for single-copy data that has no replication.**
 
 ## 7.1.5 Accelerated — the `p`, `g`, `inf`, `trn` families `[application]`
+
+> **Do not confuse the two `g`s:** here `g` is a **family** (the first letter, e.g. `g5` — a GPU instance);
+> the `g` in `c7g` (7.1.6) is a **processor suffix** meaning Graviton.
 
 | Family | Processor | Use |
 |---|---|---|

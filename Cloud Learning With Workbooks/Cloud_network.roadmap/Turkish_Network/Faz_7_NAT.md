@@ -538,7 +538,7 @@ tablosunda karşılığı yoktur (7.2.2, aynı mekanizma). Bu bir arıza değil,
 için ya public subnet'teki bir **bastion host** üzerinden atlarsın, ya da **SSM Session Manager** gibi
 ters bağlantı kuran bir servis kullanırsın (instance kendisi dışarı bağlanır, sen o oturuma katılırsın —
 hiçbir giriş portu açılmaz).
-**İlgili bölüm:** 7.3.1-7.3.3 · **Devamı:** Faz 9.4 (SG vs NACL), Faz 11.4 (IGW/NAT GW eşlemesi).
+**İlgili bölüm:** 7.3.1-7.3.3 · **Devamı:** Faz 9.4 (SG vs NACL), Faz 11.3 (IGW/NAT GW eşlemesi).
 
 ## Cevap 7.4 — Tünel + MTU = klasik
 

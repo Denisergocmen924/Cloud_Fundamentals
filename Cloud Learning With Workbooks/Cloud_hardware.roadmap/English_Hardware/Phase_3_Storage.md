@@ -601,7 +601,7 @@ At 99% of capacity:  await ≈ 40  × base
 > planned with **70–80% target utilization** — the "wasted" 20% is actually the price paid for
 > latency predictability.
 >
-> We'll put this idea at the center of capacity planning in Phase 7.5.
+> We'll put this idea at the center of capacity planning in Phase 7.6.
 
 ## 3.4.5 Choosing an EBS type — derive the decision `[application]`
 

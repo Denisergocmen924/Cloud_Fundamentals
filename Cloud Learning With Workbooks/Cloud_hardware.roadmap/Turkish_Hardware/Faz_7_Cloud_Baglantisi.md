@@ -63,7 +63,7 @@ Bu faz, önceki yedi fazın hepsini aynı anda kullanır:
 ```
 m 7 i . 2xlarge
 │ │ │      │
-│ │ │      └─ boyut (vCPU sayısı)
+│ │ │      └─ boyut (xlarge = 4 vCPU; 2xlarge = 8, her basamak ikiye katlar)
 │ │ └─────── işlemci: i=Intel, a=AMD, g=Graviton(ARM)
 │ └───────── nesil (7 = 7. nesil)
 └─────────── aile (m = general purpose)
@@ -196,6 +196,9 @@ ve Elasticsearch zaten bunu yapar — bir düğüm kaybolduğunda veri diğer d�
 **Instance store'u, çoğaltması olmayan tek kopya veri için kullanma.**
 
 ## 7.1.5 Hızlandırılmış — `p`, `g`, `inf`, `trn` aileleri `[uygulama]`
+
+> **İki `g`'yi karıştırma:** burada `g` bir **ailedir** (ilk harf, örn. `g5` — GPU'lu instance);
+> `c7g`'deki (7.1.6) `g` ise Graviton anlamına gelen bir **işlemci sonekidir**.
 
 | Aile | İşlemci | Kullanım |
 |---|---|---|

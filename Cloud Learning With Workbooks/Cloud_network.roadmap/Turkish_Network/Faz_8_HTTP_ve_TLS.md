@@ -485,7 +485,7 @@ kabul edemeyecek kadar doludur (accept kuyruğu dolmuş, yeni bağlantılar redd
 an hangi hatayı alıyorum" sorusundan daha değerlidir. Müdahale de buna göre olur: backend'i yeniden
 başlatmak 502'yi geçici olarak giderir ama yük devam ettiği için döngü tekrarlar; asıl çözüm yavaşlamanın
 sebebindedir (sorgu, kilit, ölçekleme).
-**İlgili bölüm:** 8.2.2 · **Devamı:** Faz 10.4 (performans teşhisi), Faz 10.5 (olay yönetimi).
+**İlgili bölüm:** 8.2.2 · **Devamı:** Faz 10.1.2 (altı adımlı yöntem), Faz 10.2.3 (`mtr`: yolun neresinde).
 
 ## Cevap 8.3 — Eksik ara sertifika
 

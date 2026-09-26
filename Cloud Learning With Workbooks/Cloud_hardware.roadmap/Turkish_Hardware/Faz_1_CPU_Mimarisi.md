@@ -1335,7 +1335,7 @@ detay ama bir hot loop'ta ölçülebilir fark yaratır.
 
 **7.** Performans formülünü yaz. Hangi terimi yazılım etkiler?
 
-**8.** IPC 0,3 olan bir uygulamada `top` %100 CPU gösteriyor. Ne oluyor?
+**8.** IPC 0,4 olan bir uygulamada `top` %100 CPU gösteriyor. Ne oluyor?
 
 **9.** Pipeline latency'yi mi throughput'u mu iyileştirir? Açıkla.
 
