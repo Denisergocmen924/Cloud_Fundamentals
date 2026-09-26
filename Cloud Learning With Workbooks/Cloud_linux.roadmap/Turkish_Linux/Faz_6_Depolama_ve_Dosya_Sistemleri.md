@@ -317,6 +317,14 @@ tamamlar ya da geri alır — böylece hızlıca **tutarlı** bir duruma döner.
 > geri gelir. Yine de journaling **uygulama düzeyi** tutarlılığı garanti etmez (yarım yazılmış bir
 > uygulama dosyası yine bozuk olabilir); sadece dosya sisteminin kendi yapısını korur.
 
+> **🤔 Düşün 6.3** — Bir ekip arkadaşın yeni bir veri diskini `mkfs.xfs` ile biçimlendirdi ama `fstab`'a
+> "Ubuntu kök diskimiz ext4" diyerek tür olarak `ext4` yazdı. (a) `sudo mount -a` çalıştırınca ne olur ve
+> neden (6.3.1)? (b) Diskin gerçek türünü hangi komut gösterir; çözüm yeniden biçimlendirmek mi, `fstab`'ı
+> düzeltmek mi? (c) Aylar sonra ekip maliyeti düşürmek için bu volume'ü küçültmek istiyor. 6.3.1 xfs
+> hakkında ne diyor ve pratik alternatif nedir?
+>
+> *(Cevap: fazın sonunda)*
+
 ---
 ---
 
@@ -422,6 +430,14 @@ attach edip PV yaparsın, VG'ye eklersin, LV'yi büyütürsün, dosya sistemini 
 Bu faz için LVM'i kavram düzeyinde bilmen yeter: "diski dosya sisteminden ayıran, online büyütmeyi
 kolaylaştıran bir katman." Cloud'da birçok dağıtım kök diski LVM üstüne kurar (özellikle RHEL ailesi),
 bu yüzden `lsblk` çıktısında `lvm` tipinde satırlar görürsen şaşırma.
+
+> **🤔 Düşün 6.5** — `/data` dosya sistemi, tek bir 100 GB diskten (PV) oluşan bir VG içindeki LV üzerinde
+> duruyor ve %95 dolu. Bir arkadaşın diyor ki: "LVM büyütmeyi kolaylaştırır — LV'yi büyüt yeter." (a) Bu
+> şu anda neden başarısız olabilir (6.5.1)? (b) Bulutta önce ne yapmalısın ve LVM kavramları hangi sırayla
+> gelir? (c) LV büyüdükten sonra `df -h /data` hâlâ eski boyutu gösteriyor. Hangi katman geride kaldı ve
+> bu, 6.6.2'nin hangi kuralını tekrar ediyor?
+>
+> *(Cevap: fazın sonunda)*
 
 ---
 ---
@@ -549,6 +565,18 @@ etkilemez (6.2.3); **(2) `nofail` seçeneğini eklemek** — böylece disk bir s
 durmaz, sadece o mount atlanır ve makine erişilebilir kalır. İkisi birlikte cloud'da standart pratiktir.
 **İlgili bölüm:** 6.2.3 · **Devamı:** 6.6.1'deki `mount -a` doğrulama alışkanlığı.
 
+## Cevap 6.3 — Tür `mkfs`'te yazılır; yanlış `fstab` türü mount'u düşürür; xfs küçültülemez
+
+(a) Mount, yanlış dosya sistemi türü hatasıyla **başarısız olur**: tür, `mkfs` sırasında **diske
+yazılır** ve diskin kalıcı bir özelliğidir (6.3.1); `fstab`'taki tür alanı buna uymak zorundadır. Olduğu
+gibi bırakılırsa aynı satır boot'ta da düşer — `nofail` yoksa bu boot'u kilitleyebilir (6.2.3). (b)
+`blkid` diskin gerçek `TYPE` değerini gösterir — burada `xfs`. Çözüm **`fstab` satırını `xfs` olarak
+düzeltmektir**; diskte bir sorun yok, yeniden biçimlendirmek verisini silerdi. Ardından `sudo mount -a`
+ile doğrula (6.6.1). (c) xfs **büyütülebilir ama küçültülemez** (6.3.1). Pratik yol: yeni, daha küçük
+bir volume oluştur, veriyi kopyala, mount'u ona geçir ve eskisini emekli et — küçültme ileride sık
+gerekecekse `mkfs` aşamasında ext4 seç.
+**İlgili bölüm:** 6.3.1 · **Devamı:** 6.2.3 (`fstab` boot tuzağı).
+
 ## Cevap 6.4 — Diski büyütmek yanlış katmanı hedefler; suçlu inode
 
 (a) Diski büyütmek bu sorunu büyük olasılıkla çözmez çünkü `df -h /var` **%61** diyor — yani **veri
@@ -559,6 +587,16 @@ kullanımını gösterir. (c) Beklenti: `IUse%` **%100** çıkar. O zaman gerçe
 tükenmesidir**: bir yerde çok sayıda çok küçük dosya birikmiş (cache, kuyruk, log parçaları). Çözüm
 diski büyütmek değil, o küçük dosyaları temizlemek ve onları üreten davranışı düzeltmektir.
 **İlgili bölüm:** 6.4.2 · **Devamı:** 6.7 arıza tablosu (satır 2).
+
+## Cevap 6.5 — LVM alan üretmez; önce PV ekle, sonra LV'yi ve dosya sistemini büyüt
+
+(a) LVM alan yaratmaz, havuzda olanı yönetir: VG'de boş yer yoksa LV'ye eklenecek boyutun alınacağı bir
+yer yoktur (6.5.1, yaygın yanılgı kutusu). (b) Önce **yeni bir EBS volume attach et** — LVM'in
+sağlayamadığı gerçek disk bu — sonra onu **PV** yap, **VG'ye ekle** ve ancak ondan sonra **LV'yi
+büyüt**: aşağıdan yukarıya, PV → VG → LV. (c) LV'nin üstündeki dosya sistemi ayrı bir katmandır ve
+kendiliğinden büyümez; onu genişletene kadar (`resize2fs` ext4 için, `xfs_growfs` xfs için) `df -h
+/data` değişmez. Bu, 6.6.2'nin kuralının aynısı: alt katman büyür, üsttekiler otomatik takip etmez.
+**İlgili bölüm:** 6.5.1 · **Devamı:** 6.6.2 (kök diski büyütme).
 
 ## Cevap 6.6 — Sadece alt katman (EBS) büyüdü; partition ve dosya sistemi geride kaldı
 

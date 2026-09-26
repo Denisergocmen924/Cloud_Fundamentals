@@ -315,6 +315,14 @@ up intact."
 > **not** guarantee **application-level** consistency (a half-written app file can still be corrupt); it
 > only protects the filesystem's own structure.
 
+> **🤔 Think 6.3** — A teammate formatted a new data disk with `mkfs.xfs`, but wrote the type in `fstab` as
+> `ext4` "because our Ubuntu root disk is ext4." (a) What happens when you run `sudo mount -a`, and why
+> (6.3.1)? (b) Which command shows the disk's real type, and is the fix to reformat or to edit `fstab`?
+> (c) Months later the team wants to shrink this volume to save cost. What does 6.3.1 say about xfs, and
+> what is the practical alternative?
+>
+> *(Answer: at the end of the phase)*
+
 ---
 ---
 
@@ -419,6 +427,14 @@ That wasn't this flexible in the direct-device model.
 For this phase, knowing LVM at the concept level is enough: "a layer that separates the disk from the
 filesystem and makes online growth easy." In the cloud many distros put the root disk on LVM (especially
 the RHEL family), so don't be surprised to see `lvm`-type rows in `lsblk` output.
+
+> **🤔 Think 6.5** — A `/data` filesystem sits on an LV in a VG built from a single 100 GB disk (PV), and
+> it is 95% full. A colleague says: "LVM makes growing easy — just grow the LV." (a) Why might that fail
+> right now (6.5.1)? (b) What must you do first in the cloud, and in what order do the LVM concepts come?
+> (c) After the LV grows, `df -h /data` still shows the old size. Which layer is left, and which rule from
+> 6.6.2 does this repeat?
+>
+> *(Answer: at the end of the phase)*
 
 ---
 ---
@@ -547,6 +563,18 @@ reason, boot doesn't stop, only that mount is skipped and the machine stays reac
 standard cloud practice.
 **Related section:** 6.2.3 · **Continues in:** the `mount -a` verify habit in 6.6.1.
 
+## Answer 6.3 — The type is written at `mkfs`; a wrong `fstab` type fails the mount; xfs cannot shrink
+
+(a) The mount **fails** with a wrong-filesystem-type error: the type is **written to the disk at
+`mkfs`** and is a permanent property of it (6.3.1), and the type field in `fstab` must match. Left as
+is, the same line would fail at boot too — and without `nofail` that can lock boot (6.2.3). (b) `blkid`
+shows the disk's real `TYPE` — here `xfs`. The fix is to **edit the `fstab` line to `xfs`**; nothing is
+wrong with the disk, and reformatting would wipe its data. Then verify with `sudo mount -a` (6.6.1). (c)
+xfs **can be grown but not shrunk** (6.3.1). The practical route: create a new, smaller volume, copy the
+data over, switch the mount, and retire the old one — or, if shrinking will be a recurring need, choose
+ext4 at `mkfs` time.
+**Related section:** 6.3.1 · **Continues in:** 6.2.3 (the `fstab` boot trap).
+
 ## Answer 6.4 — Growing the disk targets the wrong layer; the culprit is inodes
 
 (a) Growing the disk most likely won't fix this because `df -h /var` says **61%** — so the **data-block**
@@ -558,6 +586,17 @@ root-cause class is **inode exhaustion**: a large number of very small files hav
 (cache, queue, log fragments). The fix isn't to grow the disk but to clean up those small files and fix the
 behavior producing them.
 **Related section:** 6.4.2 · **Continues in:** 6.7 failure table (row 2).
+
+## Answer 6.5 — LVM does not supply space; add a PV first, then grow the LV and the filesystem
+
+(a) LVM doesn't create space, it only manages what the pool already has: if the VG has no free room,
+there is nothing to carve the extra LV size from (6.5.1, the misconception box). (b) First **attach a
+new EBS volume** — the real disk that LVM cannot supply — then make it a **PV**, **add it to the VG**,
+and only then **grow the LV**: bottom-up, PV → VG → LV. (c) The filesystem on top of the LV is a
+separate layer and does not grow by itself, so `df -h /data` is unchanged until you expand it
+(`resize2fs` for ext4, `xfs_growfs` for xfs). It is the same rule as 6.6.2: the lower layer grows, the
+upper ones don't follow automatically.
+**Related section:** 6.5.1 · **Continues in:** 6.6.2 (growing the root disk).
 
 ## Answer 6.6 — Only the bottom layer (EBS) grew; partition and filesystem lagged
 

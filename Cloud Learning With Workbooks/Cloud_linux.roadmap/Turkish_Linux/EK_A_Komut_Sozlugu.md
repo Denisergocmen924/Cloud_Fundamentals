@@ -64,6 +64,8 @@
 | `pkill <isim>` | İsimle process öldürür | 🔴 |
 | `nice` / `renice` | Process önceliğini ayarlar | 🟡 |
 | `free -h` | RAM/swap durumu | 🟢 |
+| `uptime` | Load average (R + D process'leri) ve çalışma süresi | 🟢 |
+| `nproc` | Makinenin gördüğü çekirdek sayısı (load ÷ `nproc`) | 🟢 |
 | `vmstat 1` | Sistem geneli (CPU/IO/bellek) canlı | 🟢 |
 | `iostat -x 1` | Disk IO istatistikleri | 🟢 |
 | `nohup cmd &` | Terminal kapansa da çalışmaya devam eder | 🟡 |
@@ -111,12 +113,15 @@
 | `ufw status` / `ufw allow` | Host firewall durumu / kural | 🟢/🔴 |
 | `traceroute <host>` | Paket yolu | 🟢 |
 | `nc -zv host port` | Port erişim testi | 🟢 |
+| `ssh [-i anahtar] kullanici@host` | Uzak shell açar (`-v` el sıkışmayı gösterir) | 🟢 |
+| `netplan apply` | `/etc/netplan/*.yaml`'ı çalışan ağa uygular | 🔴 |
 
 ## A.7 Paketler (Faz 8)
 
 | Komut | Ne yapar | Risk |
 |---|---|---|
 | `apt update` | Paket listesini yeniler | 🟡 |
+| `apt upgrade` | Kurulu paketleri daha yeni sürümlere yükseltir | 🔴 |
 | `apt install <paket>` | Paket kurar (+ bağımlılıklar) | 🔴 |
 | `apt remove/purge <paket>` | Paket kaldırır | 🔴 |
 | `dpkg -l` | Kurulu paketleri listeler | 🟢 |
@@ -186,7 +191,9 @@ Değiştirmeden önce **eski durumu kaydet.**
 | `umount /mnt` | `findmnt /mnt` | Yeniden `mount`; "target is busy" derse tutanı `lsof +f -- /mnt` ile bul |
 | `mkfs.ext4 /dev/xxx` | `lsblk -f` — hedefi iki kez kontrol et | **Geri alma yok — veri gitti.** Sadece **önceden** alınmış snapshot/yedek kurtarır |
 | `ufw allow` / `ufw enable` | `ufw status numbered` | `ufw delete <kural>` / `ufw disable`. SSH üzerindeyken etkinleştirmeden **önce** 22'yi izinle |
+| `netplan apply` | `ip a`, `ip r`, `cp /etc/netplan/<dosya>.yaml <dosya>.bak` | Yedeği geri kopyala, sonra `netplan apply`. SSH üzerinden yanlış yapılandırma kendi bağlantını kesebilir — konsol erişimini (EC2 serial console / SSM) hazır tut |
 | `apt install <paket>` | `dpkg -l <paket>` | `apt remove <paket>`, sonra `apt autoremove` |
+| `apt upgrade` | `apt list --upgradable`, `dpkg -l > paketler.once` | **Tek bir geri alma yok.** Eski sürümü yeniden kur: `apt install <paket>=<eski sürüm>` (sürümleri `apt-cache policy <paket>` ile gör); sürüm sabitleme sürprizi önler |
 | `apt remove` / `purge` | `dpkg -L <paket>`, `/etc/<paket>`'i kopyala | `apt install <paket>`. **`purge` yapılandırmayı geri dönüşsüz siler** — önce yedekle |
 | `visudo` / `/etc/sudoers` düzenleme | `cp /etc/sudoers /root/sudoers.bak` | Yedeği geri kopyala. Düzenlerken **ikinci bir root oturumu açık tut** |
 | `auditctl` (kural ekle/sil) | `auditctl -l > rules.bak` | `auditctl -D` (çalışma anı kurallarını temizle); `/etc/audit/rules.d/`'ye yazılmayan kurallar yeniden başlatmada kaybolur |

@@ -389,6 +389,14 @@ tarafında portu açıyor mu (7.5); (2) **host firewall** OS tarafında portu a�
 **doğru adrese bind** etmiş mi (7.4.2 — `0.0.0.0`); (4) arkasındaki **process ayakta mı** (Faz 3/5).
 Teşhis, bu kapıları dıştan içe (veya içten dışa) sırayla elemektir — panik değil, sıra.
 
+> **🤔 Düşün 7.4** — Bir web uygulamasını başlattın ve `systemctl status` yeşil. `ss -tulpn` şunu
+> gösteriyor: `127.0.0.1:8080  users:(("app",pid=2210,...))`. Laptop'ından `curl http://<public-ip>:8080`
+> `Connection refused` diyor, oysa Security Group 8080'i açık ve `ufw` kapalı. (a) 7.4.2'deki üç sorudan
+> hangisi kırmızı ve `ss` çıktısının neresi bunu gösteriyor? (b) Neyi, nerede değiştirirsin? (c) Bir
+> servis için `127.0.0.1` ne zaman *doğru* cevaptır?
+>
+> *(Cevap: fazın sonunda)*
+
 ---
 ---
 
@@ -432,6 +440,14 @@ Security Group hem host firewall o portu açık tutmalıdır — biri kapatırsa
 > diğeri hâlâ koruyabilir. Faz 9'da bunu AppArmor/SELinux (uygulama-seviyesi zorlama) ile birlikte tam bir
 > katmanlı savunma olarak göreceksin. Şimdilik kural: bir bağlantı arızasında **her iki firewall katmanını
 > da** kontrol et — biri "açık" diye diğerini varsayma.
+
+> **🤔 Düşün 7.5** — Security Group'ta 80. portu açtın ve `ss -tulpn` nginx'i `0.0.0.0:80`'de gösteriyor.
+> Yine de dışarıdan `curl` zaman aşımına kadar takılı kalıyor. `sudo ufw status verbose` çıktısı `Status:
+> active` ve yalnızca `22/tcp` izinli. (a) Hangi kapı kapanıyor ve Security Group konsolu bunu neden
+> göstermiyor? (b) Çözüm nedir ve dışarıdan nasıl doğrularsın? (c) Başka bir instance da zaman aşımına
+> uğruyor ama `ufw`'su kapalı. Sonra nereye bakarsın?
+>
+> *(Cevap: fazın sonunda)*
 
 ---
 ---
@@ -499,6 +515,31 @@ izinlerde olabilir (`600` değil); SSH bunu tehlikeli bulup anahtarı kullanmay�
 `ls -l ~/.ssh/id_ed25519` — `-rw-------` (600) değilse `chmod 600 ~/.ssh/id_ed25519`. `ssh -v` her iki
 durumda da hangi anahtarın sunulduğunu ve sunucunun neden reddettiğini gösterir.
 **İlgili bölüm:** 7.3.1 (Faz 2.3) · **Devamı:** 7.6 arıza tablosu (satır 6).
+
+## Cevap 7.4 — `127.0.0.1`'e bağlı: yeşil `systemctl` üç sorudan yalnızca birincisini cevaplar
+
+(a) **İkinci** soru — "doğru adreste mi dinliyor?" `systemctl` yalnızca birincisini (process çalışıyor
+mu) cevaplar. `ss` satırı `127.0.0.1:8080` gösteriyor: yalnızca loopback, yani dışarıdan hiçbir bağlantı
+ona ulaşamaz. Bu, mesajı da açıklar: paket makineye **ulaştı** (SG ve `ufw` geçirdi) ama o arayüzde
+dinleyen bir şey yoktu; sessizce düşürülmek yerine reddedildi. (b) **Uygulamanın kendi
+yapılandırmasındaki bind adresini** değiştir (örneğin `--host 0.0.0.0` ya da `listen` ayarı), servisi
+yeniden başlat ve `ss -tulpn` çıktısında artık `0.0.0.0:8080` göründüğünü doğrula. SG'yi ya da `ufw`'yu
+daha fazla açmak hiçbir şeyi değiştirmez — zaten açıklar. (c) Servis yalnızca iç kullanım içinse: yerel
+process'lerin ya da bir SSH tüneli (7.3.3) üzerinden erişilen bir veritabanı — loopback'te tutmak o
+zaman bilinçli bir güvenlik tercihidir.
+**İlgili bölüm:** 7.4.2 · **Devamı:** 7.5.1 (diğer iki kapı).
+
+## Cevap 7.5 — İki katman, ikisi de açık olmalı: SG'nin izin verdiğini host firewall kesti
+
+(a) **Host firewall**: `ufw` aktif ve yalnızca 22'yi listeliyor; SG paketin makineye ulaşmasına izin
+verse de 80. port makinenin içinde düşürülüyor. Security Group makinenin dışında yaşayan ayrı bir
+katmandır ve konsolu yalnızca SG'yi yansıtır — ikisi bağımsızdır ve **ikisi de açık olmalıdır** (7.5.1).
+(b) Portu host'ta `sudo ufw allow 80/tcp` ile aç (geri alma: `sudo ufw delete allow 80/tcp`), `sudo ufw
+status verbose` ile kontrol et ve **dışarıdan** `curl -I http://<ip>` ile doğrula — makinenin içinden
+yapılan bir kontrol SG'den hiç geçmez. (c) `ufw` kapalıysa host katmanı sebep değildir; **Security
+Group**'u konsoldan ya da CLI'dan kontrol et: port açık mı, kaynak aralığı doğru mu, instance gerçekten
+düşündüğün SG'de mi? Sonra 7.4.3'teki kapı haritasına dön.
+**İlgili bölüm:** 7.5.1 · **Devamı:** Faz 9 (defense in depth).
 
 ---
 ---

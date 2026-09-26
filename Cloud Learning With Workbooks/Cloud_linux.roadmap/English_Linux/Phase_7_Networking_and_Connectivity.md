@@ -406,6 +406,14 @@ the port on the OS side (7.5); (3) is the service **bound to the right address**
 is the **process behind it up** (Phase 3/5). Diagnosis is eliminating these gates from outside in (or
 inside out) in order — not panic, order.
 
+> **🤔 Think 7.4** — You start a web app and `systemctl status` is green. `ss -tulpn` shows `127.0.0.1:8080
+> users:(("app",pid=2210,...))`. From your laptop `curl http://<public-ip>:8080` says `Connection
+> refused`, although the Security Group opens 8080 and `ufw` is inactive. (a) Which of the three questions
+> of 7.4.2 is red, and what in the `ss` output shows it? (b) What do you change, and where? (c) When would
+> `127.0.0.1` be the *right* answer for a service?
+>
+> *(Answer: at the end of the phase)*
+
 ---
 ---
 
@@ -451,6 +459,14 @@ That's why the answer to "I opened port 80 in the SG but I still can't connect" 
 > still protect. In Phase 9 you'll see this as a full layered defense together with AppArmor/SELinux
 > (application-level enforcement). For now the rule: in a connection failure, check **both firewall
 > layers** — don't assume the other because one is "open."
+
+> **🤔 Think 7.5** — You opened port 80 in the Security Group and `ss -tulpn` shows nginx on `0.0.0.0:80`.
+> Yet from outside, `curl` hangs until it times out. `sudo ufw status verbose` shows `Status: active` with
+> only `22/tcp` allowed. (a) Which gate is closing, and why does the Security Group console not show it?
+> (b) What is the fix, and how do you verify it from outside? (c) A different instance also times out, but
+> its `ufw` is inactive. Where do you look next?
+>
+> *(Answer: at the end of the phase)*
 
 ---
 ---
@@ -521,6 +537,32 @@ this dangerous and refuses to use the key. Verification: `ls -l ~/.ssh/id_ed2551
 `-rw-------` (600), `chmod 600 ~/.ssh/id_ed25519`. In both cases `ssh -v` shows which key was offered and
 why the server refused it.
 **Related section:** 7.3.1 (Phase 2.3) · **Continues in:** the 7.6 failure table (row 6).
+
+## Answer 7.4 — Bound to `127.0.0.1`: green `systemctl` answers only the first of three questions
+
+(a) The **second** question — "is it listening on the right address?" `systemctl` answers only the first
+(is the process running). The `ss` line shows `127.0.0.1:8080`: loopback only, so no connection from
+outside can reach it. That also explains the message: the packet **did** reach the machine (SG and `ufw`
+let it through) and nothing was listening on that interface, so it was refused rather than silently
+dropped. (b) Change the **bind address in the app's own config** (for example `--host 0.0.0.0` or its
+`listen` setting), restart the service, and confirm that `ss -tulpn` now shows `0.0.0.0:8080`. Opening
+the SG or `ufw` further changes nothing — they are already open. (c) When the service is meant to be
+internal only: a database reached by local processes or through an SSH tunnel (7.3.3) — keeping it on
+loopback is then a deliberate security choice.
+**Related section:** 7.4.2 · **Continues in:** 7.5.1 (the other two gates).
+
+## Answer 7.5 — Two layers, both must be open: the host firewall cut what the SG allowed
+
+(a) The **host firewall**: `ufw` is active and lists only 22, so port 80 is dropped inside the machine
+even though the SG lets the packet reach it. The Security Group is a separate layer that lives outside
+the machine, and its console reflects only the SG — the two are independent and **both must be open**
+(7.5.1). (b) Allow the port on the host with `sudo ufw allow 80/tcp` (undo: `sudo ufw delete allow
+80/tcp`), check `sudo ufw status verbose`, and verify from **outside** with `curl -I http://<ip>` — a
+check from inside the machine would not pass through the SG at all. (c) With `ufw` inactive the host
+layer is not the cause, so check the **Security Group** in the console or CLI: is the port open, is the
+source range right, and is the instance actually in the SG you think it is. Then go back to the gate map
+of 7.4.3.
+**Related section:** 7.5.1 · **Continues in:** Phase 9 (defense in depth).
 
 ---
 ---

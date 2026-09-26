@@ -267,6 +267,14 @@ binary** veya **konteyner**, en son çare **kaynaktan derleme**.
 > hangi sürümü nereye koyduğu bilinmeyen bir çöplüğe döner. Paket yöneticisi disiplindir; kaynaktan
 > derleme, sadece gerçekten gerektiğinde başvurulan bir istisnadır.
 
+> **🤔 Düşün 8.3** — Bir ekip arkadaşın GitHub'da bir araç buldu ve production sunucuda `./configure &&
+> make && sudo make install` çalıştırdı; çalışıyor. İki ay sonra o araç için bir güvenlik güncellemesi
+> duyuruluyor. (a) `apt upgrade` bunu neden düzeltmez ve `dpkg -L aracadi` dosyalarını neden listelemez
+> (8.3.1)? (b) Aynı kurulum şimdi yirmi sunucuda daha gerekiyor. 8.3.1 hangi tercih sırasını veriyor? (c)
+> Tek cümleyle: paket yöneticisi, elle derlemenin vermediği neyi sağlar?
+>
+> *(Cevap: fazın sonunda)*
+
 ---
 ---
 
@@ -299,6 +307,13 @@ tamir etmezsin** — atarsın ve imajdan yenisini başlatırsın.
 > hayvanlar değil; numaralı, birbirinin aynı, biri bozulunca tereddütsüz değiştirdiğin sürü hayvanları.
 > "Bu sunucuda özel bir ayar var, sakın silme" cümlesi bir immutable altyapıda duyulmamalıdır — her ayar
 > tarifededir, her makine atılabilir. Faz 12'de bu felsefeyi bulut mimarisiyle tam olarak birleştireceğiz.
+
+> **🤔 Düşün 8.4** — Production bir web sunucuda ekip arkadaşın bir hatayı bir ayarı elle düzenleyerek
+> çözüyor, servisi yeniden başlatıyor ve çalışıyor. İki hafta sonra Auto Scaling AMI'den yeni instance'lar
+> başlatıyor ve onlar aynı hatayı veriyor. (a) Elle yapılan düzeltme neden taşınmadı (8.4.1)? (b) Düzeltme
+> nasıl olmalıydı? (c) Tarifin yeniden üretilebilir olması için sürüm sabitleme (8.1.2) neden ön koşuldur?
+>
+> *(Cevap: fazın sonunda)*
 
 ---
 ---
@@ -353,6 +368,28 @@ vs kalıcı tanım** ayrımının tam kardeşidir: systemd'nin bellekteki aktif 
 vs fstab (kalıcı) gibi — diski değiştirmek, çalışan durumu otomatik güncellemez; arada bir "yeniden oku"
 adımı (`daemon-reload` / `mount -a` / netplan apply) vardır.
 **İlgili bölüm:** 8.2.2 · **Devamı:** 8.5 arıza tablosu (satır 6).
+
+## Cevap 8.3 — Kaynaktan derleme paket yöneticisinin dışında kalır: güncelleme yok, temiz kaldırma yok
+
+(a) Kaynaktan derleme **paket yöneticisinin dışında** kalır: `apt`'ın onunla ilgili kaydı yoktur, bu
+yüzden `apt upgrade` varlığından habersizdir ve güncelleyemez; `dpkg -L` de bir şey bulamaz. `make
+install`'ın diske saçtığı dosyaları temiz kaldırmak da zordur. Yama uygulamak; duyuruyu kendin fark
+etmek, indirmek ve elle yeniden derlemek demektir. (b) **Önce paket** (`apt`); yoksa **resmî repo
+ekle**; yoksa **hazır binary** ya da **container**; **kaynaktan derleme en son.** Yirmi sunucu için
+ayrıca sonucu yirmi kez derlemek yerine bir tarife (8.4.1) gömerdin. (c) Bir **yaşam döngüsü**: sürüm
+takibi, bağımlılık çözümü, güvenlik güncellemeleri, temiz kaldırma ve imza doğrulamalı güven.
+**İlgili bölüm:** 8.3.1 · **Devamı:** 8.4.1 (elle yama yerine yeniden inşa).
+
+## Cevap 8.4 — Elle düzeltme tek makinede yaşar; düzeltmenin yeri tarif ve imajdır
+
+(a) Değişiklik yalnızca **o tek makinenin diskinde** yaşıyor. Her yeni instance'ın doğduğu imaj olan AMI
+hâlâ eski ayarı taşıyor, bu yüzden her yeni makine orijinal sorunla başlıyor; elle düzeltilen sunucu
+kimsenin yeniden üretemeyeceği özel bir makineye dönüşmüş. (b) Değişiklik **tarife** (yapılandırma ya da
+unit dosyası) yazılmalı, ondan **yeni bir AMI** üretilmeli ve instance'lar yama yapılarak değil
+**değiştirilerek** dağıtılmalıydı. (c) Sabitleme yoksa aynı tarif farklı günlerde farklı paket sürümleri
+çeker; iki inşa aynı makine olmaz ve "yeniden üretilebilir" bir yalan olur (8.4.1). Her paket sabit bir
+sürüme kilitliyse tarif bugün de üç ay sonra da aynı makineyi verir.
+**İlgili bölüm:** 8.4.1 · **Devamı:** Faz 12 (cloud mimarisinde baked AMI).
 
 ---
 ---

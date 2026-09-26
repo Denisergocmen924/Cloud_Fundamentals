@@ -276,6 +276,14 @@ else a **prebuilt binary** or a **container**, and as a last resort **build from
 > later, a junkyard where nobody knows who put which version where. The package manager is discipline;
 > building from source is an exception you reach for only when it's really needed.
 
+> **🤔 Think 8.3** — A colleague found a tool on GitHub and ran `./configure && make && sudo make install`
+> on the production server; it works. Two months later a security update for that tool is announced. (a)
+> Why doesn't `apt upgrade` fix it, and why won't `dpkg -L toolname` list its files (8.3.1)? (b) The same
+> setup is now needed on twenty more servers. Which preference order does 8.3.1 give? (c) In one sentence:
+> what does a package manager provide that hand-compiling does not?
+>
+> *(Answer: at the end of the phase)*
+
 ---
 ---
 
@@ -309,6 +317,13 @@ Two concepts make this possible, and both come from this phase:
 > server has a special setting, don't ever delete it" should never be heard in an immutable infrastructure
 > — every setting is in the recipe, every machine is disposable. In Phase 12 we'll fully merge this
 > philosophy with cloud architecture.
+
+> **🤔 Think 8.4** — On a production web server a teammate fixes an error by editing a setting by hand,
+> restarts the service, and it works. Two weeks later Auto Scaling launches new instances from the AMI and
+> they show the same error. (a) Why didn't the hand fix carry over (8.4.1)? (b) What should the fix have
+> been? (c) Why is version pinning (8.1.2) a precondition for the recipe to be reproducible?
+>
+> *(Answer: at the end of the phase)*
 
 ---
 ---
@@ -366,6 +381,29 @@ like `ip addr` (running) vs netplan (persistent), or `mount` (running) vs fstab 
 disk doesn't automatically update the running state; there's a "re-read" step in between (`daemon-reload` /
 `mount -a` / netplan apply).
 **Related section:** 8.2.2 · **Continues in:** the 8.5 failure table (row 6).
+
+## Answer 8.3 — Built from source means outside the package manager: no updates, no clean removal
+
+(a) A source build stays **outside the package manager**: `apt` has no record of it, so `apt upgrade`
+doesn't know it exists and can't update it, and `dpkg -L` finds nothing. The files `make install`
+scattered around the disk are also hard to remove cleanly. Patching means noticing the announcement
+yourself, downloading, and recompiling by hand. (b) **Package first** (`apt`); otherwise **add an
+official repo**; otherwise a **prebuilt binary** or a **container**; **build from source last.** For
+twenty servers you would also bake the result into a recipe (8.4.1) instead of compiling twenty times.
+(c) A **lifecycle**: version tracking, dependency resolution, security updates, clean removal and
+signature-verified trust.
+**Related section:** 8.3.1 · **Continues in:** 8.4.1 (rebuild instead of patching by hand).
+
+## Answer 8.4 — A hand fix lives on one machine; the fix belongs in the recipe and the image
+
+(a) The change lives only on **that one machine's disk**. The AMI — the image every new instance is born
+from — still holds the old setting, so each new machine starts with the original problem; the hand-fixed
+server has become a special one nobody can reproduce. (b) Put the change **into the recipe** (the config
+or unit file), bake a **new AMI** from it, and roll out by **replacing** instances rather than patching
+them. (c) Without pinning, the same recipe pulls different package versions on different days, so two
+builds are not the same machine and "reproducible" is a lie (8.4.1); with every package locked to a
+fixed version, the recipe gives the same machine today and three months from now.
+**Related section:** 8.4.1 · **Continues in:** Phase 12 (baked AMI in the cloud architecture).
 
 ---
 ---

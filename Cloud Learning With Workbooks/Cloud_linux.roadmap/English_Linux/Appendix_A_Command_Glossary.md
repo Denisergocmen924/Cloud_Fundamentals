@@ -64,6 +64,8 @@
 | `pkill <name>` | Kills a process by name | 🔴 |
 | `nice` / `renice` | Sets process priority | 🟡 |
 | `free -h` | RAM/swap status | 🟢 |
+| `uptime` | Load average (R + D processes) and uptime | 🟢 |
+| `nproc` | Core count the machine sees (load ÷ `nproc`) | 🟢 |
 | `vmstat 1` | System-wide (CPU/IO/memory) live | 🟢 |
 | `iostat -x 1` | Disk IO statistics | 🟢 |
 | `nohup cmd &` | Keeps running even if the terminal closes | 🟡 |
@@ -111,12 +113,15 @@
 | `ufw status` / `ufw allow` | Host firewall status / rule | 🟢/🔴 |
 | `traceroute <host>` | Packet path | 🟢 |
 | `nc -zv host port` | Port reachability test | 🟢 |
+| `ssh [-i key] user@host` | Opens a remote shell (`-v` shows the handshake) | 🟢 |
+| `netplan apply` | Applies `/etc/netplan/*.yaml` to the running network | 🔴 |
 
 ## A.7 Packages (Phase 8)
 
 | Command | What it does | Risk |
 |---|---|---|
 | `apt update` | Refreshes the package list | 🟡 |
+| `apt upgrade` | Upgrades installed packages to newer versions | 🔴 |
 | `apt install <pkg>` | Installs a package (+ dependencies) | 🔴 |
 | `apt remove/purge <pkg>` | Removes a package | 🔴 |
 | `dpkg -l` | Lists installed packages | 🟢 |
@@ -187,7 +192,9 @@ first**, then change it.
 | `umount /mnt` | `findmnt /mnt` | `mount` again; if "target is busy", find the holder with `lsof +f -- /mnt` |
 | `mkfs.ext4 /dev/xxx` | `lsblk -f` — check the target twice | **No undo — the data is gone.** Only a snapshot/backup taken *before* saves you |
 | `ufw allow` / `ufw enable` | `ufw status numbered` | `ufw delete <rule>` / `ufw disable`. Over SSH, allow port 22 **before** enabling |
+| `netplan apply` | `ip a`, `ip r`, `cp /etc/netplan/<file>.yaml <file>.bak` | Copy the backup back, then `netplan apply`. A wrong config over SSH can cut your own connection — keep console access (EC2 serial console / SSM) ready |
 | `apt install <pkg>` | `dpkg -l <pkg>` | `apt remove <pkg>` then `apt autoremove` |
+| `apt upgrade` | `apt list --upgradable`, `dpkg -l > pkgs.before` | **No single undo.** Reinstall the old version: `apt install <pkg>=<old version>` (see versions with `apt-cache policy <pkg>`); version pinning prevents the surprise |
 | `apt remove` / `purge` | `dpkg -L <pkg>`, copy `/etc/<pkg>` | `apt install <pkg>`. **`purge` deletes the config with no undo** — back it up first |
 | `visudo` / edits to `/etc/sudoers` | `cp /etc/sudoers /root/sudoers.bak` | Copy the backup back. Keep a **second root session open** while editing |
 | `auditctl` (add/delete rules) | `auditctl -l > rules.bak` | `auditctl -D` (clear runtime rules); rules not written to `/etc/audit/rules.d/` vanish at reboot |
