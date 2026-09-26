@@ -1,6 +1,6 @@
 # Phase 4 — System Buses and I/O
 
-> **Navigation:** [◀ Phase 3 — Storage](Phase_3_Storage.md) · **Phase 4** · [Phase 5 — Network Hardware ▶](Phase_5_Network_Hardware.md)
+> **Navigation:** [◀ Checkpoint Quiz 1](Checkpoint_Quiz_1.md) · **Phase 4** · [Phase 5 — Network Hardware ▶](Phase_5_Network_Hardware.md)
 
 ---
 
@@ -942,4 +942,4 @@ of interrupts, DMA and buffers right where you left them:
 
 ---
 
-> **Navigation:** [◀ Phase 3 — Storage](Phase_3_Storage.md) · **Phase 4** · [Phase 5 — Network Hardware ▶](Phase_5_Network_Hardware.md)
+> **Navigation:** [◀ Checkpoint Quiz 1](Checkpoint_Quiz_1.md) · **Phase 4** · [Phase 5 — Network Hardware ▶](Phase_5_Network_Hardware.md)

@@ -1,6 +1,6 @@
 # Faz 4 — Sistem Bus'ları ve I/O
 
-> **Navigasyon:** [◀ Faz 3 — Depolama](Faz_3_Depolama.md) · **Faz 4** · [Faz 5 — Ağ Donanımı ▶](Faz_5_Ag_Donanimi.md)
+> **Navigasyon:** [◀ Ara Sınav 1](Ara_Sinav_1.md) · **Faz 4** · [Faz 5 — Ağ Donanımı ▶](Faz_5_Ag_Donanimi.md)
 
 ---
 
@@ -935,4 +935,4 @@ bırakmadığın yerden alacak:
 
 ---
 
-> **Navigasyon:** [◀ Faz 3 — Depolama](Faz_3_Depolama.md) · **Faz 4** · [Faz 5 — Ağ Donanımı ▶](Faz_5_Ag_Donanimi.md)
+> **Navigasyon:** [◀ Ara Sınav 1](Ara_Sinav_1.md) · **Faz 4** · [Faz 5 — Ağ Donanımı ▶](Faz_5_Ag_Donanimi.md)

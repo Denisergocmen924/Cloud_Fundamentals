@@ -1,6 +1,6 @@
 # Faz 3 — Depolama (Kalıcı Hafıza)
 
-> **Navigasyon:** [◀ Faz 2 — Bellek Hiyerarşisi](Faz_2_Bellek_Hiyerarsisi.md) · **Faz 3** · [Faz 4 — Sistem Bus'ları ve I/O ▶](Faz_4_Bus_ve_IO.md)
+> **Navigasyon:** [◀ Faz 2 — Bellek Hiyerarşisi](Faz_2_Bellek_Hiyerarsisi.md) · **Faz 3** · [Ara Sınav 1 ▶](Ara_Sinav_1.md)
 
 ---
 
@@ -1398,4 +1398,4 @@ dolduruyor.
 
 ---
 
-> **Navigasyon:** [◀ Faz 2 — Bellek Hiyerarşisi](Faz_2_Bellek_Hiyerarsisi.md) · **Faz 3** · [Faz 4 — Sistem Bus'ları ve I/O ▶](Faz_4_Bus_ve_IO.md)
+> **Navigasyon:** [◀ Faz 2 — Bellek Hiyerarşisi](Faz_2_Bellek_Hiyerarsisi.md) · **Faz 3** · [Ara Sınav 1 ▶](Ara_Sinav_1.md)

@@ -1,6 +1,6 @@
 # Phase 7 — Cloud Connection
 
-> **Navigation:** [◀ Phase 6 — Virtualization Hardware](Phase_6_Virtualization_Hardware.md) · **Phase 7** · [Back to the start of the map ▶](README_en.md)
+> **Navigation:** [◀ Phase 6 — Virtualization Hardware](Phase_6_Virtualization_Hardware.md) · **Phase 7** · [Checkpoint Quiz 2 ▶](Checkpoint_Quiz_2.md)
 
 ---
 
@@ -1775,8 +1775,8 @@ data structure (5×). **None of the biggest performance gains in this map requir
 
 *Phase 7 complete. **The hardware roadmap is finished.***
 
-→ **[Back to the start of the map](README_en.md)** · **[Appendix A — Reference Tables](Appendix_A_Reference_Tables.md)** · **[Appendix B — Glossary](Appendix_B_Glossary.md)**
+→ **[Checkpoint Quiz 2 — Phases 4–7](Checkpoint_Quiz_2.md)** · **[Back to the start of the map](README_en.md)** · **[Appendix A — Reference Tables](Appendix_A_Reference_Tables.md)** · **[Appendix B — Glossary](Appendix_B_Glossary.md)**
 
 ---
 
-> **Navigation:** [◀ Phase 6 — Virtualization Hardware](Phase_6_Virtualization_Hardware.md) · **Phase 7** · [Back to the start of the map ▶](README_en.md)
+> **Navigation:** [◀ Phase 6 — Virtualization Hardware](Phase_6_Virtualization_Hardware.md) · **Phase 7** · [Checkpoint Quiz 2 ▶](Checkpoint_Quiz_2.md)

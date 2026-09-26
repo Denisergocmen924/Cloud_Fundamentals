@@ -1,6 +1,6 @@
 # Phase 3 — Storage (Persistent Memory)
 
-> **Navigation:** [◀ Phase 2 — Memory Hierarchy](Phase_2_Memory_Hierarchy.md) · **Phase 3** · [Phase 4 — System Buses and I/O ▶](Phase_4_Buses_and_IO.md)
+> **Navigation:** [◀ Phase 2 — Memory Hierarchy](Phase_2_Memory_Hierarchy.md) · **Phase 3** · [Checkpoint Quiz 1 ▶](Checkpoint_Quiz_1.md)
 
 ---
 
@@ -1383,4 +1383,4 @@ thanks to DMA" but never defined DMA. Phase 4 fills exactly this gap.
 
 ---
 
-> **Navigation:** [◀ Phase 2 — Memory Hierarchy](Phase_2_Memory_Hierarchy.md) · **Phase 3** · [Phase 4 — System Buses and I/O ▶](Phase_4_Buses_and_IO.md)
+> **Navigation:** [◀ Phase 2 — Memory Hierarchy](Phase_2_Memory_Hierarchy.md) · **Phase 3** · [Checkpoint Quiz 1 ▶](Checkpoint_Quiz_1.md)

@@ -1,6 +1,6 @@
 # Faz 7 — Cloud Bağlantısı
 
-> **Navigasyon:** [◀ Faz 6 — Sanallaştırma Donanımı](Faz_6_Sanallastirma_Donanimi.md) · **Faz 7** · [Haritanın başı ▶](README.md)
+> **Navigasyon:** [◀ Faz 6 — Sanallaştırma Donanımı](Faz_6_Sanallastirma_Donanimi.md) · **Faz 7** · [Ara Sınav 2 ▶](Ara_Sinav_2.md)
 
 ---
 
@@ -1758,8 +1758,8 @@ gerektirmedi.**
 
 *Faz 7 tamamlandı. **Hardware yol haritası bitti.***
 
-→ **[Haritanın başına dön](README.md)** · **[Ek A — Referans Tabloları](EK_A_Referans_Tablolari.md)** · **[Ek B — Terim Sözlüğü](EK_B_Terim_Sozlugu.md)**
+→ **[Ara Sınav 2 — Faz 4–7](Ara_Sinav_2.md)** · **[Haritanın başına dön](README.md)** · **[Ek A — Referans Tabloları](EK_A_Referans_Tablolari.md)** · **[Ek B — Terim Sözlüğü](EK_B_Terim_Sozlugu.md)**
 
 ---
 
-> **Navigasyon:** [◀ Faz 6 — Sanallaştırma Donanımı](Faz_6_Sanallastirma_Donanimi.md) · **Faz 7** · [Haritanın başı ▶](README.md)
+> **Navigasyon:** [◀ Faz 6 — Sanallaştırma Donanımı](Faz_6_Sanallastirma_Donanimi.md) · **Faz 7** · [Ara Sınav 2 ▶](Ara_Sinav_2.md)

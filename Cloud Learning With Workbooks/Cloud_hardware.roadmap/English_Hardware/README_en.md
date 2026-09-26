@@ -36,10 +36,12 @@ to finish on a plane, with no internet, entirely on your own.
 | [Phase_1_CPU_Architecture.md](Phase_1_CPU_Architecture.md) | 1 | ALU, fetch-decode-execute, clock, pipeline, core/vCPU, ISA | 5–7 hours |
 | [Phase_2_Memory_Hierarchy.md](Phase_2_Memory_Hierarchy.md) | 2 | Cache, RAM, virtual memory, swap, NUMA | 7–10 hours |
 | [Phase_3_Storage.md](Phase_3_Storage.md) | 3 | HDD, SSD, NVMe, IOPS/throughput/latency, RAID | 5–7 hours |
+| [**Checkpoint_Quiz_1.md**](Checkpoint_Quiz_1.md) | 0–3 | Combined quiz: from the transistor to the disk (21 questions) | 1 hour |
 | [Phase_4_Buses_and_IO.md](Phase_4_Buses_and_IO.md) | 4 | Bus, PCIe, DMA, interrupt, chipset | 4–5 hours |
 | [Phase_5_Network_Hardware.md](Phase_5_Network_Hardware.md) | 5 | NIC, switch, bandwidth/latency, RDMA | 3–4 hours |
 | [Phase_6_Virtualization_Hardware.md](Phase_6_Virtualization_Hardware.md) | 6 | Hypervisor, VT-x, EPT, vCPU scheduling, SR-IOV, container | 6–8 hours |
 | [Phase_7_Cloud_Connection.md](Phase_7_Cloud_Connection.md) | 7 | Instance families, Nitro, choosing EBS, noisy neighbors, bottleneck hunting | 5–7 hours |
+| [**Checkpoint_Quiz_2.md**](Checkpoint_Quiz_2.md) | 4–7 | Combined quiz: from the bus to the cloud decision (21 questions) | 1 hour |
 
 **Appendices:**
 
@@ -108,6 +110,15 @@ If you score below 70% on the test, **instead of repeating the phase**, go back 
 section the question you got wrong points to. Every answer key tells you which section it
 belongs to.
 
+### 5. Don't skip the checkpoint quizzes — they are different
+
+The test at the end of each phase asks one phase. The two **checkpoint quizzes** ask
+**the connections between phases**: *Quiz 1* after Phase 3 (transistor → CPU → memory → disk),
+*Quiz 2* after Phase 7 (bus → network → hypervisor → cloud decision). Each has 21 questions
+(connection reasoning, a scenario, and output reading), and its answer key tells you **which
+bridge between phases** a missed question points to. Doing them is what turns eight
+separate phases into one story.
+
 ---
 
 ## Progress tracking
@@ -119,10 +130,12 @@ Track your own position here. Check the box when you finish a phase.
 [ ] Phase 1 — CPU Architecture
 [ ] Phase 2 — Memory Hierarchy            ← the most critical phase, don't rush
 [ ] Phase 3 — Storage
+[ ] ✅ Checkpoint Quiz 1 (Phases 0–3)
 [ ] Phase 4 — System Buses and I/O
 [ ] Phase 5 — Network Hardware
 [ ] Phase 6 — Virtualization Hardware     ← the phase of "aha" moments
 [ ] Phase 7 — Cloud Connection            ← not a learning phase, a decision-making phase
+[ ] ✅ Checkpoint Quiz 2 (Phases 4–7)
 ```
 
 ---

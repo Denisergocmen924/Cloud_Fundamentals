@@ -35,10 +35,12 @@ baştan sona işleyebilirsin.
 | [Faz_1_CPU_Mimarisi.md](Faz_1_CPU_Mimarisi.md) | 1 | ALU, fetch-decode-execute, clock, pipeline, core/vCPU, ISA | 5–7 saat |
 | [Faz_2_Bellek_Hiyerarsisi.md](Faz_2_Bellek_Hiyerarsisi.md) | 2 | Cache, RAM, sanal bellek, swap, NUMA | 7–10 saat |
 | [Faz_3_Depolama.md](Faz_3_Depolama.md) | 3 | HDD, SSD, NVMe, IOPS/throughput/latency, RAID | 5–7 saat |
+| [**Ara_Sinav_1.md**](Ara_Sinav_1.md) | 0–3 | Birleşik sınav: transistörden diske (21 soru) | 1 saat |
 | [Faz_4_Bus_ve_IO.md](Faz_4_Bus_ve_IO.md) | 4 | Bus, PCIe, DMA, interrupt, chipset | 4–5 saat |
 | [Faz_5_Ag_Donanimi.md](Faz_5_Ag_Donanimi.md) | 5 | NIC, switch, bandwidth/latency, RDMA | 3–4 saat |
 | [Faz_6_Sanallastirma_Donanimi.md](Faz_6_Sanallastirma_Donanimi.md) | 6 | Hypervisor, VT-x, EPT, vCPU scheduling, SR-IOV, container | 6–8 saat |
 | [Faz_7_Cloud_Baglantisi.md](Faz_7_Cloud_Baglantisi.md) | 7 | Instance aileleri, Nitro, EBS seçimi, noisy neighbor, darboğaz avı | 5–7 saat |
+| [**Ara_Sinav_2.md**](Ara_Sinav_2.md) | 4–7 | Birleşik sınav: bus'tan cloud kararına (21 soru) | 1 saat |
 
 **Ekler:**
 
@@ -102,6 +104,14 @@ Her faz şununla biter:
 Testte %70'in altında kaldıysan **fazı tekrar etmek yerine**, yanlış yaptığın sorunun
 işaret ettiği bölüme geri dön. Her cevap anahtarı hangi bölüme ait olduğunu söyler.
 
+### 5. Ara sınavları atlama — onlar farklı
+
+Her fazın sonundaki test tek bir fazı sorar. İki **ara sınav ise fazlar arasındaki bağlantıları**
+sorar: *Sınav 1* Faz 3'ten sonra (transistör → CPU → bellek → disk), *Sınav 2* Faz 7'den sonra
+(bus → ağ → hypervisor → cloud kararı). Her birinde 21 soru var (bağlantı muhakemesi, bir senaryo ve
+çıktı okuma) ve cevap anahtarı, kaçırdığın sorunun **fazlar arasındaki hangi köprüyü** işaret ettiğini
+söyler. Sekiz ayrı fazı tek bir hikâyeye çeviren şey bunları yapmaktır.
+
 ---
 
 ## İlerleme takibi
@@ -113,10 +123,12 @@ Kendi konumunu buradan takip et. Bir fazı bitirdiğinde kutuyu işaretle.
 [ ] Faz 1 — CPU Mimarisi
 [ ] Faz 2 — Bellek Hiyerarşisi          ← en kritik faz, acele etme
 [ ] Faz 3 — Depolama
+[ ] ✅ Ara Sınav 1 (Faz 0–3)
 [ ] Faz 4 — Sistem Bus'ları ve I/O
 [ ] Faz 5 — Ağ Donanımı
 [ ] Faz 6 — Sanallaştırma Donanımı      ← "aha" anlarının fazı
 [ ] Faz 7 — Cloud Bağlantısı            ← öğrenme değil, karar verme fazı
+[ ] ✅ Ara Sınav 2 (Faz 4–7)
 ```
 
 ---
