@@ -275,6 +275,10 @@ least load" principle.
 > `journalctl --disk-usage` and `df -h /var/log` together answer "are the logs filling the disk" — this is the
 > early-warning indicator of the log-explosion trap in 9.4.2.
 
+
+> **🤔 Think 9.3** — A colleague enables auditd on a busy production server with the rule "log every file access", "for maximum security". Two hours later the server slows down, then services start dying. (a) What is the most likely chain of events? (b) Which commands from this section confirm it? (c) How do you fix it without giving up auditing?
+>
+> *(Answer: at the end of the phase)*
 ---
 ---
 
@@ -305,6 +309,10 @@ kernel modules, killing other processes). The blast radius shrinks dramatically.
 > the `cap_net_raw` capability — the one privilege it needs. In a systemd unit you can also grant this with
 > `AmbientCapabilities=CAP_NET_BIND_SERVICE` (a Phase 8 connection).
 
+
+> **🤔 Think 9.4** — Your application must listen on port 443. A colleague says "just run it as root, ports below 1024 need it." (a) Which principle of this phase does that violate? (b) What is the minimum privilege that solves the need, and how do you give it in a systemd unit? (c) If the application is compromised, what can the attacker still NOT do?
+>
+> *(Answer: at the end of the phase)*
 ---
 ---
 
@@ -347,7 +355,7 @@ The correct model is to **remove** the secret from the machine entirely. Two app
 > the whole failure class of secret leakage largely disappears. "A secret that does not exist cannot leak" —
 > this is the single strongest lesson of the phase.
 
-> **🤔 Think 9.3** — Your application will read a file from S3. Two designs: (A) write an IAM user's access key
+> **🤔 Think 9.5** — Your application will read a file from S3. Two designs: (A) write an IAM user's access key
 > into the application's config file; (B) attach an IAM role to the instance and let the application access
 > keyless. (a) In (A), if the access key leaks (e.g. the config lands in git), what happens, and what must you
 > do to limit the damage? (b) Why does (B) largely eliminate this risk class — what gets written to disk?
@@ -412,7 +420,17 @@ path to it as allowed (if needed, first use `complain` mode to see what is requi
 only the needed path, not the whole profile.
 **Related section:** 9.3.1-9.3.2 · **Continues in:** the 9.7 failure table (row 1).
 
-## Answer 9.3 — A leaked key must be rotated; an IAM role writes no key to disk
+## Answer 9.3 — The security tool became the denial-of-service source: narrow the rules, limit and rotate
+
+(a) A very broad rule makes auditd produce thousands of events per second; they flood journald and `/var/log`, the disk fills (Phase 6) and the I/O bottleneck slows the whole machine — then services die because the disk is full. (b) `sudo systemctl status auditd`, `sudo journalctl --disk-usage` and `df -h /var/log`: the last two together answer "are the logs filling the disk". (c) Do not turn auditing off; first free space, then **narrow** the rules to events that truly matter (changes to `/etc/passwd`, `/etc/sudoers`, privileged commands), **rate-limit** auditd and put rotation on the logs (Phase 5/6). Even a security tool obeys "least privilege / least load".
+**Related section:** 9.4.1-9.4.2 · **Continues in:** 11.1.2 (logrotate)
+
+## Answer 9.4 — Grant one fine-grained capability, not the whole of root
+
+(a) The principle of least privilege (9.1): the whole of root is being handed over for a single privilege. (b) The `CAP_NET_BIND_SERVICE` capability — "may bind privileged ports, nothing else". In the unit: `User=appuser` plus `AmbientCapabilities=CAP_NET_BIND_SERVICE` (alternatively `setcap 'cap_net_bind_service=+ep'` on the binary, 🔴 — note the current value first with `getcap`; undo with `setcap -r`). (c) The process opens port 443 but has none of root's other powers: it cannot read files beyond what `appuser`'s DAC permits, cannot load kernel modules and cannot kill other users' processes — the blast radius shrinks to the size of `appuser`.
+**Related section:** 9.5.1 · **Continues in:** 12.3.2 (the systemd service)
+
+## Answer 9.5 — A leaked key must be rotated; an IAM role writes no key to disk
 
 (a) In (A), because the access key is written in plaintext in the config file, the moment the config lands in
 git the key counts as **leaked** — even if you delete it from history it remains in git history and every

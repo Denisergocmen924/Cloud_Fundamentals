@@ -294,6 +294,10 @@ Forcing the wrong tool (500 lines of Bash, or Python for a single `mv`) is a mis
 > machine up, Python does the work. Drawing the right boundary is the foundation of automation that scales and
 > is maintainable.
 
+
+> **🤔 Think 10.3** — A script has grown to 400 lines: it calls a REST API with pagination, "parses" nested JSON with grep/sed pipelines and must retry on HTTP 429. Every few weeks a small change breaks it silently. (a) Which of the rules in 10.3.1 does it hit? (b) What should you do? (c) What legitimately stays in Bash?
+>
+> *(Answer: at the end of the phase)*
 ---
 ---
 
@@ -348,7 +352,7 @@ code**.
 > all of them lie this phase's two lessons: robustness (do not break silently) and idempotency (the same result
 > on re-run). Understanding these two ideas before learning any tool pays off whichever tool you use.
 
-> **🤔 Think 10.3** — A cloud-init user-data script of yours installs a package and adds a configuration line
+> **🤔 Think 10.4** — A cloud-init user-data script of yours installs a package and adds a configuration line
 > to `/etc/app.conf`. One day the instance reboots and part of cloud-init re-runs. (a) If the script is not
 > idempotent (adds the line with `>>`), what happens to the config file? (b) Which single pattern would you use
 > to make it idempotent? (c) Why is this a small example of the "immutable rebuild" philosophy — how do
@@ -413,7 +417,12 @@ explicitly gives the same guarantee. Two layers (fail-fast + explicit check) cut
 the destructive command.
 **Related section:** 10.2.1, 10.2.3 · **Continues in:** the 10.5 failure table (rows 1, 3).
 
-## Answer 10.3 — The config file bloats; conditional adding; idempotency = state equals code
+## Answer 10.3 — It hits all four rules: move the logic to Python, keep Bash as glue
+
+(a) All four: logic beyond ~20 lines, structured JSON data parsed with fragile `grep`/`sed`, HTTP/API work (pagination, retries) and testability — nobody can write tests for it. (b) Rewrite the core in Python (`requests` for pagination and retries, the `json` module for parsing) and add tests; the silent breakage is the price of forcing the wrong tool. (c) Bash keeps the glue: the user-data one-liner that installs Python and runs `python3 tool.py`, moving files, starting services. Bash brings the machine up, Python does the work.
+**Related section:** 10.3.1 · **Continues in:** 12.2.1 (cloud-init user-data)
+
+## Answer 10.4 — The config file bloats; conditional adding; idempotency = state equals code
 
 (a) If the script is not idempotent and adds the line with `>>`, then every time cloud-init re-runs it adds
 **the same line again** — the config file bloats over time with copies of the same line, and even

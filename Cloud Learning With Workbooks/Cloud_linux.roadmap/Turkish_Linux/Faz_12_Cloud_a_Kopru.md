@@ -107,6 +107,10 @@ bir imaj alır ve ondan yeni makineler üretirsin.
 > ayağa kalkar — Faz 10'un "mutable yamama vs immutable yeniden inşa" felsefesi tam olarak budur. AMI, "bir kez
 > doğru kur, sonra tekrar üret" fikrinin somut aracıdır.
 
+
+> **🤔 Düşün 12.1** — X takımı boş bir Ubuntu AMI başlatıp paketlerini her seferinde SSH ile elle kuruyor. Y takımı bir kez kurup sertleştiriyor, sonra kendi AMI'sini pişiriyor. Autoscaling'in bir dakika içinde 10 instance eklemesi gerekiyor ve az önce kritik bir güvenlik yaması çıktı. (a) Hangi takım daha hızlı ölçeklenir ve neden? (b) Her takım yamayı nasıl uygular? (c) Bu, önceki fazlardaki hangi fikirdir?
+>
+> *(Cevap: fazın sonunda)*
 ---
 ---
 
@@ -141,7 +145,7 @@ hiçbir şey değil) ve **patlama yarıçapını daraltmak** (makine ele geçiri
 kimlik bilgileri geçici ve dönüyor). Faz 9'un "Secrets Manager / IAM role" cloud kutusu tam olarak buydu: sır
 diskte durmaz, kimlik makinenin kimliğinden gelir.
 
-> **🤔 Düşün 12.1** — Bir EC2 instance'ının S3'e dosya yazması gerekiyor. İki yol var: (a) AWS erişim anahtarını
+> **🤔 Düşün 12.2** — Bir EC2 instance'ının S3'e dosya yazması gerekiyor. İki yol var: (a) AWS erişim anahtarını
 > user-data ile diske yazmak, (b) instance'a bir IAM role atamak. (a) Her iki yolda da makine S3'e yazabilir —
 > peki güvenlik açısından fark ne, "patlama yarıçapı" (Faz 9) hangisinde daha küçük ve neden? (b) IAM role
 > kullanınca kimlik bilgileri **nerede** durur, disk ele geçirilince ne kaybedilir? (c) Bu, Faz 9'un "sır diskte
@@ -191,7 +195,7 @@ Faz 8'in "kurulu olmak ≠ servis olarak çalışıyor olmak" ve Faz 5'in "çal�
 production'ın kalbidir: `systemctl enable --now myapp` ile hem şimdi başlatır (çalışan durum) hem boot'a
 yazarsın (kalıcı tanım). Ve `User=myapp` ile Faz 9'un "root olarak çalıştırma" dersini uygularsın.
 
-> **🤔 Düşün 12.2** — Bir EBS volume'u `/data`'ya mount ettin ve uygulamanı çalıştırdın, her şey iyi. Ama
+> **🤔 Düşün 12.3** — Bir EBS volume'u `/data`'ya mount ettin ve uygulamanı çalıştırdın, her şey iyi. Ama
 > `/etc/fstab`'a eklemeyi unuttun. Ertesi hafta instance reboot etti. (a) Reboot sonrası `/data` ne durumda,
 > uygulaman ne görür? (b) Bu, Faz 6'nın hangi dersinin (iki fikir) production'daki tam karşılığıdır? (c)
 > Uygulamanı systemd servisi olarak çalıştırıyor olman bu durumu nasıl daha kötü ya da daha görünür yapar —
@@ -235,6 +239,10 @@ user-data'ya baştan** koyarsın — gözlemlenebilirlik sonradan eklenen değil
 > "SG + host + bind" olur. Junior mühendis sadece SG'ye bakar; usta üç katmanı da eler. İşte bu workbook'un tüm
 > amacı buydu: soyutlamanın altını görmek.
 
+
+> **🤔 Düşün 12.4** — Kullanıcılar web uygulamana 443'ten ulaşamıyor. Security group 0.0.0.0/0'dan 443'e izin veriyor ve yeni bir meslektaşın "SG doğru, demek ki sorun ağda değil" sonucuna varıyor. (a) Trafiği yine de hangi iki başka katman engelleyebilir? (b) Her katmanı hangi komut inceler? (c) SG neden bu ikisini göremez?
+>
+> *(Cevap: fazın sonunda)*
 ---
 ---
 
@@ -263,7 +271,7 @@ sahip olarak koşar. "Sunucusuz" demek "Linux yok" demek değil — "Linux'u **s
 en yükseğe çıktığında bile, altında bu workbook'un tüm temelleri (process, bellek, dosya sistemi, izin) hâlâ
 oradadır.
 
-> **🤔 Düşün 12.3** — Bir arkadaşın "Lambda kullanıyorum, artık Linux öğrenmeme gerek yok" diyor. (a) Lambda'nın
+> **🤔 Düşün 12.5** — Bir arkadaşın "Lambda kullanıyorum, artık Linux öğrenmeme gerek yok" diyor. (a) Lambda'nın
 > altında hangi Linux gerçekleri hâlâ çalışıyor (en az üç tane say)? (b) Lambda fonksiyonun "out of memory"
 > hatası verirse ya da `/tmp` dolu derse, bu workbook'un hangi fazlarının bilgisi işine yarar? (c) "Soyutlama
 > yükseldikçe Linux bilgisi gereksizleşir" iddiasına, bu fazın merkez fikriyle ("AWS soyutlamaları Linux'un
@@ -303,7 +311,12 @@ Bu fazın "bozulması", boot'tan production'a yolculuğun bir halkasının kopma
 
 # Faz 12 — Düşün sorularının cevapları
 
-## Cevap 12.1 — IAM role vs diskteki anahtar; patlama yarıçapı; sır diskte durmasın
+## Cevap 12.1 — Pişirilmiş imaj: yeni makine dondurulmuş ve hazır başlar, yamalar tarif üzerinden geçer
+
+(a) Y takımı: instance'ları donmuş durumdan saniyeler içinde kalkar; X ise her makinede kurulumu beklemek zorundadır ve her seferinde farklı bir sonuç riski (drift, insan hatası) vardır. (b) X makineleri tek tek SSH ile yamar (mutable — filo birbirinden ayrışır). Y tarifi günceller, yeni bir AMI pişirir ve eski instance'ları değiştirir (immutable — her makine aynıdır). (c) Faz 8/10'un "mutable yamalama vs immutable yeniden inşa"sı: bir kez doğru kur, sonra çoğalt.
+**İlgili bölüm:** 12.1.1 · **Devamı:** 12.2.1 (cloud-init user-data)
+
+## Cevap 12.2 — IAM role vs diskteki anahtar; patlama yarıçapı; sır diskte durmasın
 
 (a) Her iki yolda da makine S3'e yazabilir, ama güvenlik farkı büyüktür: diske yazılan AWS anahtarı **kalıcı** ve
 **statik**tir — makine ele geçirilirse (Faz 9), saldırgan bu anahtarı okur ve onunla dilediği yerden, dilediği
@@ -316,7 +329,7 @@ anahtar) hiç diske yazılmaz, kimlik makinenin **kendi kimliğinden** (IAM role
 küçük patlama yarıçapı birlikte sağlanır.
 **İlgili bölüm:** 12.2.2 · **Bağlanır:** Faz 9 (sırlar, patlama yarıçapı).
 
-## Cevap 12.2 — fstab'a eklenmeyen mount; çalışan vs kalıcı; systemd ile daha görünür
+## Cevap 12.3 — fstab'a eklenmeyen mount; çalışan vs kalıcı; systemd ile daha görünür
 
 (a) Reboot sonrası `/data` **boştur** — çünkü mount sadece "çalışan durum"du, kalıcı tanıma (fstab) yazılmadı;
 EBS volume hâlâ orada ama `/data`'ya bağlı değil. Uygulaman `/data`'ya baktığında ya boş bir dizin ya da (mount
@@ -329,7 +342,12 @@ daha görünür yapar: servis boot'ta otomatik başlar (Faz 5 — kalıcı tanı
 `/data`'nın mount edilmediğini kanıtlar — kanıt zinciri seni fstab eksikliğine götürür.
 **İlgili bölüm:** 12.3.1-12.3.2 · **Bağlanır:** Faz 6, Faz 5, Faz 11.
 
-## Cevap 12.3 — Lambda'nın altındaki Linux; OOM/tmp; soyutlama yükseldikçe
+## Cevap 12.4 — SG + host firewall + bind adresi: üç katmanı da ele
+
+(a) Host firewall (makinenin içindeki ufw/iptables) ve uygulamanın bind adresi (yalnızca `127.0.0.1`'i dinleyen servis, SG ne derse desin dışarıdan erişilemez); AppArmor/SELinux ise sürecin neye erişebileceğini sınırlayan ek bir iç kilittir. (b) SG: `aws ec2 describe-security-groups` (ya da konsol); host firewall: `sudo ufw status`; bind: `ss -tulpn`. (c) SG trafiği instance'a **ulaşmadan önce** süzer; OS'in içinde olanlar — host firewall kuralları ve sürecin hangi adresi dinlediği — onun görüş alanı dışındadır. Junior yalnızca SG'ye bakar; usta üç katmanı da eler.
+**İlgili bölüm:** 12.4.1 · **Devamı:** 11.4.2 ("Neden erişilemiyor?")
+
+## Cevap 12.5 — Lambda'nın altındaki Linux; OOM/tmp; soyutlama yükseldikçe
 
 (a) Lambda'nın altında hâlâ çalışan Linux gerçekleri (en az üç): fonksiyon bir **Linux process'i** olarak koşar
 (Faz 3); bir **bellek sınırı** vardır ve cgroup ile uygulanır (Faz 4 + 3.6); bir **dosya sistemi** vardır
@@ -432,7 +450,7 @@ test eder. Cevaplarını kâğıda yaz. Hedef: 18 üzerinden 14+.
 9. systemd servisi failed; `systemctl status myapp` + `journalctl -u myapp` (status check ≠ uygulama) (12.6, Faz
    8+11). — 10. cloud-init script'i sessizce hata verip devam etti; `set -euo pipefail` (Faz 10) önlerdi;
    cloud-init logunu (`/var/log/cloud-init-output.log`) oku (12.6). — 11. Mount fstab'a eklenmedi; `/etc/fstab`'a
-   UUID ile ekle; "çalışan mount ≠ kalıcı tanım" (Faz 6) (12.3.1, Cevap 12.2). — 12. Yetki ağ değil **kimlik**
+   UUID ile ekle; "çalışan mount ≠ kalıcı tanım" (Faz 6) (12.3.1, Cevap 12.3). — 12. Yetki ağ değil **kimlik**
    katmanında; IAM role eksik/yanlış — doğru izinli bir role ata (Faz 9) (12.6). — 13. Uygulama 127.0.0.1'e bind
    olmuş; `ss -tulpn | grep <port>` ile bind adresini gör (dinleme ≠ doğru adres, Faz 7 üç mercek) (12.6). —
    14. CloudWatch agent'ı AMI/user-data'ya baştan koymalıydın; "kanıtı önceden dışarı taşı" (Faz 11) (12.4.2). —

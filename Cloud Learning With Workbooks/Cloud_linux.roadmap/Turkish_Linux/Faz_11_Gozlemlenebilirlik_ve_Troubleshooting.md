@@ -131,6 +131,10 @@ altındaki config'ler her servisin log dosyasının ne zaman döndürüleceğini
 > logrotate'i loğu sildi ya da disk dolu olduğu için yazamıyor (`df -h` → Faz 6). "Log yok" bir cevap değil,
 > yeni bir sorudur: neden yok?
 
+
+> **🤔 Düşün 11.1** — Bir servis başlangıçta çöküyor ve `systemctl status myapp` yalnızca "failed" ile işe yaramaz iki satır gösteriyor. (a) Sonra ne çalıştırırsın ve neden? (b) Servis çöktü ve makine gece yeniden başladı — reboot öncesi log'a hangi filtre ulaştırır? (c) Hiç log bulamıyorsun: üç olasılık nedir?
+>
+> *(Cevap: fazın sonunda)*
 ---
 ---
 
@@ -157,7 +161,7 @@ ancak eldeki katmanı elediğinde geç.
 
 ![Şekil 11.1 — Katman katman debugging metodolojisi. "Uygulama açılmıyor" belirtisinden başlayan, beş katmandan geçen bir karar akışı: (1) Uygulama logu — journalctl -u / /var/log; (2) Servis durumu — systemctl status; (3) Kaynak — top / free / iostat / dmesg (OOM); (4) Ağ — ss -tulpn / curl / dig; (5) Çekirdek — dmesg / journalctl -k. Her katmanda "kanıt burada mı?" sorusu sorulur; kanıt bulunduysa neden tespit edilir, bulunmadıysa bir alt katmana inilir. Yanda "en ucuz ve en olası kontrolden en derin ve en nadire" yönünü gösteren bir ok. Altta ders: rastgele deneme değil, katman katman kanıtla daraltma.](../diagrams/png/lx-11-01-debugging-layers.png)
 
-> **🤔 Düşün 11.1** — Bir web uygulaması "açılmıyor" (tarayıcıda zaman aşımı). Elindeki tek bilgi bu. (a) Yukarıdaki
+> **🤔 Düşün 11.2** — Bir web uygulaması "açılmıyor" (tarayıcıda zaman aşımı). Elindeki tek bilgi bu. (a) Yukarıdaki
 > beş katmanı sırayla uygularsan, her katmanda hangi tek komutu çalıştırırsın ve ne ararsın? (b) `systemctl
 > status` "active (running)" diyorsa ama tarayıcı hâlâ açılmıyorsa, hangi katmana geçersin ve neden? (c) Neden
 > bu sıra (log→servis→kaynak→ağ→çekirdek) "önce yeniden başlat" refleksinden daha iyidir?
@@ -223,7 +227,7 @@ kesinliğine dönüşür. Ağırdır ve process'i yavaşlatır, o yüzden **son 
 > 11.5), makineye girmeden oku; (2) makineye girmek için SSM Session Manager kullan (SSH portu açık olmasa
 > bile). Yerelde `strace` nihai hakemse, cloud'da "kanıtı makinenin dışına taşımak" nihai stratejidir.
 
-> **🤔 Düşün 11.2** — Bir servis `systemctl status` ile "active (running)" görünüyor, log yazmıyor, `top`'ta
+> **🤔 Düşün 11.3** — Bir servis `systemctl status` ile "active (running)" görünüyor, log yazmıyor, `top`'ta
 > CPU/RAM normal, ama isteklere cevap vermiyor (takılmış). (a) Bu dört gözlem (durum, log, kaynak) neden
 > yetersiz kaldı — her biri neyi göremez? (b) `strace -p <pid>` ile process'e bağlansan ve `read()` ya da
 > `futex()` çağrısında "asılı" kaldığını görsen, bu sana ne söyler? (c) Neden `strace` bu durumda "nihai
@@ -270,7 +274,7 @@ kırıldı? Boot → init (systemd) → hedef (target) → servis birimi → uyg
 durum vs kalıcı tanım" fikri burada kritiktir: servis **enabled** mı (boot'ta başlamalı) ama **failed** mı? Yoksa
 hiç enabled değil mi? Zincirin hangi halkasının koptuğunu bulursun.
 
-> **🤔 Düşün 11.3** — Bir EC2 instance'ı reboot sonrası açıldı, `ping` cevap veriyor, SSH çalışıyor, ama üzerinde
+> **🤔 Düşün 11.4** — Bir EC2 instance'ı reboot sonrası açıldı, `ping` cevap veriyor, SSH çalışıyor, ama üzerinde
 > koşması gereken web uygulaması yok. (a) "Boot'tan servise" zincirini (init → target → birim → uygulama) hangi
 > komutlarla adım adım kontrol edersin? (b) `systemctl is-enabled myapp` "disabled" dönerse sorun nedir, ve bu
 > Faz 5'in "çalışan durum vs kalıcı tanım" fikrine nasıl bağlanır? (c) Eğer "enabled" ama "failed" dönerse,
@@ -318,6 +322,10 @@ uygula. AWS'in "healthy" etiketi teşhisin başlangıcıdır, sonu değil.
 > koyarsın. "Gözlemlenebilirlik" bir düzeltme değil, bir **tasarım kararıdır** — sistemi kurarken kanıtın nasıl
 > dışarı akacağını da tasarlarsın.
 
+
+> **🤔 Düşün 11.5** — AWS konsolu bir instance için "2/2 kontrol geçti" gösteriyor, ama uygulama hata veriyor. Bir meslektaşın "AWS sağlıklı diyor, demek ki sorun makinede değil" diyor. (a) Neden yanılıyor? (b) SSH açmadan kanıtı hangi sırayla toplarsın? (c) Olaydan önce ne yapılmış olmalıydı?
+>
+> *(Cevap: fazın sonunda)*
 ---
 ---
 
@@ -350,7 +358,12 @@ gizler:
 
 # Faz 11 — Düşün sorularının cevapları
 
-## Cevap 11.1 — Beş katmanı sırayla uygulamak, "önce yeniden başlat" refleksinden neden iyi
+## Cevap 11.1 — Önce journal'ı oku: `journalctl -u`, reboot sonrası `-b -1`
+
+(a) `journalctl -u myapp -e` — `systemctl status` yalnızca son birkaç satırı gösterir; gerçek sebep (yapılandırma ayrıştırma hatası, port çakışması, permission denied) çoğunlukla journal'da görünür. Refleks: önce log'u oku, sonra tahmin et. (b) `journalctl -b -1 -u myapp` — bir önceki boot'un logları. (c) "Log yok" bir cevap değil yeni bir sorudur: (1) servis hiç başlamadı (bozuk unit — `journalctl -u`), (2) log'u başka yere yazıyor (stdout yerine dosyaya — yapılandırmaya bak), (3) logrotate log'u sildi ya da disk dolu olduğu için yazamıyor (`df -h`, Faz 6).
+**İlgili bölüm:** 11.1.1-11.1.2 · **Devamı:** 11.2.1 (sistematik daraltma)
+
+## Cevap 11.2 — Beş katmanı sırayla uygulamak, "önce yeniden başlat" refleksinden neden iyi
 
 (a) Her katmanda tek komut ve aranan: **(1) Log** — `journalctl -u myapp -e` → hata satırı, exception,
 "connection refused", "permission denied" ara. **(2) Servis** — `systemctl status myapp` → active mi, failed
@@ -365,7 +378,7 @@ maskeler**: sorun geri gelir, üstelik yeniden başlatma logları da temizleyebi
 katman ise her adımda kanıt biriktirir, kök nedeni bulur ve kalıcı çözer.
 **İlgili bölüm:** 11.2.1 · **Devamı:** 11.4 üç içgüdü sorusu.
 
-## Cevap 11.2 — Durum/log/kaynak neden yetersiz kaldı; strace neden nihai hakem
+## Cevap 11.3 — Durum/log/kaynak neden yetersiz kaldı; strace neden nihai hakem
 
 (a) Üç gözlem şunu göremez: **`systemctl status`** sadece process'in **var olduğunu** söyler, ne yaptığını değil
 — "running" bir process pekâlâ bir kilitte (deadlock) veya bir I/O'da sonsuza kadar bekliyor olabilir. **Log**
@@ -380,7 +393,7 @@ gösterir — diğer araçların göremediği "process'in kernel'e ne sorduğu v
 kalan her yerde o konuşur.
 **İlgili bölüm:** 11.3.2 · **Devamı:** 11.5 cloud'da SSH'siz kanıt.
 
-## Cevap 11.3 — Boot'tan servise zinciri; enabled vs failed; çalışan durum vs kalıcı tanım
+## Cevap 11.4 — Boot'tan servise zinciri; enabled vs failed; çalışan durum vs kalıcı tanım
 
 (a) Zincir adım adım: `systemctl get-default` (hangi target'a boot etti) → `systemctl list-units --failed`
 (başarısız birim var mı) → `systemctl status myapp` (birimin durumu) → `journalctl -u myapp -b` (bu boot'ta ne
@@ -392,6 +405,11 @@ durum ≠ kalıcı tanım" dersidir. Çözüm: `systemctl enable myapp`. (c) "en
 `journalctl -u myapp -b` — birim boot'ta başlamayı denedi ama neden başaramadığını (config hatası, eksik bağımlılık,
 izin) log söyler.
 **İlgili bölüm:** 11.4.3 · **Devamı:** 11.5 "instance sağlıklı ama uygulama değil".
+
+## Cevap 11.5 — Sağlıklı instance ≠ çalışan uygulama: önce CloudWatch Logs, sonra SSM
+
+(a) Durum kontrolleri yalnızca iki şeye bakar: sistem durumu (alttaki donanım/hypervisor) ve instance durumu (OS açıldı ve erişilebilir). İkisi de uygulamana bakmaz; içerideki systemd servisi failed durumunda olabilir ve AWS yine de "sağlıklı" der — "kurulu ≠ servis olarak çalışıyor"un cloud biçimi. (b) Önce CloudWatch Logs (SSH gerekmez), sonra IAM üzerinden içeri girmek için SSM Session Manager; içeride katman katman metodoloji: log → servis → kaynak → ağ. (c) CloudWatch agent'ı ve SSM AMI'de ya da user-data'da **önceden** olmalıydı — makine çöktükten sonra agent kurulamaz; gözlemlenebilirlik bir tasarım kararıdır.
+**İlgili bölüm:** 11.5.1-11.5.2 · **Devamı:** 12.4.2 (CloudWatch)
 
 ---
 ---
@@ -473,8 +491,8 @@ Cevaplarını kâğıda yaz, sonra anahtarla karşılaştır. Hedef: 18 üzerind
 
 9. (1) `journalctl -u myapp -e` → hata satırı; (2) `systemctl status myapp` → failed/running; (3) `top`+`free`
    → CPU/RAM/OOM (11.2.1). — 10. Ağ katmanı; `ss -tulpn | grep <port>` → port dinleniyor mu, 127.0.0.1'e mi
-   bind (Faz 7 tuzağı) (Cevap 11.1b). — 11. Servis "çalışan durum" olarak elle başlatılmış ama "kalıcı tanıma"
-   (enable) eklenmemiş; reboot'ta kayboldu; çözüm `systemctl enable myapp` (Faz 5) (Cevap 11.3b). — 12. `strace
+   bind (Faz 7 tuzağı) (Cevap 11.2b). — 11. Servis "çalışan durum" olarak elle başlatılmış ama "kalıcı tanıma"
+   (enable) eklenmemiş; reboot'ta kayboldu; çözüm `systemctl enable myapp` (Faz 5) (Cevap 11.4b). — 12. `strace
    -p <pid>` — hangi sistem çağrısında (read/futex) asılı kaldığını gösterir; diğer araçlar bunu göremez
    (11.3.2). — 13. CloudWatch Logs (SSH'siz log oku) + SSM Session Manager (içeri gir); status check ≠ uygulama
    (11.5). — 14. MAC (`dmesg | grep -i denied`, AppArmor/SELinux) ve capability (`CAP_NET_BIND_SERVICE`); Faz 9

@@ -291,6 +291,10 @@ Yanlış aracı zorlamak (500 satırlık Bash, ya da tek `mv` için Python) her 
 > ayağa kaldırır, Python işi yapar. Doğru sınırı çizmek, ölçeklenen ve bakımı yapılabilen otomasyonun
 > temelidir.
 
+
+> **🤔 Düşün 10.3** — Bir script 400 satıra çıktı: sayfalamalı bir REST API'yi çağırıyor, iç içe JSON'u grep/sed boru hatlarıyla "ayrıştırıyor" ve HTTP 429'da yeniden denemek zorunda. Birkaç haftada bir küçük bir değişiklik onu sessizce bozuyor. (a) 10.3.1'deki kurallardan hangilerine takılıyor? (b) Ne yapmalısın? (c) Bash'te meşru olarak ne kalır?
+>
+> *(Cevap: fazın sonunda)*
 ---
 ---
 
@@ -343,7 +347,7 @@ yüzden bu faz, tek bir script yazmayı değil, **tüm altyapıyı tekrarlanabil
 > hepsinin altında bu fazın iki dersi yatar: sağlamlık (sessizce bozma) ve idempotency (tekrar çalışınca aynı
 > sonuç). Bir aracı öğrenmeden önce bu iki fikri anlamak, hangi aracı kullanırsan kullan işe yarar.
 
-> **🤔 Düşün 10.3** — Bir cloud-init user-data script'in bir paket kuruyor ve `/etc/app.conf`'a bir yapılandırma
+> **🤔 Düşün 10.4** — Bir cloud-init user-data script'in bir paket kuruyor ve `/etc/app.conf`'a bir yapılandırma
 > satırı ekliyor. Bir gün instance yeniden boot ediyor ve cloud-init'in bir kısmı yeniden çalışıyor. (a)
 > Script idempotent değilse (`>>` ile satır ekliyor) config dosyasına ne olur? (b) Bunu idempotent yapmak için
 > hangi tek deseni kullanırsın? (c) Bu neden "immutable yeniden inşa" felsefesinin küçük bir örneğidir —
@@ -407,7 +411,12 @@ belki kritik bir dizin silinir — `cd`'nin sessiz başarısızlığı yıkıcı
 başarısızlığı yıkıcı komuttan önce keser.
 **İlgili bölüm:** 10.2.1, 10.2.3 · **Devamı:** 10.5 arıza tablosu (satır 1, 3).
 
-## Cevap 10.3 — Config dosyası şişer; koşullu ekleme; idempotency = durum kod'a eşit
+## Cevap 10.3 — Dört kurala da takılıyor: mantığı Python'a taşı, Bash'i yapıştırıcı olarak tut
+
+(a) Dördüne de: ~20 satırı aşan mantık, kırılgan `grep`/`sed` ile ayrıştırılan yapısal JSON verisi, HTTP/API işi (sayfalama, yeniden deneme) ve test edilebilirlik — bunun için kimse test yazamaz. (b) Çekirdeği Python'da yeniden yaz (sayfalama ve yeniden deneme için `requests`, ayrıştırma için `json` modülü) ve test ekle; sessiz bozulmalar yanlış aracı zorlamanın bedelidir. (c) Bash yapıştırıcıyı tutar: Python'u kurup `python3 tool.py` çalıştıran user-data tek satırı, dosya taşıma, servis başlatma. Bash makineyi ayağa kaldırır, Python işi yapar.
+**İlgili bölüm:** 10.3.1 · **Devamı:** 12.2.1 (cloud-init user-data)
+
+## Cevap 10.4 — Config dosyası şişer; koşullu ekleme; idempotency = durum kod'a eşit
 
 (a) Script idempotent değilse ve `>>` ile satır ekliyorsa, cloud-init her yeniden çalıştığında **aynı satırı
 bir daha** ekler — config dosyası zamanla aynı satırın kopyalarıyla şişer, hatta çelişkili/çift ayarlar

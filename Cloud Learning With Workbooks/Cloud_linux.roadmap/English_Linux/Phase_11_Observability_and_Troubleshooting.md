@@ -132,6 +132,10 @@ configs under `/etc/logrotate.d/` define when each service's log file is rotated
 > config), (3) logrotate deleted the log or the disk is full so it can't write (`df -h` → Phase 6). "No log" is
 > not an answer, it is a new question: why is there none?
 
+
+> **🤔 Think 11.1** — A service fails at start and `systemctl status myapp` shows only "failed" plus two unhelpful lines. (a) What do you run next, and why? (b) The service crashed and the machine rebooted overnight — which filter reaches the log from before the reboot? (c) You find no log at all: what are the three possibilities?
+>
+> *(Answer: at the end of the phase)*
 ---
 ---
 
@@ -160,7 +164,7 @@ gather evidence at each layer, move to the next only when you have eliminated th
 
 ![Figure 11.1 — Layer-by-layer debugging methodology. A decision flow starting from the symptom "the application won't open," passing through five layers: (1) Application log — journalctl -u / /var/log; (2) Service status — systemctl status; (3) Resource — top / free / iostat / dmesg (OOM); (4) Network — ss -tulpn / curl / dig; (5) Kernel — dmesg / journalctl -k. At each layer the question "is the evidence here?" is asked; if found the cause is identified, if not you descend one layer. On the side an arrow indicating the direction "from the cheapest and most likely check to the deepest and rarest." At the bottom, the lesson: not random trials but narrowing down with evidence, layer by layer.](../diagrams/png/lx-11-01-debugging-layers.png)
 
-> **🤔 Think 11.1** — A web app "won't open" (timeout in the browser). The only thing you have is this. (a) If
+> **🤔 Think 11.2** — A web app "won't open" (timeout in the browser). The only thing you have is this. (a) If
 > you apply the five layers above in order, which single command would you run at each layer and what would you
 > look for? (b) If `systemctl status` says "active (running)" but the browser still won't open, which layer do
 > you move to and why? (c) Why is this order (log→service→resource→network→kernel) better than the "restart it
@@ -229,7 +233,7 @@ it speaks wherever everything else is silent.
 > the SSH port is closed). If locally `strace` is the final arbiter, in the cloud "moving the evidence outside
 > the machine" is the final strategy.
 
-> **🤔 Think 11.2** — A service shows "active (running)" via `systemctl status`, writes no log, CPU/RAM are
+> **🤔 Think 11.3** — A service shows "active (running)" via `systemctl status`, writes no log, CPU/RAM are
 > normal in `top`, but it doesn't respond to requests (hung). (a) Why did these observations (status, log,
 > resource) fall short — what can each not see? (b) If you attach to the process with `strace -p <pid>` and see
 > it "hung" on a `read()` or `futex()` call, what does that tell you? (c) Why is `strace` the "final arbiter"
@@ -277,7 +281,7 @@ chain did it break? Boot → init (systemd) → target → service unit → app.
 state vs persistent definition" idea is critical here: is the service **enabled** (should start at boot) but
 **failed**? Or never enabled at all? You find which link of the chain snapped.
 
-> **🤔 Think 11.3** — An EC2 instance came up after a reboot, `ping` responds, SSH works, but the web app that
+> **🤔 Think 11.4** — An EC2 instance came up after a reboot, `ping` responds, SSH works, but the web app that
 > should be running on it isn't. (a) With which commands do you check the "boot to service" chain (init →
 > target → unit → app) step by step? (b) If `systemctl is-enabled myapp` returns "disabled," what is the
 > problem, and how does this connect to Phase 5's "running state vs persistent definition" idea? (c) If it
@@ -326,6 +330,10 @@ end.
 > the AMI (Phase 8) or user-data (Phase 10) from the start. "Observability" is not a fix, it is a **design
 > decision** — when you build the system, you also design how the evidence flows out.
 
+
+> **🤔 Think 11.5** — The AWS console shows "2/2 checks passed" for an instance, yet the application returns errors. A colleague says "AWS says it is healthy, so the problem is not in the machine." (a) Why is he wrong? (b) In what order do you collect evidence without opening SSH? (c) What should have been done before the incident?
+>
+> *(Answer: at the end of the phase)*
 ---
 ---
 
@@ -359,7 +367,12 @@ the real problem:
 
 # Phase 11 — Answers to the think questions
 
-## Answer 11.1 — Applying the five layers in order, why better than "restart first"
+## Answer 11.1 — Read the journal first: `journalctl -u`, and `-b -1` after a reboot
+
+(a) `journalctl -u myapp -e` — `systemctl status` shows only the last few lines, while the real cause (config parse error, port conflict, permission denied) is usually visible in the journal. The reflex: read the log first, then guess. (b) `journalctl -b -1 -u myapp` — the previous boot's logs. (c) "No log" is a new question, not an answer: (1) the service never started (a broken unit — `journalctl -u`), (2) it writes its log elsewhere (to a file instead of stdout — check the config), (3) logrotate deleted the log or the disk is full so it cannot write (`df -h`, Phase 6).
+**Related section:** 11.1.1-11.1.2 · **Continues in:** 11.2.1 (systematic narrowing)
+
+## Answer 11.2 — Applying the five layers in order, why better than "restart first"
 
 (a) Each layer's single command and what to look for: **(1) Log** — `journalctl -u myapp -e` → look for the
 error line, exception, "connection refused," "permission denied." **(2) Service** — `systemctl status myapp` →
@@ -375,7 +388,7 @@ can clear the logs too, destroying the evidence. Layer-by-layer instead accumula
 the root cause and fixes it for good.
 **Related section:** 11.2.1 · **Continues in:** 11.4 the three instinct questions.
 
-## Answer 11.2 — Why status/log/resource fell short; why strace is the final arbiter
+## Answer 11.3 — Why status/log/resource fell short; why strace is the final arbiter
 
 (a) The three observations cannot see: **`systemctl status`** only tells you the process **exists**, not what it
 is doing — a "running" process may well be in a lock (deadlock) or waiting forever on an I/O. **The log** only
@@ -390,7 +403,7 @@ lying **which system call, with which argument, with which return value** the pr
 they stay silent, it speaks.
 **Related section:** 11.3.2 · **Continues in:** 11.5 cloud evidence without SSH.
 
-## Answer 11.3 — The boot-to-service chain; enabled vs failed; running state vs persistent definition
+## Answer 11.4 — The boot-to-service chain; enabled vs failed; running state vs persistent definition
 
 (a) The chain step by step: `systemctl get-default` (which target it booted to) → `systemctl list-units
 --failed` (any failed unit) → `systemctl status myapp` (the unit's state) → `journalctl -u myapp -b` (what it
@@ -403,6 +416,11 @@ definition" lesson. Fix: `systemctl enable myapp`. (c) If it returns "enabled" b
 is: `journalctl -u myapp -b` — the unit tried to start at boot but the log tells you why it couldn't (config
 error, missing dependency, permission).
 **Related section:** 11.4.3 · **Continues in:** 11.5 "instance healthy but app not."
+
+## Answer 11.5 — Healthy instance ≠ running application: CloudWatch Logs first, then SSM
+
+(a) The status checks look at two things only: system status (the underlying hardware/hypervisor) and instance status (the OS booted and is reachable). Neither looks at your application; the systemd service inside may be in a failed state and AWS still says "healthy" — the cloud form of "installed ≠ running as a service". (b) First CloudWatch Logs (no SSH needed), then SSM Session Manager to get inside over IAM, and inside apply the layer-by-layer methodology: log → service → resource → network. (c) The CloudWatch agent and SSM had to be in the AMI or user-data **beforehand** — you cannot install the agent after the machine has crashed; observability is a design decision.
+**Related section:** 11.5.1-11.5.2 · **Continues in:** 12.4.2 (CloudWatch)
 
 ---
 ---
@@ -490,9 +508,9 @@ Write your answers on paper, then compare with the answer key. Target: 14+ out o
 
 9. (1) `journalctl -u myapp -e` → the error line; (2) `systemctl status myapp` → failed/running; (3) `top`+`free`
    → CPU/RAM/OOM (11.2.1). — 10. The network layer; `ss -tulpn | grep <port>` → is the port listening, bound to
-   127.0.0.1 (Phase 7 trap) (Answer 11.1b). — 11. The service was started by hand as a "running state" but not
+   127.0.0.1 (Phase 7 trap) (Answer 11.2b). — 11. The service was started by hand as a "running state" but not
    added to the "persistent definition" (enable); on reboot it vanished; fix `systemctl enable myapp` (Phase 5)
-   (Answer 11.3b). — 12. `strace -p <pid>` — shows which system call (read/futex) it is stuck on; the other
+   (Answer 11.4b). — 12. `strace -p <pid>` — shows which system call (read/futex) it is stuck on; the other
    tools can't see this (11.3.2). — 13. CloudWatch Logs (read logs without SSH) + SSM Session Manager (get
    inside); status check ≠ app (11.5). — 14. MAC (`dmesg | grep -i denied`, AppArmor/SELinux) and capability
    (`CAP_NET_BIND_SERVICE`); Phase 9 (11.4.2). — 15. It masks the symptom without finding the cause; the problem

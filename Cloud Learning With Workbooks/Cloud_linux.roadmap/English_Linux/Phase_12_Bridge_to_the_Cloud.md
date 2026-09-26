@@ -111,6 +111,10 @@ everything "baked" into it and produce new machines from it.
 > **seconds** — this is exactly Phase 10's "mutable patching vs immutable rebuild" philosophy. The AMI is the
 > concrete tool of the "set it up right once, then reproduce" idea.
 
+
+> **🤔 Think 12.1** — Team X launches an empty Ubuntu AMI and installs its packages by hand over SSH every time. Team Y installs and hardens once, then bakes its own AMI. Autoscaling must add 10 instances within a minute, and a critical security patch has just been released. (a) Which team scales faster, and why? (b) How does each team apply the patch? (c) Which idea from the earlier phases is this?
+>
+> *(Answer: at the end of the phase)*
 ---
 ---
 
@@ -145,7 +149,7 @@ write to S3, nothing else) and **narrowing the blast radius** (even if the machi
 permanent key on disk; the credentials are temporary and rotating). Phase 9's "Secrets Manager / IAM role" cloud
 box was exactly this: the secret does not live on disk, the identity comes from the machine's identity.
 
-> **🤔 Think 12.1** — An EC2 instance needs to write a file to S3. There are two ways: (a) write an AWS access key
+> **🤔 Think 12.2** — An EC2 instance needs to write a file to S3. There are two ways: (a) write an AWS access key
 > to disk via user-data, (b) assign an IAM role to the instance. (a) In both ways the machine can write to S3 —
 > so what is the security difference, in which one is the "blast radius" (Phase 9) smaller and why? (b) When you
 > use an IAM role, **where** do the credentials live, what is lost if the disk is compromised? (c) How does this
@@ -195,7 +199,7 @@ Phase 8's "installed ≠ running as a service" and Phase 5's "running state vs p
 the heart of production: with `systemctl enable --now myapp` you both start it now (running state) and write it
 into boot (persistent definition). And with `User=myapp` you apply Phase 9's "don't run as root" lesson.
 
-> **🤔 Think 12.2** — You mounted an EBS volume to `/data` and ran your app, all is well. But you forgot to add it
+> **🤔 Think 12.3** — You mounted an EBS volume to `/data` and ran your app, all is well. But you forgot to add it
 > to `/etc/fstab`. The next week the instance rebooted. (a) What is the state of `/data` after the reboot, what
 > does your app see? (b) This is the exact production counterpart of which of Phase 6's lessons (two ideas)? (c)
 > How does running your app as a systemd service make this worse or more visible — what happens if the service
@@ -240,6 +244,10 @@ beginning, not added later.
 > Phase 7's "three lenses" become "SG + host + bind" in the cloud. A junior engineer looks only at the SG; the
 > master eliminates all three. This was the whole point of this workbook: seeing beneath the abstraction.
 
+
+> **🤔 Think 12.4** — Users cannot reach your web app on port 443. The security group allows 443 from 0.0.0.0/0, and a junior colleague concludes "the SG is right, so the problem is not the network." (a) Which two other layers can still block the traffic? (b) Which command inspects each layer? (c) Why can the SG not see these two?
+>
+> *(Answer: at the end of the phase)*
 ---
 ---
 
@@ -267,7 +275,7 @@ Linux beneath it: your function runs as a Linux process, inside a micro-VM (Fire
 means "**you don't manage** the Linux." Even when the abstraction rises to its highest, beneath it all the
 fundamentals of this workbook (process, memory, filesystem, permission) are still there.
 
-> **🤔 Think 12.3** — A friend of yours says "I use Lambda, I don't need to learn Linux anymore." (a) Which Linux
+> **🤔 Think 12.5** — A friend of yours says "I use Lambda, I don't need to learn Linux anymore." (a) Which Linux
 > truths are still running beneath Lambda (name at least three)? (b) If your Lambda function gives an "out of
 > memory" error or says `/tmp` is full, which phases of this workbook's knowledge help you? (c) How do you answer
 > the claim "as abstraction rises, Linux knowledge becomes unnecessary" with this phase's central idea ("AWS
@@ -307,7 +315,12 @@ fundamental (and therefore a phase):
 
 # Phase 12 — Answers to the think questions
 
-## Answer 12.1 — IAM role vs a key on disk; blast radius; keep the secret off disk
+## Answer 12.1 — Baked image: the new machine starts frozen and ready, patches go through the recipe
+
+(a) Team Y: its instances come up from the frozen state in seconds, while X must wait for installs on every machine and risks a different result each time (drift, human error). (b) X patches machines one by one over SSH (mutable — the fleet drifts apart). Y updates the recipe, bakes a new AMI and replaces the old instances (immutable — every machine is identical). (c) Phase 8/10's "mutable patching vs immutable rebuild": set it up right once, then reproduce.
+**Related section:** 12.1.1 · **Continues in:** 12.2.1 (cloud-init user-data)
+
+## Answer 12.2 — IAM role vs a key on disk; blast radius; keep the secret off disk
 
 (a) In both ways the machine can write to S3, but the security difference is large: an AWS key written to disk is
 **permanent** and **static** — if the machine is compromised (Phase 9), the attacker reads this key and with it
@@ -321,7 +334,7 @@ is derived from the machine's **own identity** (the IAM role) — so least privi
 achieved together.
 **Related section:** 12.2.2 · **Connects to:** Phase 9 (secrets, blast radius).
 
-## Answer 12.2 — A mount not added to fstab; running vs persistent; more visible with systemd
+## Answer 12.3 — A mount not added to fstab; running vs persistent; more visible with systemd
 
 (a) After the reboot `/data` is **empty** — because the mount was only "running state," it wasn't written to the
 persistent definition (fstab); the EBS volume is still there but not mounted to `/data`. When your app looks at
@@ -335,7 +348,12 @@ visibility also increases: with the Phase 11 reflex `journalctl -u myapp` shows 
 and `df -h`/`mount` proves that `/data` isn't mounted — the evidence chain leads you to the missing fstab entry.
 **Related section:** 12.3.1-12.3.2 · **Connects to:** Phase 6, Phase 5, Phase 11.
 
-## Answer 12.3 — The Linux beneath Lambda; OOM/tmp; as abstraction rises
+## Answer 12.4 — SG + host firewall + bind address: eliminate all three layers
+
+(a) The host firewall (ufw/iptables inside the machine) and the application's bind address (a service listening only on `127.0.0.1` is unreachable from outside no matter what the SG says); AppArmor/SELinux is a further inner lock for what the process may access. (b) SG: `aws ec2 describe-security-groups` (or the console); host firewall: `sudo ufw status`; bind: `ss -tulpn`. (c) The SG filters traffic **before it ever reaches** the instance; what happens inside the OS — the host firewall's rules and which address the process listens on — is outside its view. The junior looks only at the SG; the master eliminates all three.
+**Related section:** 12.4.1 · **Continues in:** 11.4.2 ("Why is it unreachable?")
+
+## Answer 12.5 — The Linux beneath Lambda; OOM/tmp; as abstraction rises
 
 (a) The Linux truths still running beneath Lambda (at least three): the function runs as a **Linux process**
 (Phase 3); it has a **memory limit** enforced by a cgroup (Phase 4 + 3.6); it has a **filesystem** (`/tmp`, a root

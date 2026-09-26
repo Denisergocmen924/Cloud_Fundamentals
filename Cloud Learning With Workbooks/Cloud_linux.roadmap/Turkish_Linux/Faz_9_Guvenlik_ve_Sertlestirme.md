@@ -267,6 +267,10 @@ Ders çift yönlüdür: (1) denetim kurallarını **dar** tut — her şeyi değ
 > `journalctl --disk-usage` ve `df -h /var/log` birlikte "loglar diski dolduruyor mu" sorusunu yanıtlar —
 > bu, 9.4.2'deki log patlaması tuzağının erken uyarı göstergesidir.
 
+
+> **🤔 Düşün 9.3** — Meraklı bir meslektaşın yoğun bir production sunucuda "azami güvenlik için" "her dosya erişimini logla" kuralıyla auditd'yi açıyor. İki saat sonra sunucu yavaşlıyor, sonra servisler ölmeye başlıyor. (a) En olası olay zinciri nedir? (b) Bu bölümdeki hangi komutlar bunu doğrular? (c) Denetimi bırakmadan nasıl düzeltirsin?
+>
+> *(Cevap: fazın sonunda)*
 ---
 ---
 
@@ -297,6 +301,10 @@ yükleme, başka process'leri öldürme) **sahip olmaz**. Patlama yarıçapı dr
 > `cap_net_raw` capability'siyle çalışır — ihtiyacı olan tek yetki. systemd unit'inde bunu
 > `AmbientCapabilities=CAP_NET_BIND_SERVICE` ile de verebilirsin (Faz 8 bağlantısı).
 
+
+> **🤔 Düşün 9.4** — Uygulaman 443 portunu dinlemek zorunda. Bir meslektaşın "root olarak çalıştır, 1024 altı portlar bunu ister" diyor. (a) Bu, fazın hangi ilkesini çiğner? (b) İhtiyacı çözen asgari yetki nedir ve bunu bir systemd unit'inde nasıl verirsin? (c) Uygulama ele geçirilirse saldırgan yine de neyi YAPAMAZ?
+>
+> *(Cevap: fazın sonunda)*
 ---
 ---
 
@@ -336,7 +344,7 @@ Doğru model, sırrı makineden tamamen **çıkarmaktır**. İki yaklaşım:
 > yerine kimlik doğrulamak.** Sonuç: diskte hiç kalıcı sır yoktur → çalınacak sır yoktur → sır sızması diye
 > bir arıza sınıfı büyük ölçüde ortadan kalkar. "Var olmayan sır sızmaz" — bu fazın en güçlü tek dersidir.
 
-> **🤔 Düşün 9.3** — Bir uygulaman S3'ten dosya okuyacak. İki tasarım: (A) bir IAM kullanıcısının access
+> **🤔 Düşün 9.5** — Bir uygulaman S3'ten dosya okuyacak. İki tasarım: (A) bir IAM kullanıcısının access
 > key'ini uygulamanın config dosyasına yazmak; (B) instance'a bir IAM role eklemek ve uygulamanın
 > anahtarsız erişmesi. (a) (A)'da access key sızarsa (ör. config git'e düştü) ne olur, ve zararı sınırlamak
 > için ne yapman gerekir? (b) (B) bu risk sınıfını neden büyük ölçüde ortadan kaldırır — diske ne yazılıyor?
@@ -400,7 +408,17 @@ olarak eklemek (gerekirse önce `complain` moduyla neyin gerektiğini görmek). 
 yolu aç, profili değil.
 **İlgili bölüm:** 9.3.1-9.3.2 · **Devamı:** 9.7 arıza tablosu (satır 1).
 
-## Cevap 9.3 — Sızan key döndürülmeli; IAM role diske hiç key yazmaz
+## Cevap 9.3 — Güvenlik aracı hizmet-reddi kaynağına dönüştü: kuralları daralt, sınırla ve döndür
+
+(a) Çok geniş bir kural auditd'nin saniyede binlerce olay üretmesine yol açar; bunlar journald'i ve `/var/log`'u boğar, disk dolar (Faz 6) ve I/O darboğazı tüm makineyi yavaşlatır — sonunda disk dolu olduğu için servisler ölür. (b) `sudo systemctl status auditd`, `sudo journalctl --disk-usage` ve `df -h /var/log`: son ikisi birlikte "loglar diski dolduruyor mu" sorusunu cevaplar. (c) Denetimi kapatma; önce yer aç, sonra kuralları gerçekten önemli olaylara (`/etc/passwd`, `/etc/sudoers` değişiklikleri, yetkili komutlar) **daralt**, auditd'nin olay hızını **sınırla** ve loglara rotasyon koy (Faz 5/6). Güvenlik aracı bile "en az yetki / en az yük" ilkesine tabidir.
+**İlgili bölüm:** 9.4.1-9.4.2 · **Devamı:** 11.1.2 (logrotate)
+
+## Cevap 9.4 — Root'un tamamını değil, tek bir ince taneli capability ver
+
+(a) En az yetki ilkesi (9.1): tek bir yetki için root'un tamamı teslim ediliyor. (b) `CAP_NET_BIND_SERVICE` capability'si — "ayrıcalıklı portlara bağlanabilir, başka bir şey yapamaz". Unit içinde: `User=appuser` artı `AmbientCapabilities=CAP_NET_BIND_SERVICE` (alternatif: binary'ye `setcap 'cap_net_bind_service=+ep'`, 🔴 — önce `getcap` ile mevcut değeri not al; geri alma `setcap -r`). (c) Süreç 443'ü açar ama root'un diğer güçlerinin hiçbirine sahip değildir: `appuser`'ın DAC'ının izin verdiğinden fazlasını okuyamaz, kernel modülü yükleyemez, başka kullanıcıların process'lerini öldüremez — patlama yarıçapı `appuser` kadar küçülür.
+**İlgili bölüm:** 9.5.1 · **Devamı:** 12.3.2 (systemd servisi)
+
+## Cevap 9.5 — Sızan key döndürülmeli; IAM role diske hiç key yazmaz
 
 (a) (A)'da access key config dosyasına düz metin yazıldığı için, config git'e düştüğü an anahtar **sızmış**
 sayılır — geçmişten silsen bile git geçmişinde ve her klonda kalır. Bir kez sızmış sır artık güvenilmezdir;
