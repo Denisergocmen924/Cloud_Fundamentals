@@ -1267,68 +1267,68 @@ Sonuç        : ≈ 0,24  →  ~%76 tasarruf
 
 ## Bölüm A — Temel
 
-**A1.** `m7gd.2xlarge` isminin her parçasını çöz.
+**1.** `m7gd.2xlarge` isminin her parçasını çöz.
 
-**A2.** `c` ailesini `m`'den ayıran iki fiziksel özellik nedir?
+**2.** `c` ailesini `m`'den ayıran iki fiziksel özellik nedir?
 
-**A3.** Instance store ile EBS arasındaki üç temel fark nedir?
+**3.** Instance store ile EBS arasındaki üç temel fark nedir?
 
-**A4.** gp3'ün gp2'ye göre temel avantajı nedir?
+**4.** gp3'ün gp2'ye göre temel avantajı nedir?
 
-**A5.** Komşu gürültüsünün üç mekanizmasını say.
+**5.** Komşu gürültüsünün üç mekanizmasını say.
 
-**A6.** Beş darboğaz sınıfını say.
+**6.** Beş darboğaz sınıfını say.
 
-**A7.** Right-sizing'de CPU için hedef aralık nedir ve neden %100 değil?
+**7.** Right-sizing'de CPU için hedef aralık nedir ve neden %100 değil?
 
 ## Bölüm B — Mekanizma
 
-**B1.** Graviton'da 1 vCPU ile x86'da 1 vCPU neden farklı şeylerdir? Sonucu ne?
+**8.** Graviton'da 1 vCPU ile x86'da 1 vCPU neden farklı şeylerdir? Sonucu ne?
 
-**B2.** L3 cache kirlenmesi neden hiçbir standart metrikte görünmez?
+**9.** L3 cache kirlenmesi neden hiçbir standart metrikte görünmez?
 
-**B3.** "Uygulamam yavaş" duyduğunda izleyeceğin 5 adımlık yordamı sırala.
+**10.** "Uygulamam yavaş" duyduğunda izleyeceğin 5 adımlık yordamı sırala.
 
-**B4.** Bekleme bound nedir ve diğer dört sınıftan nasıl ayrılır?
+**11.** Bekleme bound nedir ve diğer dört sınıftan nasıl ayrılır?
 
-**B5.** Instance EBS bant genişliği tavanı neden ayrı bir kontrol gerektirir?
+**12.** Instance EBS bant genişliği tavanı neden ayrı bir kontrol gerektirir?
 
-**B6.** Nitro hangi komşu gürültüsü mekanizmalarını çözdü, hangilerini çözmedi? Neden?
+**13.** Nitro hangi komşu gürültüsü mekanizmalarını çözdü, hangilerini çözmedi? Neden?
 
-**B7.** Aşırı ve yetersiz tahsisin maliyetleri neden asimetriktir?
+**14.** Aşırı ve yetersiz tahsisin maliyetleri neden asimetriktir?
 
 ## Bölüm C — Uygulama ve muhakeme
 
-**C1.** Bir ekip video kodlama servisi kuruyor. İş: kullanıcı video yükler, 4 farklı
+**15.** Bir ekip video kodlama servisi kuruyor. İş: kullanıcı video yükler, 4 farklı
 çözünürlüğe dönüştürülür. İşler kuyrukta birikebilir, gecikme kritik değil. Günde 3 saat
 yoğun, 21 saat sakin.
 Instance ailesi, boyut, fiyatlandırma modeli ve depolama önerini gerekçeleriyle yaz.
 
-**C2.** Bir PostgreSQL birincil düğümü: 500 GB veri, çalışma seti ~120 GB, %85 okuma,
+**16.** Bir PostgreSQL birincil düğümü: 500 GB veri, çalışma seti ~120 GB, %85 okuma,
 p99 sorgu süresi 50 ms hedefi.
 Instance ve EBS önerini gerekçelendir. Hangi metrikleri izlersin?
 
-**C3.** `iostat -x` çıktısı:
+**17.** `iostat -x` çıktısı:
 ```
 Device  r/s     w/s    rkB/s    wkB/s  r_await w_await aqu-sz %util
 nvme1n1 15980,0 20,0  63920,0   80,0    0,62    0,71   10,20  99,9
 ```
 Volume: gp3, 16.000 IOPS. Instance: `m7i.4xlarge`. Teşhisin?
 
-**C4.** Bir ML ekibi `p4d.24xlarge` (8× A100) kullanıyor. `nvidia-smi` GPU kullanımını
+**18.** Bir ML ekibi `p4d.24xlarge` (8× A100) kullanıyor. `nvidia-smi` GPU kullanımını
 %35 gösteriyor. Ekip `p5.48xlarge`'a (8× H100) geçmek istiyor.
 Bu mantıklı mı? Önce ne yapılmalı?
 
-**C5.** Bir API'nin p99'u gece 02:00'de her gün 5 kata çıkıyor, 03:00'te normale dönüyor.
+**19.** Bir API'nin p99'u gece 02:00'de her gün 5 kata çıkıyor, 03:00'te normale dönüyor.
 Trafik o saatte en düşük seviyede. CPU, bellek, ağ normal. `iostat` await 15 ms (normalde
 1 ms).
 Teşhisin ve çözümün?
 
-**C6.** Bir ekip maliyeti düşürmek için tüm üretim instance'larını `m6i`'den
+**20.** Bir ekip maliyeti düşürmek için tüm üretim instance'larını `m6i`'den
 `t3`'e taşımayı öneriyor. Ortalama CPU kullanımı %35.
 Değerlendir ve alternatif öner.
 
-**C7.** Bir e-ticaret sitesi Black Friday'e hazırlanıyor. Normal trafik 1.000 istek/s,
+**21.** Bir e-ticaret sitesi Black Friday'e hazırlanıyor. Normal trafik 1.000 istek/s,
 beklenen tepe 15.000 istek/s. Mevcut: 10 × `m7i.2xlarge`, ortalama CPU %30.
 Kapasite planını yaz: kaç instance, hangi model, hangi riskler?
 
@@ -1338,7 +1338,7 @@ Kapasite planını yaz: kaç instance, hangi model, hangi riskler?
 
 ### Bölüm A
 
-**A1.** *(7.1.0)*
+**1.** *(7.1.0)*
 ```
 m   = genel amaçlı aile
 7   = 7. nesil
@@ -1347,38 +1347,38 @@ d   = yerel NVMe (instance store) var
 2xlarge = 8 vCPU
 ```
 
-**A2.** *(7.1.2)* **Yüksek sürekli clock** (tek thread performansı) ve **vCPU başına daha
+**2.** *(7.1.2)* **Yüksek sürekli clock** (tek thread performansı) ve **vCPU başına daha
 fazla L3 cache**. RAM oranının düşük olması bir sonuçtur, sebep değil.
 
-**A3.** *(7.1.4)*
+**3.** *(7.1.4)*
 | Instance store | EBS |
 |---|---|
 | PCIe doğrudan bağlı | **Ağ üzerinden** |
 | ~50–100 μs, milyonlarca IOPS | ~1 ms, kotalı IOPS |
 | **Instance durunca kaybolur** | Kalıcı, snapshot alınabilir |
 
-**A4.** *(7.3.2)* **IOPS, disk boyutundan bağımsız ayarlanır.** gp2'de IOPS = boyut × 3
+**4.** *(7.3.2)* **IOPS, disk boyutundan bağımsız ayarlanır.** gp2'de IOPS = boyut × 3
 olduğu için yüksek IOPS istemek gereksiz büyük disk almayı zorunlu kılar.
 
-**A5.** *(7.4.1)* CPU zamanı yarışması (steal time), **L3 cache kirlenmesi**, **bellek
+**5.** *(7.4.1)* CPU zamanı yarışması (steal time), **L3 cache kirlenmesi**, **bellek
 bant genişliği doyması**. Son ikisi ölçülemez ve Nitro tarafından çözülmemiştir.
 
-**A6.** *(7.5.1)* CPU bound, memory bound, I/O bound, network bound, **bekleme bound**.
+**6.** *(7.5.1)* CPU bound, memory bound, I/O bound, network bound, **bekleme bound**.
 
-**A7.** *(7.6.2)* **%40–60 ortalama.** %100 hedeflenmez çünkü kuyruk eğrisi üsteldir —
+**7.** *(7.6.2)* **%40–60 ortalama.** %100 hedeflenmez çünkü kuyruk eğrisi üsteldir —
 %95 doluluk, %50 doluluğun ~8 katı gecikme demektir *(Faz 3.4.4)*. Son %20 kapasite,
 p99'u patlatarak ödenir.
 
 ### Bölüm B
 
-**B1.** *(7.1.6, Faz 1.5.2)* x86'da 1 vCPU = 1 SMT iş parçacığı = **fiziksel çekirdeğin
+**8.** *(7.1.6, Faz 1.5.2)* x86'da 1 vCPU = 1 SMT iş parçacığı = **fiziksel çekirdeğin
 yarısı.** Graviton'da 1 vCPU = **1 tam fiziksel çekirdek.**
 
 **Sonuç:** `c7g.4xlarge` (16 fiziksel çekirdek) ile `c7i.4xlarge` (8 fiziksel çekirdek)
 aynı vCPU sayısına sahip ama farklı donanımdır. Graviton'un avantajı SMT'den az
 faydalanan iş yüklerinde ilan edilenden **büyük**, çok faydalananlarda **küçüktür**.
 
-**B2.** *(7.4.3)* Çünkü kirlenme **komut sayısını değil, komut başına süreyi** artırır.
+**9.** *(7.4.3)* Çünkü kirlenme **komut sayısını değil, komut başına süreyi** artırır.
 - CPU kullanımı aynı veya yüksek görünür (aynı iş için daha çok çevrim harcanıyor)
 - Steal time değişmez (vCPU çekirdeği **alıyor**, sadece bellek bekliyor)
 - Bellek/disk/ağ kullanımı değişmez
@@ -1386,7 +1386,7 @@ faydalanan iş yüklerinde ilan edilenden **büyük**, çok faydalananlarda **k�
 Düşen şey **IPC**'dir *(Faz 1.3.2)* ve onu ölçmek donanım performans sayaçları gerektirir
 — cloud instance'larında genelde kısıtlıdır.
 
-**B3.** *(7.5.2)*
+**10.** *(7.5.2)*
 ```
 0. Doğru soruyu sor (ne zamandan beri, p50 mi p99 mu, ne kadar, sürekli mi)
 1. CPU     — top/mpstat: us, sy, wa, st
@@ -1396,17 +1396,17 @@ Düşen şey **IPC**'dir *(Faz 1.3.2)* ve onu ölçmek donanım performans saya�
 5. Hiçbiri değilse → bekleme bound
 ```
 
-**B4.** *(7.5.7)* **Hiçbir kaynak doygun değilken uygulamanın yavaş olmasıdır.** Diğer
+**11.** *(7.5.7)* **Hiçbir kaynak doygun değilken uygulamanın yavaş olmasıdır.** Diğer
 dördünde bir kaynak tavana dayanır; burada sistem bir şeyi **bekler**: kilit, uzak çağrı,
 bağlantı/thread havuzu, GC duraklaması, yavaş aşağı akış servisi.
 
 **Ayırt edici:** Donanım eklemek hiçbir şeyi düzeltmez.
 
-**B5.** *(7.3.5)* Volume'un ve instance'ın limitleri **ayrı ayrı** uygulanır. 64.000 IOPS
+**12.** *(7.3.5)* Volume'un ve instance'ın limitleri **ayrı ayrı** uygulanır. 64.000 IOPS
 sağlayabilen bir io2 volume, 10.000 IOPS'a izin veren bir instance'a takılırsa efektif
 limit 10.000'dir — fark boşa ödenir.
 
-**B6.** *(7.2.2)*
+**13.** *(7.2.2)*
 | Çözdü | Çözmedi |
 |---|---|
 | Hypervisor CPU tüketimi | **L3 cache yarışması** |
@@ -1417,7 +1417,7 @@ limit 10.000'dir — fark boşa ödenir.
 kanalları **CPU paketinin içindedir** ve fiziksel olarak paylaşılır; taşınamaz ve
 donanım seviyesinde kotalanmaz *(Faz 6.1.2)*.
 
-**B7.** *(7.6.3)*
+**14.** *(7.6.3)*
 ```
 Aşırı tahsis  : maliyet FATURADA görünür, ölçülebilir, kolay düzeltilir
 Yetersiz tahsis: maliyet GİZLİDİR — kaybedilen istek, müşteri, itibar, olay yönetimi
@@ -1427,7 +1427,7 @@ tanımlanmalıdır.
 
 ### Bölüm C
 
-**C1.** *(7.1.2, 7.6.4)*
+**15.** *(7.1.2, 7.6.4)*
 
 | Karar | Öneri | Gerekçe |
 |---|---|---|
@@ -1442,7 +1442,7 @@ tanımlanmalıdır.
 > dayanıklı (iş kuyruğa geri döner), gecikmeye duyarsız. %70–90 tasarruf, neredeyse
 > sıfır risk.
 
-**C2.** *(7.1.3, 7.3, 7.5.4)*
+**16.** *(7.1.3, 7.3, 7.5.4)*
 
 | Karar | Öneri | Gerekçe |
 |---|---|---|
@@ -1469,7 +1469,7 @@ harcanmalıdır.**
 □ Checkpoint sıklığı ve süresi
 ```
 
-**C3.** *(7.3.5, Faz 3.4.5)*
+**17.** *(7.3.5, Faz 3.4.5)*
 
 **Okuma:**
 ```
@@ -1498,7 +1498,7 @@ fazlasını kabul etmiyor.**
 > **Not: gp3'ün tavanı 16.000 IOPS'tir.** Tam oradasın, yani gp3 ile yapabileceğin bir
 > şey kalmadı — ya io2'ye geçeceksin ya da IOPS ihtiyacını azaltacaksın.
 
-**C4.** *(7.1.5, Faz 4.2.4)*
+**18.** *(7.1.5, Faz 4.2.4)*
 
 **Mantıklı değil — %35 GPU kullanımıyla daha hızlı GPU almak, boşta duran kapasiteyi
 büyütmektir.**
@@ -1543,7 +1543,7 @@ Fiyat 2 katına çıkacak, kullanım oranı DÜŞECEK
 > Ve eğer %80'e çıkardıktan sonra hâlâ yetmiyorsa, **o zaman** H100 mantıklı bir
 > karardır — çünkü artık gerçekten GPU sınırlısın.
 
-**C5.** *(7.5.5)*
+**19.** *(7.5.5)*
 
 **Teşhis: Zamanlanmış bir gece işi diski doyuruyor.**
 
@@ -1582,7 +1582,7 @@ iotop -o          # 02:00'de çalıştır — hangi process
 > **1 ve 2 numara ücretsizdir ve vakaların çoğunu çözer.** "p99 arttı, io2'ye geçelim"
 > demek burada **kök sebebi görmeden para harcamaktır.**
 
-**C6.** *(7.1, Faz 6.5.3)*
+**20.** *(7.1, Faz 6.5.3)*
 
 **Değerlendirme: Bu öneri yanlıştır ve üretimde arızaya yol açar.**
 
@@ -1616,7 +1616,7 @@ ve kredi tam da tepe anlarda tükenir.
 > t ailesi bir **indirim** değil, **farklı bir performans modelidir.** İş yükü o modele
 > uymuyorsa ucuz değil, sadece bozuktur.
 
-**C7.** *(7.6)*
+**21.** *(7.6)*
 
 **Mevcut durum analizi:**
 ```

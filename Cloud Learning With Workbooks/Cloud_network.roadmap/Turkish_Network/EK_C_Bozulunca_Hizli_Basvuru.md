@@ -1,6 +1,6 @@
 # Ek C — "Bozulunca" Hızlı Başvuru
 
-> **Navigasyon:** [◀ Ek B — Kavram ve Dosya Haritası](EK_B_Kavram_Dosya_Haritasi.md) · **Ek C** · [Faz 11 — Cloud'a Köprü ▶](Faz_11_Clouda_Kopru.md)
+> **Navigasyon:** [◀ Ek B — Kavram ve Dosya Haritası](EK_B_Kavram_Dosya_Haritasi.md) · **Ek C** · [README ▶](README.md)
 
 ---
 
@@ -169,4 +169,4 @@ Panik yapma, rastgele kural açma. Aşağıdan yukarı ele:
 
 ---
 
-> **Navigasyon:** [◀ Ek B — Kavram ve Dosya Haritası](EK_B_Kavram_Dosya_Haritasi.md) · **Ek C** · [Faz 11 — Cloud'a Köprü ▶](Faz_11_Clouda_Kopru.md)
+> **Navigasyon:** [◀ Ek B — Kavram ve Dosya Haritası](EK_B_Kavram_Dosya_Haritasi.md) · **Ek C** · [README ▶](README.md)

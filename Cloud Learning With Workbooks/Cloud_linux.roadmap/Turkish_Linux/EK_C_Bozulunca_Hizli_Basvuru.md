@@ -1,6 +1,6 @@
 # Ek C — "Bozulunca" Hızlı Başvuru
 
-> **Navigasyon:** [◀ Ek B — Dosya ve Dizin Haritası](EK_B_Dosya_Dizin_Haritasi.md) · **Ek C** · [Faz 12 — Cloud'a Köprü ▶](Faz_12_Cloud_a_Kopru.md)
+> **Navigasyon:** [◀ Ek B — Dosya ve Dizin Haritası](EK_B_Dosya_Dizin_Haritasi.md) · **Ek C** · [README ▶](README.md)
 
 ---
 
@@ -115,4 +115,4 @@ Panik yapma, yeniden başlatma. Sırayla ele:
 
 ---
 
-> **Navigasyon:** [◀ Ek B — Dosya ve Dizin Haritası](EK_B_Dosya_Dizin_Haritasi.md) · **Ek C** · [Faz 12 — Cloud'a Köprü ▶](Faz_12_Cloud_a_Kopru.md)
+> **Navigasyon:** [◀ Ek B — Dosya ve Dizin Haritası](EK_B_Dosya_Dizin_Haritasi.md) · **Ek C** · [README ▶](README.md)

@@ -900,58 +900,58 @@ tek başına zararsız görünen bir desen, RTT 0,3 ms'den 90 ms'ye çıkınca f
 
 ## Bölüm A — Temel
 
-**A1.** Ethernet çerçevesinde MTU nedir ve standart değeri kaçtır?
+**1.** Ethernet çerçevesinde MTU nedir ve standart değeri kaçtır?
 
-**A2.** Hub ile switch arasındaki temel fark nedir?
+**2.** Hub ile switch arasındaki temel fark nedir?
 
-**A3.** Bant genişliği ve gecikmeyi bir cümleyle ayırt et.
+**3.** Bant genişliği ve gecikmeyi bir cümleyle ayırt et.
 
-**A4.** Full duplex ne demektir?
+**4.** Full duplex ne demektir?
 
-**A5.** DMA, NIC bağlamında ne sağlar?
+**5.** DMA, NIC bağlamında ne sağlar?
 
-**A6.** RSS'in görevi nedir?
+**6.** RSS'in görevi nedir?
 
-**A7.** 25 Gbps kaç GB/s eder?
+**7.** 25 Gbps kaç GB/s eder?
 
 ## Bölüm B — Mekanizma
 
-**B1.** Bir paketin kablodan uygulamaya ulaşana kadar geçtiği adımları sırala.
+**8.** Bir paketin kablodan uygulamaya ulaşana kadar geçtiği adımları sırala.
 
-**B2.** Gecikmenin dört bileşenini say ve her birinin neye bağlı olduğunu belirt.
+**9.** Gecikmenin dört bileşenini say ve her birinin neye bağlı olduğunu belirt.
 
-**B3.** NAPI neden var? Hangi problemi çözüyor?
+**10.** NAPI neden var? Hangi problemi çözüyor?
 
-**B4.** RSS neden rastgele dağıtım yerine hash kullanır? İki sebep ver.
+**11.** RSS neden rastgele dağıtım yerine hash kullanır? İki sebep ver.
 
-**B5.** Halka tamponu dolduğunda ne olur? Bunu büyütmek her zaman çözüm müdür?
+**12.** Halka tamponu dolduğunda ne olur? Bunu büyütmek her zaman çözüm müdür?
 
-**B6.** BDP nedir ve neden TCP pencere boyutuyla ilgilidir?
+**13.** BDP nedir ve neden TCP pencere boyutuyla ilgilidir?
 
-**B7.** Jumbo frame iki ayrı kazanç sağlar — ikisini de açıkla.
+**14.** Jumbo frame iki ayrı kazanç sağlar — ikisini de açıkla.
 
 ## Bölüm C — Uygulama ve muhakeme
 
-**C1.** 10 Gbps hat, 80 ms RTT. BDP kaçtır? 256 KB pencere ile elde edilebilecek maksimum
+**15.** 10 Gbps hat, 80 ms RTT. BDP kaçtır? 256 KB pencere ile elde edilebilecek maksimum
 throughput nedir?
 
-**C2.** Bir sunucuda `mpstat` çıktısında CPU0 `%soft` kolonunda %98, diğer 15 çekirdek
+**16.** Bir sunucuda `mpstat` çıktısında CPU0 `%soft` kolonunda %98, diğer 15 çekirdek
 boşta. Ağ throughput'u 3 Gbps'te takılı, hat 25 Gbps. Teşhisin ve çözümün?
 
-**C3.** Bir ekip mikroservis mimarisine geçti. Her istek 12 servis çağrısı yapıyor,
+**17.** Bir ekip mikroservis mimarisine geçti. Her istek 12 servis çağrısı yapıyor,
 hepsi senkron. Servisler multi-AZ dağıtılmış. p99 gecikme hedefi 100 ms. Bu hedef
 tutturulabilir mi? Hesapla ve yorumla.
 
-**C4.** 100 Gbps NIC alacaksın. Sunucuda boş PCIe Gen3 x8 yuvası var. Ne olur?
+**18.** 100 Gbps NIC alacaksın. Sunucuda boş PCIe Gen3 x8 yuvası var. Ne olur?
 
-**C5.** Bir dosya transferi aynı AZ içinde 900 MB/s, kıtalar arası 4 MB/s. Hat her iki
+**19.** Bir dosya transferi aynı AZ içinde 900 MB/s, kıtalar arası 4 MB/s. Hat her iki
 durumda da 10 Gbps. Sebebi nedir ve nasıl doğrularsın?
 
-**C6.** Bir ekip "ağ yavaş" diyor. Elinde şu veriler var: `ping` 0,4 ms ve stabil, hat
+**20.** Bir ekip "ağ yavaş" diyor. Elinde şu veriler var: `ping` 0,4 ms ve stabil, hat
 kullanımı %30, `rx_dropped` 0, uygulama yanıt süresi 800 ms. Ağ suçlu mu? Nasıl
 ilerlersin?
 
-**C7.** Bir ML ekibi 8 GPU'lu tek düğümden 4 düğüm × 8 GPU = 32 GPU'ya geçti. Beklenen
+**21.** Bir ML ekibi 8 GPU'lu tek düğümden 4 düğüm × 8 GPU = 32 GPU'ya geçti. Beklenen
 4 kat hızlanma yerine 2,3 kat aldılar. Olası sebep ve çözüm?
 
 ---
@@ -960,30 +960,30 @@ ilerlersin?
 
 ### Bölüm A
 
-**A1.** MTU (Maximum Transmission Unit), bir çerçevenin taşıyabileceği maksimum payload
+**1.** MTU (Maximum Transmission Unit), bir çerçevenin taşıyabileceği maksimum payload
 boyutudur. Standart Ethernet'te **1500 byte**. *(5.1.2)*
 
-**A2.** Hub gelen sinyali tüm portlara kopyalar — bant genişliği paylaşılır, çarpışma
+**2.** Hub gelen sinyali tüm portlara kopyalar — bant genişliği paylaşılır, çarpışma
 olur. Switch MAC tablosuyla sadece hedef porta gönderir — her port kendi bant genişliğine
 sahiptir, çarpışma yoktur. *(5.2.1)*
 
-**A3.** Bant genişliği birim zamanda taşınan veri miktarıdır (artırılabilir); gecikme tek
+**3.** Bant genişliği birim zamanda taşınan veri miktarıdır (artırılabilir); gecikme tek
 bir paketin varış süresidir (ışık hızıyla sınırlıdır). *(5.3.1)*
 
-**A4.** Aynı anda hem gönderme hem alma — her yön kendi tam kapasitesine sahiptir.
+**4.** Aynı anda hem gönderme hem alma — her yön kendi tam kapasitesine sahiptir.
 *(5.2.2)*
 
-**A5.** NIC, gelen paketi CPU'ya uğratmadan doğrudan RAM'e yazar; giden paketi doğrudan
+**5.** NIC, gelen paketi CPU'ya uğratmadan doğrudan RAM'e yazar; giden paketi doğrudan
 RAM'den okur. CPU sadece işi başlatır ve bitince bildirim alır. *(5.1.1, Faz 4.3)*
 
-**A6.** Gelen paketleri başlık hash'ine göre farklı RX kuyruklarına, dolayısıyla farklı
+**6.** Gelen paketleri başlık hash'ine göre farklı RX kuyruklarına, dolayısıyla farklı
 çekirdeklere dağıtmak — ağ işlemeyi paralelleştirmek. *(5.1.4)*
 
-**A7.** 25 ÷ 8 = **3,125 GB/s**. *(5.2.3)*
+**7.** 25 ÷ 8 = **3,125 GB/s**. *(5.2.3)*
 
 ### Bölüm B
 
-**B1.** *(5.1.1)*
+**8.** *(5.1.1)*
 ```
 1. Kablodan sinyal → bit
 2. CRC kontrolü (bozuksa at)
@@ -995,7 +995,7 @@ RAM'den okur. CPU sadece işi başlatır ve bitince bildirim alır. *(5.1.1, Faz
 8. Uygulama
 ```
 
-**B2.** *(5.3.2)*
+**9.** *(5.3.2)*
 
 | Bileşen | Neye bağlı |
 |---|---|
@@ -1004,34 +1004,34 @@ RAM'den okur. CPU sadece işi başlatır ve bitince bildirim alır. *(5.1.1, Faz
 | İşleme | Cihaz sayısı ve gücü |
 | Kuyruk | Yük ve tıkanıklık |
 
-**B3.** Yüksek paket hızında her paket için ayrı kesme, CPU'yu tüketir (kesme fırtınası).
+**10.** Yüksek paket hızında her paket için ayrı kesme, CPU'yu tüketir (kesme fırtınası).
 NAPI, trafik yükselince kesmeleri kapatıp yoklama moduna geçer ve bir turda çok sayıda
 paket işler. Düşük trafikte kesmeye geri döner — böylece hem düşük gecikme hem yüksek
 verim sağlanır. *(5.1.4, Faz 4.4.2)*
 
-**B4.** *(5.1.4)*
+**11.** *(5.1.4)*
 1. **Sıralama:** Aynı bağlantının paketleri aynı çekirdeğe gitmeli; aksi hâlde TCP
    yeniden sıralama maliyeti doğar.
 2. **Cache yerelliği:** O bağlantının soket yapısı ve TCP durumu zaten o çekirdeğin
    cache'indedir; farklı çekirdeğe gitmek false sharing ve cache satırı ping-pong'u
    yaratır *(Faz 2.3.8)*.
 
-**B5.** Yeni gelen paketler **sessizce düşer** (`rx_dropped` artar). Büyütmek **her zaman
+**12.** Yeni gelen paketler **sessizce düşer** (`rx_dropped` artar). Büyütmek **her zaman
 çözüm değildir**: eğer CPU tüketim hızı gelme hızından düşükse, büyük tampon sadece
 kuyruk gecikmesini artırır — kaybı geciktirir, önlemez (bufferbloat). *(5.1.3, Cevap 5.1)*
 
-**B6.** BDP = Bant genişliği × RTT. Hatta aynı anda "uçmakta olan" veri miktarıdır. TCP,
+**13.** BDP = Bant genişliği × RTT. Hatta aynı anda "uçmakta olan" veri miktarıdır. TCP,
 onay beklemeden en fazla pencere boyutu kadar veri gönderebilir; pencere BDP'den küçükse
 hat **asla dolmaz** ve throughput pencereyle sınırlanır. *(5.3.3)*
 
-**B7.** *(5.1.2)*
+**14.** *(5.1.2)*
 1. **Verim artışı:** Sabit 78 byte ek yük daha büyük payload'a bölünür (%94,9 → %99,1).
 2. **Paket sayısı azalması:** Aynı veri 6 kat az pakete sığar → 6 kat az kesme ve başlık
    işleme. **İkincisi genelde daha önemlidir.**
 
 ### Bölüm C
 
-**C1.** *(5.3.3)*
+**15.** *(5.3.3)*
 ```
 BDP = 1,25 GB/s × 0,08 s = 100 MB
 
@@ -1042,7 +1042,7 @@ Hattın %0,26'sı.
 ```
 Çözüm: pencere ölçekleme, tampon büyütme, paralel akış veya BBR.
 
-**C2.** *(5.1.4, Cevap 5.1)*
+**16.** *(5.1.4, Cevap 5.1)*
 
 **Teşhis:** Ağ işleme tek çekirdekte sıkışmış — RSS ya yok ya yapılandırılmamış. 3 Gbps,
 tek çekirdeğin softirq kapasitesinin tavanıdır; hat boşta ama CPU dolu.
@@ -1059,7 +1059,7 @@ cat /proc/interrupts | grep eth0   # hepsi CPU0'da mı?
 3. RSS desteklenmiyorsa RPS'i aç
 4. GRO/TSO boşaltmalarının açık olduğunu doğrula
 
-**C3.** *(5.3.4)*
+**17.** *(5.3.4)*
 ```
 AZ'ler arası RTT ≈ 1,5 ms
 12 senkron çağrı × 1,5 ms = 18 ms   ← sadece ağ, p50'de
@@ -1080,7 +1080,7 @@ servis hedefi patlatır.
 > **Not:** Buradaki asıl ders, mikroservis sayısının değil, **senkron zincir derinliğinin**
 > problem olduğudur.
 
-**C4.** *(5.2.3, Faz 4.2.2)*
+**18.** *(5.2.3, Faz 4.2.2)*
 ```
 100 Gbps = 12,5 GB/s ihtiyaç
 PCIe Gen3 x8 =  ~7,9 GB/s kapasite
@@ -1092,7 +1092,7 @@ NIC **~63 Gbps'te takılır** — 100 Gbps'in %63'ü. Yuva darboğaz olur.
 
 > Faz 4.2.4'ün dersi: **en pahalı bileşen, onu besleyen yol kadar hızlıdır.**
 
-**C5.** *(5.3.3)*
+**19.** *(5.3.3)*
 
 **Sebep:** BDP. Aynı AZ'de RTT ~0,4 ms, kıtalar arası ~150 ms.
 ```
@@ -1109,7 +1109,7 @@ iperf3 -c <hedef> -P 10  # 10 paralel akış
 Paralel akışla toplam hız **~10 kat** artıyorsa teşhis kesinleşir — tek akışın penceresi
 darboğazdı, hat değil.
 
-**C6.** *(5.3.2, S2)*
+**20.** *(5.3.2, S2)*
 
 **Ağ suçlu değil.** Kanıtlar:
 | Veri | Ne söylüyor |
@@ -1129,7 +1129,7 @@ darboğazdı, hat değil.
 > aramayı doğru yere yönlendirir** — ve bu üç ölçüm (ping, kullanım, drop) elemek için
 > yeterlidir.
 
-**C7.** *(5.4.3)*
+**21.** *(5.4.3)*
 
 **Sebep:** Gradyan senkronizasyonu (all-reduce). Tek düğümde GPU'lar NVLink ile
 konuşuyordu (yüzlerce GB/s, mikrosaniye altı gecikme). Dört düğümde artık **ağ üzerinden**

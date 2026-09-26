@@ -903,59 +903,59 @@ goes from 0.3 ms to 90 ms.
 
 ## Part A — Fundamentals
 
-**A1.** What is the MTU in an Ethernet frame, and what is its standard value?
+**1.** What is the MTU in an Ethernet frame, and what is its standard value?
 
-**A2.** What is the fundamental difference between a hub and a switch?
+**2.** What is the fundamental difference between a hub and a switch?
 
-**A3.** Distinguish bandwidth from latency in one sentence.
+**3.** Distinguish bandwidth from latency in one sentence.
 
-**A4.** What does full duplex mean?
+**4.** What does full duplex mean?
 
-**A5.** What does DMA provide in the context of a NIC?
+**5.** What does DMA provide in the context of a NIC?
 
-**A6.** What is the job of RSS?
+**6.** What is the job of RSS?
 
-**A7.** How many GB/s is 25 Gbps?
+**7.** How many GB/s is 25 Gbps?
 
 ## Part B — Mechanism
 
-**B1.** List the steps a packet goes through from the wire until it reaches the application.
+**8.** List the steps a packet goes through from the wire until it reaches the application.
 
-**B2.** Name the four components of latency and state what each one depends on.
+**9.** Name the four components of latency and state what each one depends on.
 
-**B3.** Why does NAPI exist? What problem does it solve?
+**10.** Why does NAPI exist? What problem does it solve?
 
-**B4.** Why does RSS use a hash instead of random distribution? Give two reasons.
+**11.** Why does RSS use a hash instead of random distribution? Give two reasons.
 
-**B5.** What happens when the ring buffer fills up? Is enlarging it always the fix?
+**12.** What happens when the ring buffer fills up? Is enlarging it always the fix?
 
-**B6.** What is the BDP, and why is it related to the TCP window size?
+**13.** What is the BDP, and why is it related to the TCP window size?
 
-**B7.** Jumbo frames provide two separate gains — explain both.
+**14.** Jumbo frames provide two separate gains — explain both.
 
 ## Part C — Application and reasoning
 
-**C1.** 10 Gbps link, 80 ms RTT. What is the BDP? What is the maximum throughput achievable
+**15.** 10 Gbps link, 80 ms RTT. What is the BDP? What is the maximum throughput achievable
 with a 256 KB window?
 
-**C2.** On a server, `mpstat` shows CPU0 at 98% in the `%soft` column, while the other 15 cores
+**16.** On a server, `mpstat` shows CPU0 at 98% in the `%soft` column, while the other 15 cores
 are idle. Network throughput is stuck at 3 Gbps on a 25 Gbps link. Your diagnosis and fix?
 
-**C3.** A team moved to a microservice architecture. Every request makes 12 service calls, all
+**17.** A team moved to a microservice architecture. Every request makes 12 service calls, all
 synchronous. The services are deployed multi-AZ. The p99 latency target is 100 ms. Can this
 target be met? Calculate and interpret.
 
-**C4.** You're going to buy a 100 Gbps NIC. The server has a free PCIe Gen3 x8 slot. What
+**18.** You're going to buy a 100 Gbps NIC. The server has a free PCIe Gen3 x8 slot. What
 happens?
 
-**C5.** A file transfer runs at 900 MB/s within the same AZ and 4 MB/s intercontinentally. The
+**19.** A file transfer runs at 900 MB/s within the same AZ and 4 MB/s intercontinentally. The
 link is 10 Gbps in both cases. What is the cause, and how would you confirm it?
 
-**C6.** A team says "the network is slow". You have this data: `ping` 0.4 ms and stable, link
+**20.** A team says "the network is slow". You have this data: `ping` 0.4 ms and stable, link
 utilization 30%, `rx_dropped` 0, application response time 800 ms. Is the network to blame?
 How would you proceed?
 
-**C7.** An ML team went from a single node with 8 GPUs to 4 nodes × 8 GPUs = 32 GPUs. Instead of
+**21.** An ML team went from a single node with 8 GPUs to 4 nodes × 8 GPUs = 32 GPUs. Instead of
 the expected 4× speedup they got 2.3×. Likely cause and fix?
 
 ---
@@ -964,31 +964,31 @@ the expected 4× speedup they got 2.3×. Likely cause and fix?
 
 ### Part A
 
-**A1.** The MTU (Maximum Transmission Unit) is the maximum payload size a frame can carry. On
+**1.** The MTU (Maximum Transmission Unit) is the maximum payload size a frame can carry. On
 standard Ethernet it's **1500 bytes**. *(5.1.2)*
 
-**A2.** A hub copies the incoming signal to all ports — bandwidth is shared and collisions
+**2.** A hub copies the incoming signal to all ports — bandwidth is shared and collisions
 occur. A switch uses its MAC table to send only to the destination port — every port has its
 own bandwidth and there are no collisions. *(5.2.1)*
 
-**A3.** Bandwidth is the amount of data carried per unit of time (it can be increased); latency
+**3.** Bandwidth is the amount of data carried per unit of time (it can be increased); latency
 is the time it takes a single packet to arrive (it is bounded by the speed of light). *(5.3.1)*
 
-**A4.** Sending and receiving at the same time — each direction has its own full capacity.
+**4.** Sending and receiving at the same time — each direction has its own full capacity.
 *(5.2.2)*
 
-**A5.** The NIC writes an incoming packet directly to RAM without involving the CPU, and reads
+**5.** The NIC writes an incoming packet directly to RAM without involving the CPU, and reads
 an outgoing packet directly from RAM. The CPU only kicks off the work and gets notified when
 it's done. *(5.1.1, Phase 4.3)*
 
-**A6.** Spreading incoming packets across different RX queues — and therefore different cores —
+**6.** Spreading incoming packets across different RX queues — and therefore different cores —
 based on a header hash, parallelizing network processing. *(5.1.4)*
 
-**A7.** 25 ÷ 8 = **3.125 GB/s**. *(5.2.3)*
+**7.** 25 ÷ 8 = **3.125 GB/s**. *(5.2.3)*
 
 ### Part B
 
-**B1.** *(5.1.1)*
+**8.** *(5.1.1)*
 ```
 1. Signal from the wire → bits
 2. CRC check (drop if corrupt)
@@ -1000,7 +1000,7 @@ based on a header hash, parallelizing network processing. *(5.1.4)*
 8. Application
 ```
 
-**B2.** *(5.3.2)*
+**9.** *(5.3.2)*
 
 | Component | What it depends on |
 |---|---|
@@ -1009,29 +1009,29 @@ based on a header hash, parallelizing network processing. *(5.1.4)*
 | Processing | Number and power of devices |
 | Queuing | Load and congestion |
 
-**B3.** At high packet rates, a separate interrupt per packet exhausts the CPU (an interrupt
+**10.** At high packet rates, a separate interrupt per packet exhausts the CPU (an interrupt
 storm). When traffic rises, NAPI disables interrupts, switches to polling mode and processes
 many packets per round. At low traffic it goes back to interrupts — providing both low latency
 and high throughput. *(5.1.4, Phase 4.4.2)*
 
-**B4.** *(5.1.4)*
+**11.** *(5.1.4)*
 1. **Ordering:** packets of the same connection must go to the same core; otherwise TCP
    reordering costs arise.
 2. **Cache locality:** that connection's socket structure and TCP state are already in that
    core's cache; going to a different core creates false sharing and cache-line ping-pong
    *(Phase 2.3.8)*.
 
-**B5.** Newly arriving packets are **silently dropped** (`rx_dropped` rises). Enlarging it is
+**12.** Newly arriving packets are **silently dropped** (`rx_dropped` rises). Enlarging it is
 **not always the fix**: if the CPU's consumption rate is lower than the arrival rate, a bigger
 buffer only increases queuing delay — it delays loss rather than preventing it (bufferbloat).
 *(5.1.3, Answer 5.1)*
 
-**B6.** BDP = Bandwidth × RTT. It's the amount of data "in flight" on the link at any moment.
+**13.** BDP = Bandwidth × RTT. It's the amount of data "in flight" on the link at any moment.
 TCP can send at most a window's worth of data without waiting for acknowledgment; if the window
 is smaller than the BDP, the link **never fills up** and throughput is capped by the window.
 *(5.3.3)*
 
-**B7.** *(5.1.2)*
+**14.** *(5.1.2)*
 1. **Higher efficiency:** the fixed 78 bytes of overhead is spread over a larger payload
    (94.9% → 99.1%).
 2. **Fewer packets:** the same data fits into 6× fewer packets → 6× fewer interrupts and less
@@ -1039,7 +1039,7 @@ is smaller than the BDP, the link **never fills up** and throughput is capped by
 
 ### Part C
 
-**C1.** *(5.3.3)*
+**15.** *(5.3.3)*
 ```
 BDP = 1.25 GB/s × 0.08 s = 100 MB
 
@@ -1050,7 +1050,7 @@ Maximum with a 256 KB window:
 ```
 Fix: window scaling, larger buffers, parallel streams or BBR.
 
-**C2.** *(5.1.4, Answer 5.1)*
+**16.** *(5.1.4, Answer 5.1)*
 
 **Diagnosis:** network processing is jammed on a single core — RSS is either absent or not
 configured. 3 Gbps is the ceiling of a single core's softirq capacity; the link is idle but the
@@ -1068,7 +1068,7 @@ cat /proc/interrupts | grep eth0   # all on CPU0?
 3. If RSS isn't supported, enable RPS
 4. Verify that the GRO/TSO offloads are on
 
-**C3.** *(5.3.4)*
+**17.** *(5.3.4)*
 ```
 Inter-AZ RTT ≈ 1.5 ms
 12 synchronous calls × 1.5 ms = 18 ms   ← network alone, at p50
@@ -1088,7 +1088,7 @@ service blows the target.
 > **Note:** the real lesson here is that the problem isn't the number of microservices, but the
 > **depth of the synchronous chain**.
 
-**C4.** *(5.2.3, Phase 4.2.2)*
+**18.** *(5.2.3, Phase 4.2.2)*
 ```
 100 Gbps     = 12.5 GB/s needed
 PCIe Gen3 x8 =  ~7.9 GB/s capacity
@@ -1101,7 +1101,7 @@ value should have been checked with `lspci -vv` before buying.
 > The lesson of Phase 4.2.4: **the most expensive component is only as fast as the path that
 > feeds it.**
 
-**C5.** *(5.3.3)*
+**19.** *(5.3.3)*
 
 **Cause:** the BDP. RTT is ~0.4 ms within the same AZ and ~150 ms intercontinentally.
 ```
@@ -1118,7 +1118,7 @@ iperf3 -c <target> -P 10 # 10 parallel streams
 If the total speed rises **~10×** with parallel streams, the diagnosis is confirmed — the single
 stream's window was the bottleneck, not the link.
 
-**C6.** *(5.3.2, Q2)*
+**20.** *(5.3.2, Q2)*
 
 **The network is not to blame.** The evidence:
 
@@ -1139,7 +1139,7 @@ stream's window was the bottleneck, not the link.
 > out the network points the search in the right direction** — and these three measurements
 > (ping, utilization, drops) are enough to rule it out.
 
-**C7.** *(5.4.3)*
+**21.** *(5.4.3)*
 
 **Cause:** gradient synchronization (all-reduce). On a single node the GPUs talked over NVLink
 (hundreds of GB/s, sub-microsecond latency). Across four nodes they now talk **over the

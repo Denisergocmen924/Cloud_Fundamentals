@@ -1219,63 +1219,63 @@ attacker.
 
 ## Part A — Fundamentals
 
-**A1.** What is the difference between a Type 1 and a Type 2 hypervisor?
+**1.** What is the difference between a Type 1 and a Type 2 hypervisor?
 
-**A2.** What is a VM exit?
+**2.** What is a VM exit?
 
-**A3.** What does steal time measure?
+**3.** What does steal time measure?
 
-**A4.** What are namespaces and cgroups for? What's the difference between them?
+**4.** What are namespaces and cgroups for? What's the difference between them?
 
-**A5.** What is the basic idea of SR-IOV?
+**5.** What is the basic idea of SR-IOV?
 
-**A6.** What problem do EPT/NPT solve?
+**6.** What problem do EPT/NPT solve?
 
-**A7.** What is the most important security difference between a container and a VM?
+**7.** What is the most important security difference between a container and a VM?
 
 ## Part B — Mechanism
 
-**B1.** What was the fundamental problem of virtualization before VT-x? Name the two old
+**8.** What was the fundamental problem of virtualization before VT-x? Name the two old
 solutions and their drawbacks.
 
-**B2.** Name the four items that make up the cost of a VM exit.
+**9.** Name the four items that make up the cost of a VM exit.
 
-**B3.** Why is address translation two-level under virtualization? How does EPT improve it, and
+**10.** Why is address translation two-level under virtualization? How does EPT improve it, and
 what new cost does it bring?
 
-**B4.** How does a balloon driver work, and why is the hypervisor forced to use this indirect
+**11.** How does a balloon driver work, and why is the hypervisor forced to use this indirect
 method?
 
-**B5.** Rank emulation, virtio and SR-IOV by VM exit frequency and explain each one's mechanism
+**12.** Rank emulation, virtio and SR-IOV by VM exit frequency and explain each one's mechanism
 in a sentence.
 
-**B6.** Why is the IOMMU **a precondition** for SR-IOV? What happens without it?
+**13.** Why is the IOMMU **a precondition** for SR-IOV? What happens without it?
 
-**B7.** The Nitro architecture provides three separate gains. Explain all three with their
+**14.** The Nitro architecture provides three separate gains. Explain all three with their
 mechanisms.
 
 ## Part C — Application and reasoning
 
-**C1.** On an `m7i.xlarge`, `top` shows: `%Cpu(s): 35 us, 5 sy, 42 id, 0 wa, 18 st`. What's your
+**15.** On an `m7i.xlarge`, `top` shows: `%Cpu(s): 35 us, 5 sy, 42 id, 0 wa, 18 st`. What's your
 diagnosis? There could be two different causes — how do you tell them apart?
 
-**C2.** A database VM is 18% slower than a bare metal installation on the same hardware. It's a
+**16.** A database VM is 18% slower than a bare metal installation on the same hardware. It's a
 memory-intensive workload. Likely cause and improvement?
 
-**C3.** A team wants to run 500 microservice instances as containers on 20 hosts instead of on
+**17.** A team wants to run 500 microservice instances as containers on 20 hosts instead of on
 20 VMs. Calculate the resource saving (VM overhead ~1 GB, container ~10 MB). What risk are they
 accepting?
 
-**C4.** You're designing a Lambda-like service: customer code, must start within 100 ms, strong
+**18.** You're designing a Lambda-like service: customer code, must start within 100 ms, strong
 isolation is essential. Which technology do you choose, and why?
 
-**C5.** A Kafka consumer running on a `t3.xlarge` falls behind (lag rises) for a few hours three
+**19.** A Kafka consumer running on a `t3.xlarge` falls behind (lag rises) for a few hours three
 times a day, then catches up. CPU utilization is steady at around 55%. Diagnosis and solution?
 
-**C6.** You're choosing an instance for an application that needs 100 Gbps networking. Justify
+**20.** You're choosing an instance for an application that needs 100 Gbps networking. Justify
 with numbers why SR-IOV/ENA is mandatory (packet size 1500 B, VM exit 2000 cycles, CPU 3 GHz).
 
-**C7.** A team moved from `c7i.8xlarge` to `c7i.metal` and saw the application get 12% faster,
+**21.** A team moved from `c7i.8xlarge` to `c7i.metal` and saw the application get 12% faster,
 but the price went up 4×. Where does that 12% come from, and does this move make sense? How
 would you decide?
 
@@ -1285,35 +1285,35 @@ would you decide?
 
 ### Part A
 
-**A1.** Type 1 runs directly on the hardware (no OS beneath it) — high performance, small attack
+**1.** Type 1 runs directly on the hardware (no OS beneath it) — high performance, small attack
 surface, the standard for production clouds. Type 2 runs as an ordinary application on a host OS
 — easy setup, low performance, development environments. *(6.2.1, 6.2.2)*
 
-**A2.** When the guest operating system performs a privileged operation, the CPU switches from
+**2.** When the guest operating system performs a privileged operation, the CPU switches from
 VMX non-root mode to root mode and hands control to the hypervisor. **It is the real source of
 virtualization's cost** (1,000–5,000 cycles). *(6.3.4)*
 
-**A3.** The percentage of time a vCPU was ready to run but could not find a physical core.
+**3.** The percentage of time a vCPU was ready to run but could not find a physical core.
 *(6.5.2)*
 
-**A4.** Namespaces isolate **visibility** (PIDs, network, filesystem, hostname). cgroups limit
+**4.** Namespaces isolate **visibility** (PIDs, network, filesystem, hostname). cgroups limit
 **resource usage** (CPU, memory, I/O, process count). Together they make up a container.
 *(6.7.2)*
 
-**A5.** A physical device presents itself as multiple virtual functions (VFs) and each VF is
+**5.** A physical device presents itself as multiple virtual functions (VFs) and each VF is
 assigned directly to a VM — **the hypervisor leaves the I/O path entirely** and there are no VM
 exits. *(6.6.3)*
 
-**A6.** They move the second address translation (guest physical → host physical) into hardware.
+**6.** They move the second address translation (guest physical → host physical) into hardware.
 That eliminates the constant VM exits shadow page tables required. *(6.4.3)*
 
-**A7.** VMs run **a separate kernel**; escaping requires a hypervisor vulnerability (~100K lines,
+**7.** VMs run **a separate kernel**; escaping requires a hypervisor vulnerability (~100K lines,
 minimal surface). Containers **share the host kernel**; a kernel vulnerability is enough to
 escape (~30M lines, ~350 system calls). *(6.7.4)*
 
 ### Part B
 
-**B1.** *(6.3.2)* The guest OS is also a kernel and expects ring 0, but the hypervisor is there.
+**8.** *(6.3.2)* The guest OS is also a kernel and expects ring 0, but the hypervisor is there.
 Put it in ring 0 and isolation disappears; put it in ring 3 and its privileged instructions won't
 run.
 
@@ -1322,10 +1322,10 @@ run.
 | Binary translation | Complex, slow, risk of bugs |
 | Paravirtualization | **The guest OS has to be modified** (Windows won't run) |
 
-**B2.** *(6.3.4)* Saving/restoring state (VMCS), the pipeline flush, cache/TLB pollution, and the
+**9.** *(6.3.4)* Saving/restoring state (VMCS), the pipeline flush, cache/TLB pollution, and the
 hypervisor's time handling the event.
 
-**B3.** *(6.4.1, 6.4.3)* The guest application's virtual address must first be translated to a
+**10.** *(6.4.1, 6.4.3)* The guest application's virtual address must first be translated to a
 guest physical address by the guest OS's page table, then to a real physical address by the
 hypervisor — because the address the guest thinks is "physical" isn't real.
 
@@ -1333,12 +1333,12 @@ EPT moves the second translation into hardware; the guest can change its own pag
 VM exit. **The new cost:** a page table walk goes from 4 memory accesses to as many as 24 → a TLB
 miss is far more expensive → **huge pages are more critical in a VM.**
 
-**B4.** *(6.4.4)* The hypervisor doesn't know the internal structures of the guest's memory
+**11.** *(6.4.4)* The hypervisor doesn't know the internal structures of the guest's memory
 manager and can't ask it for pages directly. Instead it puts a driver inside the guest; the
 driver allocates memory and "inflates", the guest OS feels memory pressure and frees its own
 pages. **The hypervisor runs the guest's own memory manager for its own purposes.**
 
-**B5.** *(6.6)*
+**12.** *(6.6)*
 ```
 Emulation > virtio > SR-IOV   (VM exit frequency, most to least)
 ```
@@ -1348,12 +1348,12 @@ Emulation > virtio > SR-IOV   (VM exit frequency, most to least)
 | virtio | A shared ring buffer; many requests per notification (batching) |
 | SR-IOV | A VF is assigned directly to the VM; the hypervisor leaves the path |
 
-**B6.** *(6.6.3)* With SR-IOV the guest driver hands **DMA addresses directly** to the hardware.
+**13.** *(6.6.3)* With SR-IOV the guest driver hands **DMA addresses directly** to the hardware.
 Because DMA bypasses the CPU, page table protection doesn't apply — a malicious or buggy guest
 could target another VM's memory. The IOMMU (VT-d/AMD-Vi) acts as an MMU for devices: it
 translates and bounds every DMA access. **Without it, SR-IOV removes isolation entirely.**
 
-**B7.** *(6.6.4)*
+**14.** *(6.6.4)*
 | Gain | Mechanism |
 |---|---|
 | Performance | Network/storage/management moved onto a separate card → 100% of the main CPU goes to the customer |
@@ -1362,7 +1362,7 @@ translates and bounds every DMA access. **Without it, SR-IOV removes isolation e
 
 ### Part C
 
-**C1.** *(6.5.2)*
+**15.** *(6.5.2)*
 
 **Diagnosis:** 18% steal time — the vCPUs are waiting for a physical core. 42% of the CPU looks
 idle while the application is slow.
@@ -1380,7 +1380,7 @@ Because the question says `m7i`, **the credit possibility is eliminated** — th
 it recurs, a larger instance (a large instance = a large slice of the server = fewer neighbors).
 (3) If it's critical, a Dedicated Instance/Host.
 
-**C2.** *(6.4.3)*
+**16.** *(6.4.3)*
 
 **Cause:** the EPT two-level page table walk. On a memory-intensive workload TLB misses are
 frequent, and each miss means up to **24** memory accesses instead of the 4 you'd have without
@@ -1393,7 +1393,7 @@ virtualization.
 3. Instance generation — newer generations have better EPT/TLB hardware
 4. Prefer **explicit huge pages** over THP (see Phase 2.5.4 for THP defrag stalls)
 
-**C3.**
+**17.**
 ```
 VM approach        : 500 × 1 GB   = 500 GB overhead
 Container approach : 500 × 10 MB  =   5 GB overhead
@@ -1409,7 +1409,7 @@ misconfiguration affects every container on the same host. And one container cra
 decision would be wrong for untrusted customer code. An extra precaution: group the containers
 per host by trust/criticality level (limiting the blast radius).
 
-**C4.** *(6.7.4)*
+**18.** *(6.7.4)*
 
 **Choice: a micro-VM — Firecracker (or AWS Fargate).**
 
@@ -1426,7 +1426,7 @@ per host by trust/criticality level (limiting the blast radius).
 
 > **AWS Lambda made exactly this decision, and wrote Firecracker for it.**
 
-**C5.** *(6.5.3)*
+**19.** *(6.5.3)*
 
 **Diagnosis:** the `t3.xlarge` is running out of CPU credits.
 
@@ -1444,7 +1444,7 @@ The chain of evidence:
 intermittent one. `t3.unlimited` would be wrong here — you'd pay overage fees for hours every
 day.
 
-**C6.** *(Answer 6.2, 6.6.3)*
+**20.** *(Answer 6.2, 6.6.3)*
 ```
 100 Gbps ÷ (1500 × 8 bits) = 8,333,333 packets/s
 
@@ -1465,7 +1465,7 @@ offered economically** in the cloud without SR-IOV (ENA / enhanced networking).
 > Also remember Phase 5.2.3: 100 Gbps = 12.5 GB/s, which requires PCIe Gen4 x8. **Two separate
 > bottleneck checks: PCIe capacity and VM exit cost.**
 
-**C7.** *(6.3.4, 6.1.2, Q2)*
+**21.** *(6.3.4, 6.1.2, Q2)*
 
 **Where the 12% comes from — three sources:**
 
@@ -1515,7 +1515,7 @@ if revenue also goes up 4×. In most cases it doesn't.
 | 10–13 | Re-read 6.3 (VM exit) and 6.5 (steal time) from the start. |
 | 0–9 | Work through the phase again. **This phase is a prerequisite for Phase 7** — don't skip it. |
 
-> **If you missed C1, C5 or C7 in particular, solve them again.** All of Phase 7 is built on
+> **If you missed 15, 19 or 21 in particular, solve them again.** All of Phase 7 is built on
 > decisions of that kind.
 
 ---

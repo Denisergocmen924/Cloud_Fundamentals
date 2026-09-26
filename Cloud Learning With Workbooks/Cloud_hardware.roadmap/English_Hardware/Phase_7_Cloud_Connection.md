@@ -1276,69 +1276,69 @@ Result        : ≈ 0.24  →  ~76% savings
 
 ## Part A — Fundamentals
 
-**A1.** Decode every part of the name `m7gd.2xlarge`.
+**1.** Decode every part of the name `m7gd.2xlarge`.
 
-**A2.** What are the two physical properties that separate the `c` family from `m`?
+**2.** What are the two physical properties that separate the `c` family from `m`?
 
-**A3.** What are the three fundamental differences between instance store and EBS?
+**3.** What are the three fundamental differences between instance store and EBS?
 
-**A4.** What is gp3's fundamental advantage over gp2?
+**4.** What is gp3's fundamental advantage over gp2?
 
-**A5.** Name the three mechanisms of noisy neighbors.
+**5.** Name the three mechanisms of noisy neighbors.
 
-**A6.** Name the five bottleneck classes.
+**6.** Name the five bottleneck classes.
 
-**A7.** What is the target range for CPU in right-sizing, and why isn't it 100%?
+**7.** What is the target range for CPU in right-sizing, and why isn't it 100%?
 
 ## Part B — Mechanism
 
-**B1.** Why are 1 vCPU on Graviton and 1 vCPU on x86 different things? What follows from it?
+**8.** Why are 1 vCPU on Graviton and 1 vCPU on x86 different things? What follows from it?
 
-**B2.** Why does L3 cache pollution show up in no standard metric?
+**9.** Why does L3 cache pollution show up in no standard metric?
 
-**B3.** List the 5-step procedure you follow when you hear "my application is slow".
+**10.** List the 5-step procedure you follow when you hear "my application is slow".
 
-**B4.** What is waiting bound, and how is it distinguished from the other four classes?
+**11.** What is waiting bound, and how is it distinguished from the other four classes?
 
-**B5.** Why does the instance EBS bandwidth ceiling require a separate check?
+**12.** Why does the instance EBS bandwidth ceiling require a separate check?
 
-**B6.** Which noisy-neighbor mechanisms did Nitro solve, and which did it not? Why?
+**13.** Which noisy-neighbor mechanisms did Nitro solve, and which did it not? Why?
 
-**B7.** Why are the costs of over- and under-provisioning asymmetric?
+**14.** Why are the costs of over- and under-provisioning asymmetric?
 
 ## Part C — Application and reasoning
 
-**C1.** A team is building a video encoding service. The job: a user uploads a video and it
+**15.** A team is building a video encoding service. The job: a user uploads a video and it
 is converted into 4 different resolutions. Jobs can pile up in a queue, latency is not
 critical. 3 busy hours a day, 21 quiet hours.
 Write your instance family, size, pricing model and storage recommendation with your
 reasoning.
 
-**C2.** A PostgreSQL primary node: 500 GB of data, a working set of ~120 GB, 85% reads, a
+**16.** A PostgreSQL primary node: 500 GB of data, a working set of ~120 GB, 85% reads, a
 target p99 query time of 50 ms.
 Justify your instance and EBS recommendation. Which metrics do you monitor?
 
-**C3.** `iostat -x` output:
+**17.** `iostat -x` output:
 ```
 Device  r/s     w/s    rkB/s    wkB/s  r_await w_await aqu-sz %util
 nvme1n1 15980.0 20.0  63920.0   80.0    0.62    0.71   10.20  99.9
 ```
 Volume: gp3, 16,000 IOPS. Instance: `m7i.4xlarge`. Your diagnosis?
 
-**C4.** An ML team is using `p4d.24xlarge` (8× A100). `nvidia-smi` shows GPU utilization at
+**18.** An ML team is using `p4d.24xlarge` (8× A100). `nvidia-smi` shows GPU utilization at
 35%. The team wants to move to `p5.48xlarge` (8× H100).
 Does this make sense? What should be done first?
 
-**C5.** An API's p99 goes up 5× every day at 02:00 and returns to normal at 03:00. Traffic
+**19.** An API's p99 goes up 5× every day at 02:00 and returns to normal at 03:00. Traffic
 is at its lowest at that hour. CPU, memory and network are normal. `iostat` await is 15 ms
 (normally 1 ms).
 Your diagnosis and your solution?
 
-**C6.** To reduce cost, a team proposes moving all production instances from `m6i` to `t3`.
+**20.** To reduce cost, a team proposes moving all production instances from `m6i` to `t3`.
 Average CPU utilization is 35%.
 Evaluate this and propose an alternative.
 
-**C7.** An e-commerce site is preparing for Black Friday. Normal traffic is 1,000 requests/s,
+**21.** An e-commerce site is preparing for Black Friday. Normal traffic is 1,000 requests/s,
 the expected peak is 15,000 requests/s. Current: 10 × `m7i.2xlarge`, average CPU 30%.
 Write the capacity plan: how many instances, which model, which risks?
 
@@ -1348,7 +1348,7 @@ Write the capacity plan: how many instances, which model, which risks?
 
 ### Part A
 
-**A1.** *(7.1.0)*
+**1.** *(7.1.0)*
 ```
 m   = general purpose family
 7   = 7th generation
@@ -1357,31 +1357,31 @@ d   = has local NVMe (instance store)
 2xlarge = 8 vCPU
 ```
 
-**A2.** *(7.1.2)* **A high sustained clock** (single-thread performance) and **more L3
+**2.** *(7.1.2)* **A high sustained clock** (single-thread performance) and **more L3
 cache per vCPU**. The low RAM ratio is a consequence, not the cause.
 
-**A3.** *(7.1.4)*
+**3.** *(7.1.4)*
 | Instance store | EBS |
 |---|---|
 | Connected directly over PCIe | **Over the network** |
 | ~50–100 μs, millions of IOPS | ~1 ms, quota'd IOPS |
 | **Lost when the instance stops** | Persistent, can be snapshotted |
 
-**A4.** *(7.3.2)* **IOPS is set independently of disk size.** Because gp2's IOPS = size × 3,
+**4.** *(7.3.2)* **IOPS is set independently of disk size.** Because gp2's IOPS = size × 3,
 wanting high IOPS forces you to buy an unnecessarily large disk.
 
-**A5.** *(7.4.1)* CPU time contention (steal time), **L3 cache pollution**, **memory
+**5.** *(7.4.1)* CPU time contention (steal time), **L3 cache pollution**, **memory
 bandwidth saturation**. The last two cannot be measured and were not solved by Nitro.
 
-**A6.** *(7.5.1)* CPU bound, memory bound, I/O bound, network bound, **waiting bound**.
+**6.** *(7.5.1)* CPU bound, memory bound, I/O bound, network bound, **waiting bound**.
 
-**A7.** *(7.6.2)* **40–60% average.** 100% is not the target because the queue curve is
+**7.** *(7.6.2)* **40–60% average.** 100% is not the target because the queue curve is
 exponential — 95% utilization means about 8× the latency of 50% utilization
 *(Phase 3.4.4)*. The last 20% of capacity is paid for by blowing up p99.
 
 ### Part B
 
-**B1.** *(7.1.6, Phase 1.5.2)* On x86, 1 vCPU = 1 SMT thread = **half a physical core.** On
+**8.** *(7.1.6, Phase 1.5.2)* On x86, 1 vCPU = 1 SMT thread = **half a physical core.** On
 Graviton, 1 vCPU = **1 full physical core.**
 
 **What follows:** `c7g.4xlarge` (16 physical cores) and `c7i.4xlarge` (8 physical cores)
@@ -1389,7 +1389,7 @@ have the same vCPU count but are different hardware. Graviton's advantage is **l
 than advertised on workloads that benefit little from SMT, and **smaller** on workloads
 that benefit a lot.
 
-**B2.** *(7.4.3)* Because the pollution increases **not the number of instructions, but the
+**9.** *(7.4.3)* Because the pollution increases **not the number of instructions, but the
 time per instruction.**
 - CPU utilization looks the same or higher (more cycles spent on the same work)
 - Steal time does not change (the vCPU **is getting** the core, it is only waiting on memory)
@@ -1398,7 +1398,7 @@ time per instruction.**
 What drops is **IPC** *(Phase 1.3.2)*, and measuring it requires hardware performance
 counters — which are usually restricted on cloud instances.
 
-**B3.** *(7.5.2)*
+**10.** *(7.5.2)*
 ```
 0. Ask the right question (since when, p50 or p99, how much, continuous or not)
 1. CPU     — top/mpstat: us, sy, wa, st
@@ -1408,18 +1408,18 @@ counters — which are usually restricted on cloud instances.
 5. If none of them → waiting bound
 ```
 
-**B4.** *(7.5.7)* **It is the application being slow while no resource is saturated.** In
+**11.** *(7.5.7)* **It is the application being slow while no resource is saturated.** In
 the other four, some resource is pressed against its ceiling; here the system is
 **waiting** on something: a lock, a remote call, a connection/thread pool, a GC pause, a
 slow downstream service.
 
 **The distinguishing mark:** adding hardware fixes nothing.
 
-**B5.** *(7.3.5)* The volume's limits and the instance's limits are applied **separately.**
+**12.** *(7.3.5)* The volume's limits and the instance's limits are applied **separately.**
 An io2 volume that can supply 64,000 IOPS, attached to an instance that allows 10,000
 IOPS, has an effective limit of 10,000 — the difference is paid for and wasted.
 
-**B6.** *(7.2.2)*
+**13.** *(7.2.2)*
 | Solved | Not solved |
 |---|---|
 | Hypervisor CPU consumption | **L3 cache contention** |
@@ -1430,7 +1430,7 @@ IOPS, has an effective limit of 10,000 — the difference is paid for and wasted
 and the memory channels are **inside the CPU package** and are physically shared; they
 cannot be moved and they are not quota'd at the hardware level *(Phase 6.1.2)*.
 
-**B7.** *(7.6.3)*
+**14.** *(7.6.3)*
 ```
 Over-provisioning : the cost is VISIBLE ON THE BILL, measurable, easy to correct
 Under-provisioning: the cost is HIDDEN — lost requests, customers, reputation, incident management
@@ -1440,7 +1440,7 @@ has to be defined by measurement.
 
 ### Part C
 
-**C1.** *(7.1.2, 7.6.4)*
+**15.** *(7.1.2, 7.6.4)*
 
 | Decision | Recommendation | Reasoning |
 |---|---|---|
@@ -1455,7 +1455,7 @@ has to be defined by measurement.
 > interruption-tolerant (the job returns to the queue), insensitive to latency. 70–90%
 > savings at almost zero risk.
 
-**C2.** *(7.1.3, 7.3, 7.5.4)*
+**16.** *(7.1.3, 7.3, 7.5.4)*
 
 | Decision | Recommendation | Reasoning |
 |---|---|---|
@@ -1482,7 +1482,7 @@ on RAM, not on disk.**
 □ Checkpoint frequency and duration
 ```
 
-**C3.** *(7.3.5, Phase 3.4.5)*
+**17.** *(7.3.5, Phase 3.4.5)*
 
 **Reading it:**
 ```
@@ -1512,7 +1512,7 @@ quickly, it simply **won't accept any more.**
 > nothing more you can do with gp3 — you will either move to io2 or reduce the IOPS
 > requirement.
 
-**C4.** *(7.1.5, Phase 4.2.4)*
+**18.** *(7.1.5, Phase 4.2.4)*
 
 **It doesn't make sense — buying a faster GPU at 35% GPU utilization is growing the
 capacity that is sitting idle.**
@@ -1557,7 +1557,7 @@ The price will double, and the utilization ratio will DROP
 > And if, after getting to 80%, it still isn't enough, **then** the H100 is a sensible
 > decision — because now you really are GPU limited.
 
-**C5.** *(7.5.5)*
+**19.** *(7.5.5)*
 
 **Diagnosis: a scheduled nightly job is saturating the disk.**
 
@@ -1596,7 +1596,7 @@ iotop -o          # run it at 02:00 — which process
 > **Numbers 1 and 2 are free and solve most cases.** Saying "p99 went up, let's move to
 > io2" here is **spending money without having seen the root cause.**
 
-**C6.** *(7.1, Phase 6.5.3)*
+**20.** *(7.1, Phase 6.5.3)*
 
 **Evaluation: this proposal is wrong and will cause failures in production.**
 
@@ -1630,7 +1630,7 @@ the peaks.
 > The t family is not a **discount**, it is a **different performance model.** If the
 > workload doesn't fit that model, it isn't cheap — it is simply broken.
 
-**C7.** *(7.6)*
+**21.** *(7.6)*
 
 **Analysis of the current state:**
 ```

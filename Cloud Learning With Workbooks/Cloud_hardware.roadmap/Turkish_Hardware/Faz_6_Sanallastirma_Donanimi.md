@@ -1214,64 +1214,64 @@ bir saldırgana karşı değil.
 
 ## Bölüm A — Temel
 
-**A1.** Type 1 ve Type 2 hypervisor arasındaki fark nedir?
+**1.** Type 1 ve Type 2 hypervisor arasındaki fark nedir?
 
-**A2.** VM exit nedir?
+**2.** VM exit nedir?
 
-**A3.** Steal time neyi ölçer?
+**3.** Steal time neyi ölçer?
 
-**A4.** Namespace ve cgroup ne işe yarar? Farkları nedir?
+**4.** Namespace ve cgroup ne işe yarar? Farkları nedir?
 
-**A5.** SR-IOV'un temel fikri nedir?
+**5.** SR-IOV'un temel fikri nedir?
 
-**A6.** EPT/NPT hangi problemi çözer?
+**6.** EPT/NPT hangi problemi çözer?
 
-**A7.** Container ile VM arasındaki en önemli güvenlik farkı nedir?
+**7.** Container ile VM arasındaki en önemli güvenlik farkı nedir?
 
 ## Bölüm B — Mekanizma
 
-**B1.** VT-x öncesinde sanallaştırmanın temel problemi neydi? İki eski çözümü ve
+**8.** VT-x öncesinde sanallaştırmanın temel problemi neydi? İki eski çözümü ve
 sakıncalarını söyle.
 
-**B2.** Bir VM exit'in maliyetini oluşturan dört kalemi say.
+**9.** Bir VM exit'in maliyetini oluşturan dört kalemi say.
 
-**B3.** Sanallaştırmada adres çevirisi neden iki katlıdır? EPT bunu nasıl iyileştirir ve
+**10.** Sanallaştırmada adres çevirisi neden iki katlıdır? EPT bunu nasıl iyileştirir ve
 hangi yeni maliyeti getirir?
 
-**B4.** Balloon driver nasıl çalışır ve hypervisor neden bu dolaylı yöntemi kullanmak
+**11.** Balloon driver nasıl çalışır ve hypervisor neden bu dolaylı yöntemi kullanmak
 zorundadır?
 
-**B5.** Emülasyon, virtio ve SR-IOV'u VM exit sıklığı açısından sırala ve her birinin
+**12.** Emülasyon, virtio ve SR-IOV'u VM exit sıklığı açısından sırala ve her birinin
 mekanizmasını bir cümleyle açıkla.
 
-**B6.** IOMMU neden SR-IOV'un **ön şartıdır**? Olmazsa ne olur?
+**13.** IOMMU neden SR-IOV'un **ön şartıdır**? Olmazsa ne olur?
 
-**B7.** Nitro mimarisi üç ayrı kazanç sağlar. Üçünü de mekanizmasıyla açıkla.
+**14.** Nitro mimarisi üç ayrı kazanç sağlar. Üçünü de mekanizmasıyla açıkla.
 
 ## Bölüm C — Uygulama ve muhakeme
 
-**C1.** Bir `m7i.xlarge` üzerinde `top` çıktısı: `%Cpu(s): 35 us, 5 sy, 42 id, 0 wa, 18 st`.
+**15.** Bir `m7i.xlarge` üzerinde `top` çıktısı: `%Cpu(s): 35 us, 5 sy, 42 id, 0 wa, 18 st`.
 Teşhisin ne? İki farklı sebep olabilir — nasıl ayırt edersin?
 
-**C2.** Bir veritabanı VM'i, aynı donanımdaki bare metal kuruluma göre %18 yavaş. Bellek
+**16.** Bir veritabanı VM'i, aynı donanımdaki bare metal kuruluma göre %18 yavaş. Bellek
 yoğun bir iş yükü. Olası sebep ve iyileştirme?
 
-**C3.** Bir ekip 500 mikroservis örneğini 20 VM yerine 20 host üzerinde container olarak
+**17.** Bir ekip 500 mikroservis örneğini 20 VM yerine 20 host üzerinde container olarak
 çalıştırmak istiyor. Kaynak tasarrufunu hesapla (VM ek yükü ~1 GB, container ~10 MB).
 Hangi riski kabul etmiş oluyorlar?
 
-**C4.** Bir Lambda benzeri servis tasarlıyorsun: müşteri kodu, 100 ms içinde başlamalı,
+**18.** Bir Lambda benzeri servis tasarlıyorsun: müşteri kodu, 100 ms içinde başlamalı,
 güçlü izolasyon şart. Hangi teknolojiyi seçersin ve neden?
 
-**C5.** `t3.xlarge`'da çalışan bir Kafka consumer, günde 3 kez birkaç saatliğine geri
+**19.** `t3.xlarge`'da çalışan bir Kafka consumer, günde 3 kez birkaç saatliğine geri
 kalıyor (lag artıyor), sonra yetişiyor. CPU kullanımı %55 civarında sabit. Teşhis ve
 çözüm?
 
-**C6.** 100 Gbps ağ gerektiren bir uygulama için instance seçiyorsun. SR-IOV/ENA'nın
+**20.** 100 Gbps ağ gerektiren bir uygulama için instance seçiyorsun. SR-IOV/ENA'nın
 neden zorunlu olduğunu sayıyla gerekçelendir (paket boyutu 1500 B, VM exit 2000 çevrim,
 CPU 3 GHz).
 
-**C7.** Bir ekip, `c7i.8xlarge`'dan `c7i.metal`'a geçince uygulamanın %12 hızlandığını
+**21.** Bir ekip, `c7i.8xlarge`'dan `c7i.metal`'a geçince uygulamanın %12 hızlandığını
 görüyor ama fiyat 4 katına çıkıyor. Bu %12 nereden geliyor ve bu geçiş mantıklı mı?
 Nasıl karar verirsin?
 
@@ -1281,36 +1281,36 @@ Nasıl karar verirsin?
 
 ### Bölüm A
 
-**A1.** Type 1 doğrudan donanım üzerinde çalışır (altında OS yok) — yüksek performans,
+**1.** Type 1 doğrudan donanım üzerinde çalışır (altında OS yok) — yüksek performans,
 küçük saldırı yüzeyi, üretim cloud'larının standardı. Type 2 bir host OS üzerinde normal
 uygulama olarak çalışır — kolay kurulum, düşük performans, geliştirme ortamı. *(6.2.1,
 6.2.2)*
 
-**A2.** Misafir işletim sisteminin ayrıcalıklı bir işlem yapması üzerine CPU'nun VMX
+**2.** Misafir işletim sisteminin ayrıcalıklı bir işlem yapması üzerine CPU'nun VMX
 non-root moddan root moda geçip kontrolü hypervisor'e vermesi. **Sanallaştırmanın asıl
 maliyet kaynağıdır** (1.000–5.000 çevrim). *(6.3.4)*
 
-**A3.** vCPU'nun çalışmaya hazır olduğu ama fiziksel çekirdek bulamadığı sürenin yüzdesi.
+**3.** vCPU'nun çalışmaya hazır olduğu ama fiziksel çekirdek bulamadığı sürenin yüzdesi.
 *(6.5.2)*
 
-**A4.** Namespace **görünürlüğü** izole eder (PID, ağ, dosya sistemi, hostname). cgroup
+**4.** Namespace **görünürlüğü** izole eder (PID, ağ, dosya sistemi, hostname). cgroup
 **kaynak kullanımını** sınırlar (CPU, bellek, I/O, PID sayısı). İkisi birlikte container'ı
 oluşturur. *(6.7.2)*
 
-**A5.** Fiziksel cihazın kendini birden çok sanal fonksiyon (VF) olarak göstermesi ve her
+**5.** Fiziksel cihazın kendini birden çok sanal fonksiyon (VF) olarak göstermesi ve her
 VF'nin bir VM'e doğrudan atanması — **hypervisor I/O yolundan tamamen çıkar**, VM exit
 olmaz. *(6.6.3)*
 
-**A6.** İkinci adres çevirisini (misafir fiziksel → gerçek fiziksel) donanıma alır.
+**6.** İkinci adres çevirisini (misafir fiziksel → gerçek fiziksel) donanıma alır.
 Gölge sayfa tablolarının gerektirdiği sürekli VM exit'leri ortadan kaldırır. *(6.4.3)*
 
-**A7.** VM'ler **ayrı çekirdek** çalıştırır; kaçmak için hypervisor açığı gerekir
+**7.** VM'ler **ayrı çekirdek** çalıştırır; kaçmak için hypervisor açığı gerekir
 (~100K satır, minimal yüzey). Container'lar **host çekirdeğini paylaşır**; kaçmak için
 çekirdek açığı yeterlidir (~30M satır, ~350 sistem çağrısı). *(6.7.4)*
 
 ### Bölüm B
 
-**B1.** *(6.3.2)* Misafir OS de bir çekirdektir ve ring 0 bekler, ama orada hypervisor
+**8.** *(6.3.2)* Misafir OS de bir çekirdektir ve ring 0 bekler, ama orada hypervisor
 vardır. Ring 0'a konursa izolasyon kalkar, ring 3'e konursa ayrıcalıklı komutları
 çalışmaz.
 
@@ -1319,10 +1319,10 @@ vardır. Ring 0'a konursa izolasyon kalkar, ring 3'e konursa ayrıcalıklı komu
 | İkili çeviri | Karmaşık, yavaş, hata riski |
 | Paravirtualization | **Misafir OS'in değiştirilmesi gerekir** (Windows çalışmaz) |
 
-**B2.** *(6.3.4)* Durum kaydetme/yükleme (VMCS), pipeline boşaltma, cache/TLB kirlenmesi,
+**9.** *(6.3.4)* Durum kaydetme/yükleme (VMCS), pipeline boşaltma, cache/TLB kirlenmesi,
 hypervisor'ün olayı işleme süresi.
 
-**B3.** *(6.4.1, 6.4.3)* Misafir uygulamanın sanal adresi önce misafir OS'in sayfa
+**10.** *(6.4.1, 6.4.3)* Misafir uygulamanın sanal adresi önce misafir OS'in sayfa
 tablosuyla misafir fiziksel adresine, sonra hypervisor tarafından gerçek fiziksel adrese
 çevrilmelidir — çünkü misafirin "fiziksel" sandığı adres gerçek değildir.
 
@@ -1330,12 +1330,12 @@ EPT ikinci çeviriyi donanıma alır; misafir kendi sayfa tablosunu VM exit olma
 değiştirebilir. **Yeni maliyet:** sayfa tablosu yürüyüşü 4 bellek erişiminden en kötü
 hâlde 24'e çıkar → TLB ıskası çok daha pahalı → **huge page'ler VM'de daha kritik.**
 
-**B4.** *(6.4.4)* Hypervisor, misafirin bellek yöneticisinin iç yapısını bilmez, ondan
+**11.** *(6.4.4)* Hypervisor, misafirin bellek yöneticisinin iç yapısını bilmez, ondan
 doğrudan sayfa isteyemez. Bunun yerine misafirin içine bir sürücü koyar; sürücü bellek
 ayırarak "şişer", misafir OS bellek baskısı hissedip kendi sayfalarını boşaltır.
 **Hypervisor, misafirin kendi bellek yöneticisini kendi amacı için çalıştırır.**
 
-**B5.** *(6.6)*
+**12.** *(6.6)*
 ```
 Emülasyon > virtio > SR-IOV   (VM exit sıklığı, çoktan aza)
 ```
@@ -1345,13 +1345,13 @@ Emülasyon > virtio > SR-IOV   (VM exit sıklığı, çoktan aza)
 | virtio | Paylaşımlı halka tamponu; tek bildirimle çok istek (toplu işleme) |
 | SR-IOV | VF doğrudan VM'e atanır; hypervisor yoldan çıkar |
 
-**B6.** *(6.6.3)* SR-IOV'da misafir sürücüsü donanıma **doğrudan DMA adresi** verir. DMA
+**13.** *(6.6.3)* SR-IOV'da misafir sürücüsü donanıma **doğrudan DMA adresi** verir. DMA
 CPU'yu atladığı için sayfa tablosu koruması işlemez — kötü niyetli/hatalı bir misafir
 başka VM'in belleğini hedef gösterebilir. IOMMU (VT-d/AMD-Vi) cihazlar için MMU görevi
 görür: her DMA erişimini çevirir ve sınırlar. **Olmazsa SR-IOV izolasyonu tamamen
 kaldırır.**
 
-**B7.** *(6.6.4)*
+**14.** *(6.6.4)*
 | Kazanç | Mekanizma |
 |---|---|
 | Performans | Ağ/depolama/yönetim ayrı karta taşındı → ana CPU'nun %100'ü müşteride |
@@ -1360,7 +1360,7 @@ kaldırır.**
 
 ### Bölüm C
 
-**C1.** *(6.5.2)*
+**15.** *(6.5.2)*
 
 **Teşhis:** %18 steal time — vCPU'lar fiziksel çekirdek için bekliyor. CPU'nun %42'si
 boşta görünüyor ama uygulama yavaş.
@@ -1378,7 +1378,7 @@ Soruda `m7i` denildiği için **kredi ihtimali elenir** — host kalabalık.
 (2) Tekrarlıyorsa daha büyük instance (büyük instance = sunucunun büyük dilimi = az
 komşu). (3) Kritikse Dedicated Instance/Host.
 
-**C2.** *(6.4.3)*
+**16.** *(6.4.3)*
 
 **Sebep:** EPT iki katlı sayfa tablosu yürüyüşü. Bellek yoğun iş yükünde TLB ıskası sık
 olur ve her ıska, sanallaştırmasız 4 bellek erişimi yerine **24'e kadar** erişim demektir.
@@ -1390,7 +1390,7 @@ olur ve her ıska, sanallaştırmasız 4 bellek erişimi yerine **24'e kadar** e
 3. Instance nesli — daha yeni nesiller daha iyi EPT/TLB donanımına sahip
 4. THP yerine **açık huge page** tercih et (THP defrag duraklamaları için Faz 2.5.4)
 
-**C3.**
+**17.**
 ```
 VM yaklaşımı        : 500 × 1 GB   = 500 GB ek yük
 Container yaklaşımı : 500 × 10 MB  =   5 GB ek yük
@@ -1408,7 +1408,7 @@ karar, güvenilmeyen müşteri kodu için yanlış olurdu. Ek önlem: host baş�
 container'ları farklı güven/kritiklik seviyelerine göre gruplamak (blast radius
 sınırlama).
 
-**C4.** *(6.7.4)*
+**18.** *(6.7.4)*
 
 **Seçim: mikro-VM — Firecracker (veya AWS Fargate).**
 
@@ -1425,7 +1425,7 @@ sınırlama).
 
 > **AWS Lambda tam olarak bu kararı verdi ve bunun için Firecracker'ı yazdı.**
 
-**C5.** *(6.5.3)*
+**19.** *(6.5.3)*
 
 **Teşhis:** `t3.xlarge` CPU kredisi tükeniyor.
 
@@ -1442,7 +1442,7 @@ Kanıt zinciri:
 **Çözüm:** `m7i.xlarge`'a geç. Kafka consumer sürekli çalışan bir iş yüküdür; aralıklı
 değildir. `t3.unlimited` burada yanlış olur — her gün saatlerce aşım ücreti ödenir.
 
-**C6.** *(Cevap 6.2, 6.6.3)*
+**20.** *(Cevap 6.2, 6.6.3)*
 ```
 100 Gbps ÷ (1500 × 8 bit) = 8.333.333 paket/s
 
@@ -1463,7 +1463,7 @@ Emülasyonlu I/O (paket başına 1 VM exit varsayımıyla):
 > Ayrıca Faz 5.2.3'ü hatırla: 100 Gbps = 12,5 GB/s, PCIe Gen4 x8 gerektirir. **İki ayrı
 > darboğaz kontrolü: PCIe kapasitesi ve VM exit maliyeti.**
 
-**C7.** *(6.3.4, 6.1.2, S2)*
+**21.** *(6.3.4, 6.1.2, S2)*
 
 **%12 nereden geliyor — üç kaynak:**
 
@@ -1514,7 +1514,7 @@ ancak gelir 4 katına çıkıyorsa mantıklıdır. Çoğu durumda değildir.
 | 10–13 | 6.3 (VM exit) ve 6.5 (steal time) bölümlerini baştan oku. |
 | 0–9 | Fazı yeniden çalış. **Bu faz Faz 7'nin ön şartıdır** — atlama. |
 
-> **Özellikle C1, C5 ve C7'yi kaçırdıysan tekrar çöz.** Faz 7'nin tamamı bu tür kararlar
+> **Özellikle 15, 19 ve 21'i kaçırdıysan tekrar çöz.** Faz 7'nin tamamı bu tür kararlar
 > üzerine kuruludur.
 
 ---

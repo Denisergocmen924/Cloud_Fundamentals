@@ -1,6 +1,6 @@
 # Appendix C — "When It Breaks" Quick Reference
 
-> **Navigation:** [◀ Appendix B — Concept and File Map](Appendix_B_Concept_File_Map.md) · **Appendix C** · [Phase 11 — The Bridge to the Cloud ▶](Phase_11_Bridge_to_the_Cloud.md)
+> **Navigation:** [◀ Appendix B — Concept and File Map](Appendix_B_Concept_File_Map.md) · **Appendix C** · [README ▶](README_en.md)
 
 ---
 
@@ -169,4 +169,4 @@ Do not panic, do not open rules at random. Eliminate from the bottom up:
 
 ---
 
-> **Navigation:** [◀ Appendix B — Concept and File Map](Appendix_B_Concept_File_Map.md) · **Appendix C** · [Phase 11 — The Bridge to the Cloud ▶](Phase_11_Bridge_to_the_Cloud.md)
+> **Navigation:** [◀ Appendix B — Concept and File Map](Appendix_B_Concept_File_Map.md) · **Appendix C** · [README ▶](README_en.md)

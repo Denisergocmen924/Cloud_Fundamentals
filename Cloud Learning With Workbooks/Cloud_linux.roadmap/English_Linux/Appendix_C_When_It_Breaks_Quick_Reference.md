@@ -1,6 +1,6 @@
 # Appendix C — "When It Breaks" Quick Reference
 
-> **Navigation:** [◀ Appendix B — File and Directory Map](Appendix_B_File_Directory_Map.md) · **Appendix C** · [Phase 12 — Bridge to the Cloud ▶](Phase_12_Bridge_to_the_Cloud.md)
+> **Navigation:** [◀ Appendix B — File and Directory Map](Appendix_B_File_Directory_Map.md) · **Appendix C** · [README ▶](README_en.md)
 
 ---
 
@@ -115,4 +115,4 @@ Don't panic, don't reboot. Take it in order:
 
 ---
 
-> **Navigation:** [◀ Appendix B — File and Directory Map](Appendix_B_File_Directory_Map.md) · **Appendix C** · [Phase 12 — Bridge to the Cloud ▶](Phase_12_Bridge_to_the_Cloud.md)
+> **Navigation:** [◀ Appendix B — File and Directory Map](Appendix_B_File_Directory_Map.md) · **Appendix C** · [README ▶](README_en.md)
