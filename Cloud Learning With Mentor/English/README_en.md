@@ -119,6 +119,15 @@ cloud-bridge format:
 
 ---
 
+## Prefer to read it all out first?
+
+Each map here has a full, self-study counterpart in
+[`Cloud Learning With Workbooks`](../../Cloud%20Learning%20With%20Workbooks/): the same phases written out
+with explanations, think-questions, answers and self-tests. Work a phase in the workbook, then hand the
+matching map to a mentor and go through the same phase out loud.
+
+---
+
 ## Notes
 
 - These roadmaps are the English editions of the Turkish originals (`*_temel_tr.md`).

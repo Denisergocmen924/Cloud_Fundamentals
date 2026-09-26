@@ -11,7 +11,7 @@
 
 ## What is this book, and how does it differ from the main map?
 
-The roadmap file at the repository root is a **skeleton**: you give it to an AI mentor and
+The roadmap file in the mentor folder is a **skeleton**: you give it to an AI mentor and
 the mentor opens the topics in order. Read on its own, the skeleton tells you "what you need
 to learn" but it does not "teach it to you".
 

@@ -235,7 +235,7 @@ this book first, then give the main map to an AI mentor and repeat the same phas
 
 ## Its relationship with the other books
 
-This series consists of three books and the three of them **bound each other sensibly**:
+This series consists of three books, and they **limit each other on purpose**:
 
 | Book | What it takes | Where it meets this book |
 |---|---|---|

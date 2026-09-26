@@ -10,7 +10,7 @@
 
 ## Bu kitap nedir, ana haritadan farkı ne?
 
-Repo kökündeki yol haritası dosyası bir **iskelettir**: bir YZ mentoruna verilir, mentor
+Mentor klasöründeki yol haritası dosyası bir **iskelettir**: bir YZ mentoruna verilir, mentor
 konuları sırayla açar. İskelet tek başına okunduğunda "ne öğrenmem gerektiğini" söyler ama
 "onu öğretmez".
 

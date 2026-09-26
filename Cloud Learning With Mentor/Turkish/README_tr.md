@@ -118,6 +118,15 @@ haritalamak:
 
 ---
 
+## Önce hepsini okuyarak çalışmak ister misin?
+
+Buradaki her haritanın, [`Cloud Learning With Workbooks`](../../Cloud%20Learning%20With%20Workbooks/)
+klasöründe baştan sona yazılmış bir karşılığı var: aynı fazlar; anlatım, düşünme soruları, cevaplar ve
+kendini sınama testleriyle. Bir fazı çalışma kitabıyla işle, sonra aynı fazın haritasını bir mentora verip
+konuyu sözlü tekrar et.
+
+---
+
 ## Notlar
 
 - Tüm içerik Türkçedir; teknik terimler İngilizce kalır, ilk geçişte parantez

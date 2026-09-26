@@ -73,10 +73,12 @@ just built.
 │   ├── English/
 │   └── Turkish/
 │
-└── Cloud Learning With Workbooks/      ← offline workbooks, to study alone
-    ├── Cloud_hardware.roadmap/
-    ├── Cloud_linux.roadmap/
-    └── Cloud_network.roadmap/
+├── Cloud Learning With Workbooks/      ← offline workbooks, to study alone
+│   ├── Cloud_hardware.roadmap/         ← each holds English_*/, Turkish_*/ and diagrams/
+│   ├── Cloud_linux.roadmap/
+│   └── Cloud_network.roadmap/
+│
+└── diagram_example/                    ← the rules and template every diagram follows
 ```
 
 The logic is the same at every level:
@@ -85,8 +87,8 @@ The logic is the same at every level:
 2. **Second level — what you learn.** Hardware, Linux, network.
 3. **Inside that — which language.** English and Turkish sit side by side.
 
-Each folder carries its own README explaining how that specific path is worked through, and
-each subject is split into **phases** that are meant to be taken in order. Start from the
+Each language folder carries its own README explaining how that specific path is worked through,
+and each subject is split into **phases** that are meant to be taken in order. Start from the
 README of the path you chose, not from the middle of a file.
 
 ---
@@ -108,7 +110,8 @@ README of the path you chose, not from the middle of a file.
 | Linux | ✅ / ✅ | ✅ / ✅ |
 | Network | ✅ / ✅ | ✅ / ✅ |
 
-Diagrams are being produced and added to the workbooks phase by phase.
+Diagrams: **Hardware 26, Linux 19, Network 12** — one shared set per subject, in each workbook's
+`diagrams/` folder, with a `Diagram_Inventory.md` listing them.
 
 ---
 ---
@@ -187,10 +190,12 @@ dağarcığını kaybettirir.
 │   ├── English/
 │   └── Turkish/
 │
-└── Cloud Learning With Workbooks/      ← tek başına işlenecek offline çalışma kitapları
-    ├── Cloud_hardware.roadmap/
-    ├── Cloud_linux.roadmap/
-    └── Cloud_network.roadmap/
+├── Cloud Learning With Workbooks/      ← tek başına işlenecek offline çalışma kitapları
+│   ├── Cloud_hardware.roadmap/         ← her biri English_*/, Turkish_*/ ve diagrams/ içerir
+│   ├── Cloud_linux.roadmap/
+│   └── Cloud_network.roadmap/
+│
+└── diagram_example/                    ← her diyagramın uyduğu kurallar ve şablon
 ```
 
 Mantık her seviyede aynı:
@@ -199,7 +204,7 @@ Mantık her seviyede aynı:
 2. **İkinci seviye — ne öğrendiğin.** Donanım, Linux, ağ.
 3. **Onun içinde — hangi dil.** İngilizce ve Türkçe yan yana durur.
 
-Her klasörün kendi README'si vardır ve o yolun nasıl işleneceğini anlatır. Her konu, sırayla
+Her dil klasörünün kendi README'si vardır ve o yolun nasıl işleneceğini anlatır. Her konu, sırayla
 alınması gereken **fazlara** bölünmüştür. Bir dosyanın ortasından değil, seçtiğin yolun
 README'sinden başla.
 
@@ -222,4 +227,5 @@ README'sinden başla.
 | Linux | ✅ / ✅ | ✅ / ✅ |
 | Network | ✅ / ✅ | ✅ / ✅ |
 
-Diyagramlar üretilip çalışma kitaplarına faz faz ekleniyor.
+Diyagramlar: **Hardware 26, Linux 19, Network 12** — her konu için tek ortak set; her çalışma
+kitabının `diagrams/` klasöründe, hepsini listeleyen bir `Diagram_Inventory.md` ile birlikte.
