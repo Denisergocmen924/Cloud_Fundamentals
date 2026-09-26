@@ -79,7 +79,7 @@
 
   <!-- ===== title (§5.1) ===== -->
   <g id="title">
-    <text class="t-title" x="64" y="88">Which triple does the kernel use?</text>
+    <text class="t-title" x="64" y="88">2.2.1 Which triple does the kernel use?</text>
     <text class="t-subtitle" x="64" y="132">It picks one triple, top to bottom, and looks only at it</text>
     <text class="t-fig" x="1536" y="88" text-anchor="end">Figure 2.2</text>
     <line class="l-rule" x1="64" y1="160" x2="1536" y2="160"/>
