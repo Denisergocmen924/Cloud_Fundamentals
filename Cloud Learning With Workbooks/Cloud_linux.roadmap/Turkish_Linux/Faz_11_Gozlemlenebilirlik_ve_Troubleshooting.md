@@ -59,9 +59,9 @@ cloud'da kanıtla gösterebileceksin.
 
 | Bölüm | Konu | Derinlik | Neden burada |
 |---|---|---|---|
-| 11.1 | Loglar — ilk kanıt kaynağı | `[uygulama]` | journalctl, /var/log, logrotate; auth/syslog/dmesg ne der |
-| 11.2 | Katman katman debugging metodolojisi | `[kavram]` | Panik değil, sistematik daralma: log→servis→kaynak→ağ→çekirdek |
-| 11.3 | Araç ustalığı | `[uygulama]` | Hangi araca ne zaman: top/ps/ss/lsof/strace/dmesg/iostat |
+| 11.1 | Loglar — ilk kanıt kaynağı | `[uygulama]` | journalctl, /var/log, logrotate; auth/syslog/dmesg ne der; log'u kesmenin dört tarifi |
+| 11.2 | Katman katman debugging metodolojisi | `[kavram]` | Panik değil, sistematik daralma: log→servis→kaynak→ağ→çekirdek; adım adım işlenmiş bir 502 olayı |
+| 11.3 | Araç ustalığı | `[uygulama]` | Hangi araca ne zaman: top/ps/ss/lsof/strace/dmesg/iostat; vmstat/iostat/ss ve `/proc/<pid>` nasıl *okunur* |
 | 11.4 | Üç içgüdü sorusu | `[kavram]` | "Ne yapıyor", "neden erişilemiyor", "boot'tan servise" |
 | 11.5 | Cloud'da kanıt toplama | `[uygulama]` | CloudWatch Logs + SSM; "instance sağlıklı ama uygulama değil" |
 | 11.6 | Bu faz bozulunca | — | Yanlış teşhis refleksinin imzaları |
@@ -132,6 +132,25 @@ altındaki config'ler her servisin log dosyasının ne zaman döndürüleceğini
 > yeni bir sorudur: neden yok?
 
 
+## 11.1.3 Log'u iyi kesmek: dört tarif `[uygulama]`
+
+Bayrakları bilmek, bir log'u **kesmeyi** bilmekle aynı şey değildir. Dört tarif olayların çoğunu karşılar:
+
+| Durum | Tarif | Neden işe yarar |
+|---|---|---|
+| "Ölmeden hemen önce ne dedi?" | `journalctl -u myapp -e` | `-e` **sona** atlar; son satırdan yukarı doğru okursun |
+| "03:10 civarı bozuldu" | `journalctl --since "03:00" --until "03:20"` | 20 dakikalık pencerede **tüm birimler** — birimler arası nedenler görünür (disk doldu, *sonra* uygulama çöktü) |
+| "Sadece önemli olanlar" | `journalctl -u myapp -p warning -b` | Uyarı ve daha kötüsü, yalnızca bu boot |
+| "Pid'e ya da birime göre tam filtre lazım" | `journalctl -u myapp -o json-pretty -n 1` | Journal'ın sakladığı her alanı gösterir (`_PID`, `_SYSTEMD_UNIT`, `PRIORITY`); neye göre filtreleyebileceğini görürsün |
+
+İki alışkanlık bu tarifleri değerli kılar. Birincisi: **daralmadan önce genişlet** — neden çoğu zaman *başka* bir
+birimdedir (dolu disk, ölü veritabanı, yeniden başlayan ağ); önce zaman penceresiyle başla, `-u`'yu sonra ekle.
+İkincisi: `-b -1`'e güvenmeden önce **journal'ın reboot'tan sağ çıktığını kontrol et**: "no entries" ya da "no
+persistent journal" cevabı geliyorsa journal *uçucudur* (yalnızca `/run`'da tutulur, her reboot'ta kaybolur).
+Kalıcı yapmak için `sudo mkdir -p /var/log/journal && sudo systemctl restart systemd-journald` ya da
+`/etc/systemd/journald.conf` içinde `Storage=persistent` — yine "çalışan durum vs kalıcı tanım" ikilisi, bu kez
+kanıtın kendisi için.
+
 > **🤔 Düşün 11.1** — Bir servis başlangıçta çöküyor ve `systemctl status myapp` yalnızca "failed" ile işe yaramaz iki satır gösteriyor. (a) Sonra ne çalıştırırsın ve neden? (b) Servis çöktü ve makine gece yeniden başladı — reboot öncesi log'a hangi filtre ulaştırır? (c) Hiç log bulamıyorsun: üç olasılık nedir?
 >
 > *(Cevap: fazın sonunda)*
@@ -160,6 +179,31 @@ katmanda çözülür; çekirdeğe kadar inmek nadirdir. Metodolojinin özü: her
 ancak eldeki katmanı elediğinde geç.
 
 ![Şekil 11.1 — Katman katman debugging metodolojisi. "Uygulama açılmıyor" belirtisinden başlayan, beş katmandan geçen bir karar akışı: (1) Uygulama logu — journalctl -u / /var/log; (2) Servis durumu — systemctl status; (3) Kaynak — top / free / iostat / dmesg (OOM); (4) Ağ — ss -tulpn / curl / dig; (5) Çekirdek — dmesg / journalctl -k. Her katmanda "kanıt burada mı?" sorusu sorulur; kanıt bulunduysa neden tespit edilir, bulunmadıysa bir alt katmana inilir. Yanda "en ucuz ve en olası kontrolden en derin ve en nadire" yönünü gösteren bir ok. Altta ders: rastgele deneme değil, katman katman kanıtla daraltma.](../diagrams/png/lx-11-01-debugging-layers.png)
+
+## 11.2.2 Adım adım bir olay: "502 Bad Gateway" tepeden tabana `[uygulama]`
+
+Metodolojiye güvenmenin en kolay yolu onu iş başında görmektir. Kurulum: nginx, `127.0.0.1:8000`'deki bir
+uygulamanın önünde duruyor; kullanıcılar **502 Bad Gateway** alıyor. Başka hiçbir şey bilinmiyor. Katmanlardan
+in ve **ilk kanıt üreten katmanda dur**:
+
+| Katman | Komut | Ne görürsün | Hüküm |
+|---|---|---|---|
+| 1. Log | `sudo tail -5 /var/log/nginx/error.log` | `connect() failed (111: Connection refused) while connecting to upstream ... "http://127.0.0.1:8000/"` | nginx **sağlam**; 8000'de kimse cevap vermiyor. Soru "neden 502?" iken "uygulama neden dinlemiyor?" olur |
+| 2. Servis | `systemctl status myapp` | `Active: activating (auto-restart)` … `Main process exited, code=killed, status=9/KILL` | Uygulama **restart döngüsünde** ve kendi kendine çıkmıyor, **öldürülüyor** (sinyal 9) |
+| 3. Kaynak | `sudo dmesg -T \| grep -i "out of memory"` | `Out of memory: Killed process 2114 (gunicorn) ...` ve `free -h` toplam 1 GiB, swap 0 gösteriyor | Katil çekirdeğin **OOM killer**'ı (Faz 4) |
+
+4. ve 5. katmana hiç ihtiyaç duymadın. **Metot, kanıt bulununca durmayı söyler**, "eksik kalmasın diye her
+katmanı gez" demez. Şimdi çözüm belirtiye değil *nedene* yapılır:
+
+- `systemctl restart nginx` **değil** — nginx suçsuzdu ve restart gerçek sorunu birkaç dakika daha saklardı.
+- Bellek talebini azalt (ör. daha az uygulama worker'ı), bellek ekle (daha büyük instance) ve tek bir process'in
+  makineyi ele geçirememesi için servise tavan koy (unit'te `MemoryMax=` — Faz 8).
+- Kanıtı kalıcı yap: uygulama log'unu **ve** OOM satırını CloudWatch'a gönder (11.5); bir dahaki sefere 3. katman
+  bir login yerine tek bir sorgu olur.
+
+Üç katmanın üç ayrı "dilde" konuştuğuna dikkat et — web sunucusu log'u, systemd durumu, çekirdek mesajı — ve her
+birinin bir sonrakine soruyu nasıl *daralttığına*. Birinci katman `Permission denied` deseydi Faz 2'ye,
+`Connection timed out` deseydi Faz 7'nin üç merceğine giderdin. **Sonraki adımı tahminin değil, kanıt seçer.**
 
 > **🤔 Düşün 11.2** — Bir web uygulaması "açılmıyor" (tarayıcıda zaman aşımı). Elindeki tek bilgi bu. (a) Yukarıdaki
 > beş katmanı sırayla uygularsan, her katmanda hangi tek komutu çalıştırırsın ve ne ararsın? (b) `systemctl
@@ -226,6 +270,55 @@ kesinliğine dönüşür. Ağırdır ve process'i yavaşlatır, o yüzden **son 
 > yüzden cloud'da iki katmanlı gözlem kurarsın: (1) uygulama loglarını **dışarı** akıt (CloudWatch Logs —
 > 11.5), makineye girmeden oku; (2) makineye girmek için SSM Session Manager kullan (SSH portu açık olmasa
 > bile). Yerelde `strace` nihai hakemse, cloud'da "kanıtı makinenin dışına taşımak" nihai stratejidir.
+
+## 11.3.3 `vmstat`, `iostat` ve `ss`'i tahmin etmeden okumak `[uygulama]`
+
+11.3.1'deki tablo *hangi* araca uzanacağını söyler; burası *nasıl okunacağını*. Hangi sayılara bakacağını
+bilmedikçe sayılar bir şey ifade etmez:
+
+| Araç | Komut | Şunlara bak | Ne söylerler |
+|---|---|---|---|
+| `vmstat` | `vmstat 1 5` | `r`, `b`, `si`/`so`, `wa`, `st` | `r` (çalışmaya hazır) **CPU sayısından büyükse** → CPU-bound. `b` (kesilemez IO beklemesinde) → IO derdi. **Süregelen** sıfırdan farklı `si`/`so` → swap, bellek baskısı. `wa` yüksek → CPU *diski bekleyerek* boşta. `st` (steal) yüksek → hypervisor senden CPU alıyor (Hardware workbook'undaki gürültülü komşu) |
+| `iostat` | `iostat -x 1` (paket `sysstat`) | `await`, `aqu-sz`, `%util` | `await` = bir isteğin beklemede + servis edilirken geçirdiği ortalama süre (ms) — uygulamanın *hissettiği* sayı. `aqu-sz` = kuyruk derinliği. HDD'de `%util` 100'e yakınsa doygunluk; SSD/NVMe'de **yanıltıcıdır** — `await`'e güven |
+| `ss` | `ss -s` | duruma göre toplamlar | Hızlı sayım: kaç established, kaç `timewait` |
+| `ss` | `ss -tan state established '( dport = :5432 )'` | bağlantı başına bir satır | Şu an veritabanına kaç bağlantı gidiyor — sızıntı, yalnızca büyüyen bir sayı olarak görünür |
+| `lsof` | `sudo lsof +L1` | link sayısı 0 olan dosyalar | **Silinmiş ama hâlâ açık tutulan** dosyalar; `df` doluyken `du`'nun baytları bulamamasının sebebi (Faz 6) |
+
+Birinci okuma kuralı: **tek satıra değil, eğilime bak.** `vmstat` ve `iostat`'ın ilk satırı açılıştan bu yana
+ortalamadır; işe yarayanlar ondan sonrakilerdir. İkinci kural: **birleştir.** `vmstat`'tan yüksek `wa`, `iostat`'tan
+yüksek `await` ve `ps`'te `D` durumunda bir process — üç bağımsız aracın aynı hikâyeyi anlatması kanıttır; hiçbiri
+tek başına bir sezgidir.
+
+> **🔧 Makinende gör** 🟡 — üç aracı birlikte oku (son adım /tmp'ye 500 MB yazar)
+>
+> ```
+> $ vmstat 1 5                 # r, b, si, so, wa, st'ye bak (ilk satırı yok say)
+> $ iostat -x 1 3              # await ve %util'e bak  (yoksa: sudo apt install sysstat)
+> $ ss -s                      # kaç bağlantı, hangi durumlarda
+> ```
+>
+> Boştaki bir laptop'ta her şey sıfıra yakındır ve mesele de budur: *sağlıklı* olan böyle görünür. Şimdi başka
+> bir terminalde `dd if=/dev/zero of=/tmp/testfile bs=1M count=500 oflag=dsync` çalıştır ve `wa` ile `await`'in
+> yükselişini izle — sonra `rm /tmp/testfile`. Bilerek bir disk darboğazı ürettin ve sayılarda nasıl göründüğünü
+> öğrendin.
+
+## 11.3.4 `/proc/<pid>/`: bir process'i içeriden okumak `[mekanizma]`
+
+`/proc` **sanal** bir dosya sistemidir: içindeki hiçbir dosya diskte durmaz; çekirdek okunduğu anda üretir
+(Faz 1'in "her şey bir dosyadır" fikri, teşhis aracına dönüşmüş hâli). `1234` numaralı process için:
+
+| Yol | Ne okursun | Tipik kullanım |
+|---|---|---|
+| `/proc/1234/status` | Durum, `VmRSS` (bellekte duran), thread sayısı | "`D`'de mi? Gerçekte ne kadar RAM tutuyor?" |
+| `/proc/1234/limits` | Kaynak limitleri, özellikle **Max open files** | "Too many open files" hatası: process'in gerçekten çalıştığı limit (kabuğunun `ulimit -n`'inden farklı olabilir) |
+| `ls /proc/1234/fd \| wc -l` | Açık dosya tanımlayıcı sayısı | Yukarıdaki limitle karşılaştır — **sızıntı** ona doğru tırmanır |
+| `/proc/1234/cmdline` | Tam komut satırı (NUL ile ayrılmış) | `tr '\0' ' ' < /proc/1234/cmdline` — *gerçekte* neyin hangi bayraklarla başlatıldığı |
+| `/proc/1234/cwd`, `/proc/1234/exe` | Çalışma dizinine ve gerçek ikili dosyaya symlink | "Bu hangi ikili dosya, hangi dizinden?" |
+
+Bir `systemd` servisinin pid'i `systemctl show myapp -p MainPID --value` ile gelir, yani zincir kısadır:
+`cat /proc/$(systemctl show myapp -p MainPID --value)/limits`. "Servis *Too many open files* diyor ama kabuğumda
+`ulimit`'i yükselttim" sorunu burada çözülür: servis senin kabuğunun altında çalışmaz, bu yüzden *onun* ne
+aldığını yalnızca `/proc/<pid>/limits` gösterir (çözüm unit'tedir: `LimitNOFILE=`).
 
 > **🤔 Düşün 11.3** — Bir servis `systemctl status` ile "active (running)" görünüyor, log yazmıyor, `top`'ta
 > CPU/RAM normal, ama isteklere cevap vermiyor (takılmış). (a) Bu dört gözlem (durum, log, kaynak) neden

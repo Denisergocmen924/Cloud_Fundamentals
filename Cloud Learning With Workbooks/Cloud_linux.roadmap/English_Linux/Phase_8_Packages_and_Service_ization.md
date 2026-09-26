@@ -70,8 +70,8 @@ philosophy.
 
 | Section | Topic | Depth | Why it is here |
 |---|---|---|---|
-| 8.1 | Package managers | `[mechanism]` | How software gets onto the machine: `apt`, `dpkg`, repo, signature |
-| 8.2 | Service-izing your own app | `[application]` | **The heart of the phase** — a systemd unit, not `nohup &` |
+| 8.1 | Package managers | `[mechanism]` | How software gets onto the machine: `apt`, `dpkg`, repo, signature; the four classic apt failures |
+| 8.2 | Service-izing your own app | `[application]` | **The heart of the phase** — a systemd unit, not `nohup &`; reading exit codes and restart loops |
 | 8.3 | Building from source (awareness) | `[skip]` | `./configure && make` — when it's needed |
 | 8.4 | The immutable approach | `[concept]` | "Don't patch, rebuild" — the cloud philosophy |
 | 8.5 | When this phase breaks | — | Package and service-ization failure signatures |
@@ -147,6 +147,37 @@ Two concepts are critical for security and stability:
 > not a single package. What actually upgrades packages is **`apt upgrade`**. The right order is always
 > `apt update` (refresh the list) → then `apt install`/`apt upgrade` (install/upgrade). A common cause of
 > the "can't find the package" error is trying to work with an old list without having run `apt update`.
+
+## 8.1.3 When apt refuses: four common failures and their fixes `[application]`
+
+Package managers fail in a small number of recognisable ways. Read the **exact message** — each one names its
+own cause:
+
+| Message | What it means | First move |
+|---|---|---|
+| `Could not get lock /var/lib/dpkg/lock-frontend` | **Another** apt/dpkg process (often `unattended-upgrades` right after boot) is working; only one may run at a time | Wait, and look: `ps aux \| grep -E 'apt\|dpkg'`. **Do not** delete the lock file as a first reflex — you would be removing the protection while the other process is mid-write |
+| `E: Unable to locate package foo` | The local package list does not know `foo`: stale list, missing repo, or a typo | `sudo apt update`, then `apt-cache policy foo` (does any repo offer it?) or `apt-cache search foo` |
+| `dpkg was interrupted, you must manually run 'sudo dpkg --configure -a'` | An earlier install was cut off (dropped SSH, full disk) and left a package half-configured | `sudo dpkg --configure -a` — finish the interrupted work |
+| `The following packages have unmet dependencies` | The requested state cannot be satisfied: a broken dependency, or a package **held** at a version | `sudo apt --fix-broken install`; `apt-mark showhold` shows held packages, `sudo apt-mark unhold <pkg>` releases one |
+
+Two more commands belong next to these. `dpkg -S /usr/sbin/nginx` answers the reverse of `dpkg -L`: **which
+package owns this file?** And `apt-mark hold <pkg>` is version pinning in its simplest form (8.1.2): the package
+stays where it is through every `apt upgrade` — a deliberate, visible decision, which is exactly why holds must
+be listed in your notes (`apt-mark showhold` is the audit).
+
+> **🔧 See it on your machine** 🟡 — ask apt about a package without changing anything, then hold one
+>
+> ```
+> $ apt-cache policy curl                 # 🟢 installed vs candidate, and from which repo
+> $ dpkg -S /usr/bin/curl                 # 🟢 which package owns this file
+> $ sudo apt-mark hold curl               # 🟡 freeze curl at its current version
+> $ apt-mark showhold                     # 🟢 curl
+> $ sudo apt-mark unhold curl             # 🟡 undo: release the hold
+> ```
+>
+> The last line matters: every "hold" you create is a **debt** — the package will not get security fixes until
+> someone releases it. A hold without a note about why it exists and when to remove it is how servers quietly
+> fall behind.
 
 > **🤔 Think 8.1** — On a server you say `apt install new-tool` but get "Unable to locate package
 > new-tool" — even though you're sure this tool exists. On the same server someone else added this repo to
@@ -236,6 +267,47 @@ is Phase 7.4.2's lesson: be reachable from outside.
 > 30 seconds later your app is live on `0.0.0.0:8000`" is automatic. This is the basis of the next section
 > (8.4 immutable): instead of logging into the server by hand and installing the app, you write the
 > installation as a recipe (cloud-init/AMI) and the machine installs itself.
+
+## 8.2.3 Reading a failing unit: exit codes, restart loops and start limits `[mechanism]`
+
+`Restart=on-failure` (8.2.2) is a gift, but it also *hides* failures: a broken app now crashes, restarts, crashes
+again — quietly. Learn to read what `systemctl status myapp` actually reports:
+
+| What you see | What it means | Where to look |
+|---|---|---|
+| `Active: activating (auto-restart)` | The service is in a **restart loop**: it died and systemd is waiting `RestartSec` before trying again | `journalctl -u myapp -e` — the reason it dies is in the lines above each restart |
+| `status=203/EXEC` | systemd could not even **execute** the `ExecStart` program: wrong path, not executable, or a missing interpreter | Check the path with `ls -l` (Phase 2 permissions!) and the first line of the script |
+| `status=200/CHDIR` | `WorkingDirectory=` does not exist or is not accessible | `ls -ld /opt/myapp` |
+| `status=217/USER` | The `User=` named in the unit does not exist | `id appuser` (Phase 2) |
+| `Result: start-limit-hit` | It failed so often, so fast, that systemd **stopped trying** (default: more than 5 starts in 10 seconds — `StartLimitBurst` / `StartLimitIntervalSec`) | Fix the cause first, then `sudo systemctl reset-failed myapp` and start again |
+| `code=killed, status=9/KILL` | Something sent the process a `SIGKILL` — very often the OOM killer | `sudo dmesg -T \| grep -i "out of memory"` (Phase 4) |
+
+Before you even start the service, you can catch mistakes in the unit file itself:
+`systemd-analyze verify /etc/systemd/system/myapp.service` reads it and complains about unknown directives and
+missing executables — the unit-file equivalent of a syntax check.
+
+One design point completes the picture: `After=network.target` (8.2.2) only says **order** ("start me after the
+network target"); it does **not** make the network a **requirement**. Ordering (`After=`) and dependency
+(`Wants=` / `Requires=`) are separate ideas — you usually need both, and confusing them produces the classic
+"works when I start it by hand, fails at boot" failure: at boot the thing you needed simply was not up *yet*.
+
+> **🔧 See it on your machine** 🟡 — cause a restart loop on purpose and read it
+>
+> ```
+> $ sudo tee /etc/systemd/system/broken.service <<'EOF'
+> [Service]
+> ExecStart=/opt/nowhere/app
+> Restart=on-failure
+> RestartSec=1
+> EOF
+> $ sudo systemctl daemon-reload          # 🟡 read the new unit
+> $ sudo systemctl start broken           # 🟡 it will fail at once
+> $ systemctl status broken               # 🟢 read the status= code — which of the table's rows is it?
+> $ sudo rm /etc/systemd/system/broken.service && sudo systemctl daemon-reload   # 🟡 undo: remove it
+> ```
+>
+> You wrote a bad path on purpose; systemd answers with `203/EXEC`. Reading that code takes ten seconds once you
+> have seen it — and it is much better to meet it here than for the first time during an incident.
 
 > **🤔 Think 8.2** — You wrote an application as `myapp.service`, said `systemctl start myapp`, and it ran.
 > Then you fixed the `ExecStart` line in the unit file and said `systemctl restart myapp` again but the

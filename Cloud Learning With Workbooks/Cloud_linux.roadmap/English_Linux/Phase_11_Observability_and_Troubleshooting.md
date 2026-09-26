@@ -60,9 +60,9 @@ app not" distinction in the cloud with evidence.
 
 | Section | Topic | Depth | Why it is here |
 |---|---|---|---|
-| 11.1 | Logs — the first source of evidence | `[application]` | journalctl, /var/log, logrotate; what auth/syslog/dmesg say |
-| 11.2 | Layer-by-layer debugging methodology | `[concept]` | Not panic but systematic narrowing: log→service→resource→network→kernel |
-| 11.3 | Tool mastery | `[application]` | Which tool when: top/ps/ss/lsof/strace/dmesg/iostat |
+| 11.1 | Logs — the first source of evidence | `[application]` | journalctl, /var/log, logrotate; what auth/syslog/dmesg say; four recipes for cutting a log |
+| 11.2 | Layer-by-layer debugging methodology | `[concept]` | Not panic but systematic narrowing: log→service→resource→network→kernel; a worked 502 incident |
+| 11.3 | Tool mastery | `[application]` | Which tool when: top/ps/ss/lsof/strace/dmesg/iostat; how to *read* vmstat/iostat/ss and `/proc/<pid>` |
 | 11.4 | The three instinct questions | `[concept]` | "What is it doing", "why unreachable", "boot to service" |
 | 11.5 | Collecting evidence in the cloud | `[application]` | CloudWatch Logs + SSM; "instance healthy but app not" |
 | 11.6 | When this phase breaks | — | Signatures of a broken diagnostic reflex |
@@ -133,6 +133,25 @@ configs under `/etc/logrotate.d/` define when each service's log file is rotated
 > not an answer, it is a new question: why is there none?
 
 
+## 11.1.3 Cutting a log well: four recipes `[application]`
+
+Knowing the flags is not the same as knowing how to **cut** a log. Four recipes cover most incidents:
+
+| Situation | Recipe | Why it works |
+|---|---|---|
+| "What did it say right before it died?" | `journalctl -u myapp -e` | `-e` jumps to the **end**; you read upward from the last line |
+| "It broke around 03:10" | `journalctl --since "03:00" --until "03:20"` | **All units** in a 20-minute window — cross-unit causes show up (the disk filled, *then* the app failed) |
+| "Only what matters" | `journalctl -u myapp -p warning -b` | Warnings and worse, this boot only |
+| "I need to filter by pid or unit exactly" | `journalctl -u myapp -o json-pretty -n 1` | Shows every field the journal stores (`_PID`, `_SYSTEMD_UNIT`, `PRIORITY`) so you know what you can filter on |
+
+Two habits make these recipes pay off. First, **widen before you narrow**: the cause is often in a *different*
+unit (a full disk, a dead database, a restarted network), so start with the time window and only then add
+`-u`. Second, **check that the journal survived the reboot** before you rely on `-b -1`: if it answers "no
+entries" or "no persistent journal," the journal is *volatile* (kept only in `/run`, lost at every reboot). Make
+it persistent with `sudo mkdir -p /var/log/journal && sudo systemctl restart systemd-journald`, or set
+`Storage=persistent` in `/etc/systemd/journald.conf` — it is a "running state vs persistent definition" pair
+again, this time for the evidence itself.
+
 > **🤔 Think 11.1** — A service fails at start and `systemctl status myapp` shows only "failed" plus two unhelpful lines. (a) What do you run next, and why? (b) The service crashed and the machine rebooted overnight — which filter reaches the log from before the reboot? (c) You find no log at all: what are the three possibilities?
 >
 > *(Answer: at the end of the phase)*
@@ -163,6 +182,33 @@ problems are solved in the first two layers; going down to the kernel is rare. T
 gather evidence at each layer, move to the next only when you have eliminated the current one.
 
 ![Figure 11.1 — Layer-by-layer debugging methodology. A decision flow starting from the symptom "the application won't open," passing through five layers: (1) Application log — journalctl -u / /var/log; (2) Service status — systemctl status; (3) Resource — top / free / iostat / dmesg (OOM); (4) Network — ss -tulpn / curl / dig; (5) Kernel — dmesg / journalctl -k. At each layer the question "is the evidence here?" is asked; if found the cause is identified, if not you descend one layer. On the side an arrow indicating the direction "from the cheapest and most likely check to the deepest and rarest." At the bottom, the lesson: not random trials but narrowing down with evidence, layer by layer.](../diagrams/png/lx-11-01-debugging-layers.png)
+
+## 11.2.2 A worked incident: "502 Bad Gateway" from top to bottom `[application]`
+
+Methodology is easiest to trust once you have watched it work. Setup: nginx sits in front of an app on
+`127.0.0.1:8000`; users get **502 Bad Gateway**. Nothing else is known. Walk down the layers and **stop at the
+first layer that produces evidence**:
+
+| Layer | Command | What you see | Verdict |
+|---|---|---|---|
+| 1. Log | `sudo tail -5 /var/log/nginx/error.log` | `connect() failed (111: Connection refused) while connecting to upstream ... "http://127.0.0.1:8000/"` | nginx is **fine**; nothing answers on 8000. The question changes from "why 502?" to "why is the app not listening?" |
+| 2. Service | `systemctl status myapp` | `Active: activating (auto-restart)` … `Main process exited, code=killed, status=9/KILL` | The app is in a **restart loop**, and it is being **killed** (signal 9), not exiting on its own |
+| 3. Resource | `sudo dmesg -T \| grep -i "out of memory"` | `Out of memory: Killed process 2114 (gunicorn) ...` and `free -h` shows 1 GiB total, 0 swap | The kernel's **OOM killer** is the murderer (Phase 4) |
+
+You never needed layers 4 and 5. **The method says stop when the evidence is found**, not "visit every layer
+for completeness." Now the fix belongs to the *cause*, not the symptom:
+
+- **Not** `systemctl restart nginx` — nginx was innocent, and a restart would have hidden the real problem for
+  another few minutes.
+- Reduce the memory demand (e.g., fewer app workers), add memory (a larger instance), and put a ceiling on the
+  service so one process cannot take the whole machine (`MemoryMax=` in the unit — Phase 8).
+- Make the evidence permanent: ship the app log **and** the OOM line to CloudWatch (11.5), so next time layer 3
+  takes one query instead of a login.
+
+Notice how the three layers spoke in three different "languages" — a web-server log, a systemd state, a kernel
+message — and how each one *narrowed the question* for the next. Had layer 1 said `Permission denied`, you
+would have gone to Phase 2; had it said `Connection timed out`, to Phase 7's three lenses. **The evidence, not
+your guess, picks the next step.**
 
 > **🤔 Think 11.2** — A web app "won't open" (timeout in the browser). The only thing you have is this. (a) If
 > you apply the five layers above in order, which single command would you run at each layer and what would you
@@ -232,6 +278,55 @@ it speaks wherever everything else is silent.
 > — 11.5), read them without entering the machine; (2) use SSM Session Manager to get into the machine (even if
 > the SSH port is closed). If locally `strace` is the final arbiter, in the cloud "moving the evidence outside
 > the machine" is the final strategy.
+
+## 11.3.3 Reading `vmstat`, `iostat` and `ss` without guessing `[application]`
+
+The table in 11.3.1 says *which* tool to reach for; this is *how to read it*. Numbers mean nothing until you
+know which ones to look at:
+
+| Tool | Command | Read these | What they tell you |
+|---|---|---|---|
+| `vmstat` | `vmstat 1 5` | `r`, `b`, `si`/`so`, `wa`, `st` | `r` (runnable) **greater than the CPU count** → CPU-bound. `b` (blocked in uninterruptible IO wait) → IO trouble. **Sustained** non-zero `si`/`so` → swapping, memory pressure. `wa` high → CPU idle *waiting for disk*. `st` (steal) high → the hypervisor is taking CPU from you (the noisy neighbor of the Hardware workbook) |
+| `iostat` | `iostat -x 1` (package `sysstat`) | `await`, `aqu-sz`, `%util` | `await` = average time (ms) a request spends waiting + being served — the number the application *feels*. `aqu-sz` = queue depth. `%util` near 100 on an HDD means saturated; on SSD/NVMe it is **misleading** — trust `await` |
+| `ss` | `ss -s` | totals by state | A quick census: how many established, how many `timewait` |
+| `ss` | `ss -tan state established '( dport = :5432 )'` | one line per connection | How many connections currently go to the database — a leak shows as a number that only grows |
+| `lsof` | `sudo lsof +L1` | files with link count 0 | Files **deleted but still held open**; the reason `df` says full while `du` cannot find the bytes (Phase 6) |
+
+The first reading rule: **look at trends, not single lines.** The first line of `vmstat` and `iostat` is an
+average since boot; the useful lines are the ones after it. The second rule: **combine**. High `wa` from
+`vmstat` plus high `await` from `iostat` plus one process in `D` state from `ps` is three independent tools
+telling the same story — that is evidence; any one alone is a hunch.
+
+> **🔧 See it on your machine** 🟡 — read three tools together (the last step writes 500 MB to /tmp)
+>
+> ```
+> $ vmstat 1 5                 # look at r, b, si, so, wa, st (ignore the first line)
+> $ iostat -x 1 3              # look at await and %util  (sudo apt install sysstat if missing)
+> $ ss -s                      # how many connections, in which states
+> ```
+>
+> On an idle laptop everything is near zero, which is the point: this is what *healthy* looks like. Now run
+> `dd if=/dev/zero of=/tmp/testfile bs=1M count=500 oflag=dsync` in another terminal and watch `wa` and `await`
+> climb — then `rm /tmp/testfile`. You have just produced a disk bottleneck on purpose, and learned what it looks
+> like in the numbers.
+
+## 11.3.4 `/proc/<pid>/`: reading a process from the inside `[mechanism]`
+
+`/proc` is a **virtual** filesystem: no file in it is stored on disk; the kernel generates them on read (the
+"everything is a file" idea from Phase 1, turned into a diagnostic tool). For a process with pid `1234`:
+
+| Path | What you read | Typical use |
+|---|---|---|
+| `/proc/1234/status` | State, `VmRSS` (resident memory), threads | "Is it in `D`? How much RAM does it truly hold?" |
+| `/proc/1234/limits` | Resource limits, especially **Max open files** | The "Too many open files" error: the limit the process actually runs with (which may differ from your shell's `ulimit -n`) |
+| `ls /proc/1234/fd \| wc -l` | Number of open file descriptors | Compare with the limit above — a **leak** climbs toward it |
+| `/proc/1234/cmdline` | The exact command line (NUL-separated) | `tr '\0' ' ' < /proc/1234/cmdline` — what was *really* started, with which flags |
+| `/proc/1234/cwd`, `/proc/1234/exe` | Symlinks to the working directory and the real binary | "Which binary is this, from which directory?" |
+
+A `systemd` service's pid comes from `systemctl show myapp -p MainPID --value`, so the chain is short:
+`cat /proc/$(systemctl show myapp -p MainPID --value)/limits`. This is where "the service says *Too many open
+files* but I raised `ulimit` in my shell" gets solved: the service does not run under your shell, so only
+`/proc/<pid>/limits` shows what *it* got (the fix belongs in the unit: `LimitNOFILE=`).
 
 > **🤔 Think 11.3** — A service shows "active (running)" via `systemctl status`, writes no log, CPU/RAM are
 > normal in `top`, but it doesn't respond to requests (hung). (a) Why did these observations (status, log,

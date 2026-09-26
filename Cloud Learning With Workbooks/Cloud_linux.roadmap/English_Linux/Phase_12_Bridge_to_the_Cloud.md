@@ -65,8 +65,8 @@ to a Linux fundamental; state the Linux truth beneath each major AWS concept; an
 | Section | Topic | Depth | Why it is here |
 |---|---|---|---|
 | 12.1 | AMI = a frozen Linux | `[application]` | Phase 0 + 8: package layer + mental model seat onto AWS |
-| 12.2 | cloud-init / user-data and IAM role | `[application]` | Phase 5 + 10 + 9: boot-time config + no key on disk |
-| 12.3 | EBS + fstab and the systemd service | `[application]` | Phase 6 + 5 + 8: persistent storage + app life cycle |
+| 12.2 | cloud-init / user-data and IAM role | `[application]` | Phase 5 + 10 + 9: boot-time config + no key on disk; debugging first boot and "who am I?" |
+| 12.3 | EBS + fstab and the systemd service | `[application]` | Phase 6 + 5 + 8: persistent storage + app life cycle; the `nofail` boot-lockout trap |
 | 12.4 | Two defense layers and observability | `[concept]` | Phase 7 + 9 + 11: SG vs host, CloudWatch |
 | 12.5 | Container and Lambda — still Linux | `[concept]` | Phase 3.6: cgroup/namespace → ECS/EKS; Lambda |
 | 12.6 | When this bridge breaks | — | Which link of the journey snaps → which symptom |
@@ -149,6 +149,43 @@ write to S3, nothing else) and **narrowing the blast radius** (even if the machi
 permanent key on disk; the credentials are temporary and rotating). Phase 9's "Secrets Manager / IAM role" cloud
 box was exactly this: the secret does not live on disk, the identity comes from the machine's identity.
 
+## 12.2.3 Debugging a machine that configures itself: cloud-init and "who am I?" `[application]`
+
+When a self-configuring machine misbehaves, the failure happened **before you logged in** — so you must know
+where the first boot left its evidence:
+
+| Question | Command / file | Notes |
+|---|---|---|
+| Has cloud-init finished, and did it succeed? | `cloud-init status --long` | `status: done` or `error`; `cloud-init status --wait` blocks until it ends |
+| What did my user-data script print? | `/var/log/cloud-init-output.log` | The stdout and stderr of your script — **the** first file to read when "the app isn't installed" |
+| What did cloud-init itself decide? | `/var/log/cloud-init.log` | Which modules ran, when, and where they failed |
+| Which user-data did this instance actually receive? | `sudo cat /var/lib/cloud/instance/user-data.txt` | Confirms you debug the script that *ran*, not the one in your editor |
+
+Three facts explain most "it worked on my machine but not at first boot" surprises. (1) The default user-data
+script runs **once per instance** — editing it later and rebooting does *not* rerun it. (2) It runs as **root**
+with no interactive terminal: any prompt hangs it forever, so use `apt-get install -y` (and
+`DEBIAN_FRONTEND=noninteractive` for packages that ask questions). (3) With `set -euo pipefail` (Phase 10) the
+script stops at the first failing line — good, because the *last* lines of `cloud-init-output.log` then point at
+the culprit. (Size limit worth knowing: EC2 user-data is at most 16 KB — bigger jobs belong in the AMI or in a
+script the user-data downloads.)
+
+The second half of the question is identity: **which credentials does this machine hold?** Two commands answer
+it without ever touching a key file:
+
+```bash
+aws sts get-caller-identity          # who does AWS think I am? — shows the role's ARN
+TOKEN=$(curl -s -X PUT http://169.254.169.254/latest/api/token \
+        -H "X-aws-ec2-metadata-token-ttl-seconds: 60")
+curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
+        http://169.254.169.254/latest/meta-data/iam/security-credentials/
+                                     # the name of the attached role (the metadata service, IMDSv2)
+```
+
+If the first prints an `assumed-role/...` ARN, the role is attached and working. If the AWS CLI reports
+`Unable to locate credentials`, no role is attached (or the metadata service is unreachable) — the problem is
+in the *attachment*, not in your code. If it reports `AccessDenied` on the actual call, the role is attached but
+its policy lacks that permission (Phase 9 least privilege biting — as designed).
+
 > **🤔 Think 12.2** — An EC2 instance needs to write a file to S3. There are two ways: (a) write an AWS access key
 > to disk via user-data, (b) assign an IAM role to the instance. (a) In both ways the machine can write to S3 —
 > so what is the security difference, in which one is the "blast radius" (Phase 9) smaller and why? (b) When you
@@ -198,6 +235,42 @@ WantedBy=multi-user.target  # start at boot (Phase 5 — persistent definition)
 Phase 8's "installed ≠ running as a service" and Phase 5's "running state vs persistent definition" lessons are
 the heart of production: with `systemctl enable --now myapp` you both start it now (running state) and write it
 into boot (persistent definition). And with `User=myapp` you apply Phase 9's "don't run as root" lesson.
+
+## 12.3.3 An fstab line that can lock you out of the boot: `nofail` `[application]`
+
+A missing fstab line loses your data quietly (12.3.1). A **wrong or unsatisfiable** fstab line does something
+louder: when a listed filesystem cannot be mounted at boot — the EBS volume was detached, the UUID changed —
+systemd waits (about 90 seconds by default), then **drops the machine into emergency mode**. The instance shows
+as "running" in the console, but SSH never comes up, because boot never reached the network. In the cloud that is
+an expensive place to be: you cannot type at the emergency prompt without the serial console, and the usual fix
+is to stop the instance, detach the volume and repair the file from another machine.
+
+```
+# /etc/fstab — a data volume that must not be able to stop the boot
+UUID=3e6be9de-8139-11e1-a3a7-3f5b0c1b7a11  /data  ext4  defaults,nofail,x-systemd.device-timeout=10  0  2
+```
+
+`nofail` says: "if this mount fails, log it and keep booting." `x-systemd.device-timeout=10` shortens the wait for
+the device from ~90 seconds to 10. The habit that prevents the whole problem: **test the line before you
+reboot.**
+
+> **🔧 See it on your machine** 🟡 — validate an fstab edit before it can hurt you
+>
+> ```
+> $ lsblk -f                        # 🟢 find the volume's UUID (never trust a device name — Phase 6)
+> $ sudo cp /etc/fstab /etc/fstab.bak     # 🟡 a safety copy: the undo for what follows
+> $ findmnt --verify                # 🟢 syntax and existence check of every fstab line
+> $ sudo mount -a                   # 🟡 mount everything listed but not yet mounted — errors show NOW, not at 3 a.m.
+> ```
+>
+> If `mount -a` prints an error, your fstab would have failed at boot as well; fix it while you still have a
+> working shell. If everything is quiet, `findmnt /data` confirms the mount.
+
+`nofail` has its own trap: if `/data` fails to mount, the boot **continues**, and your service may start against
+an empty `/data` directory on the *root* disk — and happily write there. The answer is to bind the service to the
+mount: in the unit, `RequiresMountsFor=/data` makes systemd start the service only when `/data` is really
+mounted. "Do not block the boot" and "do not run without my data" are two separate guarantees; production needs
+both.
 
 > **🤔 Think 12.3** — You mounted an EBS volume to `/data` and ran your app, all is well. But you forgot to add it
 > to `/etc/fstab`. The next week the instance rebooted. (a) What is the state of `/data` after the reboot, what

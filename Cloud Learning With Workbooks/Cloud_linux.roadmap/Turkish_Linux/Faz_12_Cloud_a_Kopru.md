@@ -62,8 +62,8 @@ ineceğini (bu yolculuğun hangi halkası) bileceksin.
 | Bölüm | Konu | Derinlik | Neden burada |
 |---|---|---|---|
 | 12.1 | AMI = donmuş bir Linux | `[uygulama]` | Faz 0 + 8: paket katmanı + zihinsel model AWS'e oturur |
-| 12.2 | cloud-init / user-data ve IAM role | `[uygulama]` | Faz 5 + 10 + 9: boot-time yapılandırma + diskte key yok |
-| 12.3 | EBS + fstab ve systemd servisi | `[uygulama]` | Faz 6 + 5 + 8: kalıcı depolama + uygulama yaşam döngüsü |
+| 12.2 | cloud-init / user-data ve IAM role | `[uygulama]` | Faz 5 + 10 + 9: boot-time yapılandırma + diskte key yok; ilk boot'u debug etmek ve "ben kimim?" |
+| 12.3 | EBS + fstab ve systemd servisi | `[uygulama]` | Faz 6 + 5 + 8: kalıcı depolama + uygulama yaşam döngüsü; boot'u kilitleyen `nofail` tuzağı |
 | 12.4 | İki savunma katmanı ve gözlemlenebilirlik | `[kavram]` | Faz 7 + 9 + 11: SG vs host, CloudWatch |
 | 12.5 | Container ve Lambda — hâlâ Linux | `[kavram]` | Faz 3.6: cgroup/namespace → ECS/EKS; Lambda |
 | 12.6 | Bu köprü bozulunca | — | Yolculuğun hangi halkası koparsa hangi belirti |
@@ -145,6 +145,43 @@ hiçbir şey değil) ve **patlama yarıçapını daraltmak** (makine ele geçiri
 kimlik bilgileri geçici ve dönüyor). Faz 9'un "Secrets Manager / IAM role" cloud kutusu tam olarak buydu: sır
 diskte durmaz, kimlik makinenin kimliğinden gelir.
 
+## 12.2.3 Kendini yapılandıran makineyi debug etmek: cloud-init ve "ben kimim?" `[uygulama]`
+
+Kendini yapılandıran bir makine bozulduğunda, hata **sen login olmadan önce** olmuştur — yani ilk boot'un
+kanıtı nerede bıraktığını bilmelisin:
+
+| Soru | Komut / dosya | Not |
+|---|---|---|
+| cloud-init bitti mi, başarılı mı? | `cloud-init status --long` | `status: done` ya da `error`; `cloud-init status --wait` bitene kadar bekler |
+| User-data betiğim ne yazdı? | `/var/log/cloud-init-output.log` | Betiğinin stdout ve stderr'i — "uygulama kurulmamış" olduğunda okunacak **ilk** dosya |
+| cloud-init'in kendisi ne karar verdi? | `/var/log/cloud-init.log` | Hangi modüller ne zaman çalıştı, nerede başarısız oldu |
+| Bu instance gerçekte hangi user-data'yı aldı? | `sudo cat /var/lib/cloud/instance/user-data.txt` | Editöründeki değil, *çalışan* betiği debug ettiğini doğrular |
+
+Üç gerçek, "makinemde çalışıyordu ama ilk boot'ta çalışmadı" sürprizlerinin çoğunu açıklar. (1) Varsayılan
+user-data betiği **instance başına bir kez** çalışır — sonradan düzenleyip reboot etmek onu *yeniden çalıştırmaz*.
+(2) **root** olarak, etkileşimli terminal olmadan çalışır: her soru onu sonsuza dek kilitler; bu yüzden
+`apt-get install -y` (ve soru soran paketler için `DEBIAN_FRONTEND=noninteractive`) kullan. (3) `set -euo pipefail`
+(Faz 10) ile betik başarısız olan ilk satırda durur — iyi, çünkü `cloud-init-output.log`'un *son* satırları
+suçluyu gösterir. (Bilmeye değer bir sınır: EC2 user-data en fazla 16 KB'tır — daha büyük işler AMI'ye ya da
+user-data'nın indirdiği bir betiğe aittir.)
+
+Sorunun ikinci yarısı kimliktir: **bu makinede hangi kimlik bilgileri var?** İki komut, bir key dosyasına hiç
+dokunmadan cevaplar:
+
+```bash
+aws sts get-caller-identity          # AWS beni kim sanıyor? — role'ün ARN'ini gösterir
+TOKEN=$(curl -s -X PUT http://169.254.169.254/latest/api/token \
+        -H "X-aws-ec2-metadata-token-ttl-seconds: 60")
+curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
+        http://169.254.169.254/latest/meta-data/iam/security-credentials/
+                                     # bağlı role'ün adı (metadata servisi, IMDSv2)
+```
+
+Birincisi bir `assumed-role/...` ARN'i basıyorsa role bağlı ve çalışıyordur. AWS CLI `Unable to locate
+credentials` diyorsa role bağlı değildir (ya da metadata servisine ulaşılamıyordur) — sorun senin kodunda değil,
+*bağlamadadır*. Asıl çağrıda `AccessDenied` diyorsa role bağlıdır ama politikasında o izin yoktur (Faz 9'un en az
+yetki ilkesi ısırıyor — tasarlandığı gibi).
+
 > **🤔 Düşün 12.2** — Bir EC2 instance'ının S3'e dosya yazması gerekiyor. İki yol var: (a) AWS erişim anahtarını
 > user-data ile diske yazmak, (b) instance'a bir IAM role atamak. (a) Her iki yolda da makine S3'e yazabilir —
 > peki güvenlik açısından fark ne, "patlama yarıçapı" (Faz 9) hangisinde daha küçük ve neden? (b) IAM role
@@ -194,6 +231,41 @@ WantedBy=multi-user.target  # boot'ta başla (Faz 5 — kalıcı tanım)
 Faz 8'in "kurulu olmak ≠ servis olarak çalışıyor olmak" ve Faz 5'in "çalışan durum vs kalıcı tanım" dersleri
 production'ın kalbidir: `systemctl enable --now myapp` ile hem şimdi başlatır (çalışan durum) hem boot'a
 yazarsın (kalıcı tanım). Ve `User=myapp` ile Faz 9'un "root olarak çalıştırma" dersini uygularsın.
+
+## 12.3.3 Boot'tan kilitleyebilen bir fstab satırı: `nofail` `[uygulama]`
+
+Eksik bir fstab satırı verini sessizce kaybettirir (12.3.1). **Yanlış ya da karşılanamayan** bir fstab satırı
+daha gürültülü bir şey yapar: listelenen bir dosya sistemi boot'ta mount edilemediğinde — EBS volume ayrılmış,
+UUID değişmiş — systemd bekler (varsayılan yaklaşık 90 saniye), sonra **makineyi emergency mode'a düşürür**.
+Konsolda instance "running" görünür ama SSH hiç gelmez, çünkü boot ağa hiç ulaşmamıştır. Bulutta burası pahalı bir
+yerdir: serial console olmadan emergency prompt'a yazamazsın ve olağan çözüm instance'ı durdurmak, volume'u
+ayırıp dosyayı başka bir makineden onarmaktır.
+
+```
+# /etc/fstab — boot'u durduramayacak bir veri volume'ü
+UUID=3e6be9de-8139-11e1-a3a7-3f5b0c1b7a11  /data  ext4  defaults,nofail,x-systemd.device-timeout=10  0  2
+```
+
+`nofail` şunu der: "bu mount başarısız olursa kaydet ve boot etmeye devam et." `x-systemd.device-timeout=10`
+aygıt bekleme süresini ~90 saniyeden 10'a düşürür. Tüm sorunu önleyen alışkanlık: **reboot etmeden önce satırı
+test et.**
+
+> **🔧 Makinende gör** 🟡 — bir fstab düzenlemesini sana zarar verebilmeden önce doğrula
+>
+> ```
+> $ lsblk -f                        # 🟢 volume'ün UUID'sini bul (aygıt adına asla güvenme — Faz 6)
+> $ sudo cp /etc/fstab /etc/fstab.bak     # 🟡 güvenlik kopyası: aşağıdakilerin geri alma adımı
+> $ findmnt --verify                # 🟢 her fstab satırının sözdizimi ve varlık kontrolü
+> $ sudo mount -a                   # 🟡 listelenen ama henüz mount edilmemiş her şeyi mount et — hatalar ŞİMDİ görünür, gece 3'te değil
+> ```
+>
+> `mount -a` bir hata basarsa fstab'ın boot'ta da başarısız olacaktı; çalışan bir kabuğun varken düzelt. Her şey
+> sessizse `findmnt /data` mount'u doğrular.
+
+`nofail`'in kendi tuzağı var: `/data` mount edilemezse boot **devam eder** ve servisin *root* diskteki boş bir
+`/data` dizinine karşı başlayıp oraya keyifle yazabilir. Çözüm servisi mount'a bağlamaktır: unit'te
+`RequiresMountsFor=/data`, systemd'nin servisi yalnızca `/data` gerçekten mount edildiğinde başlatmasını sağlar.
+"Boot'u engelleme" ile "verin olmadan çalışma" iki ayrı garantidir; production ikisine de ihtiyaç duyar.
 
 > **🤔 Düşün 12.3** — Bir EBS volume'u `/data`'ya mount ettin ve uygulamanı çalıştırdın, her şey iyi. Ama
 > `/etc/fstab`'a eklemeyi unuttun. Ertesi hafta instance reboot etti. (a) Reboot sonrası `/data` ne durumda,

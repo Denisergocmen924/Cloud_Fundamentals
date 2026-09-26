@@ -65,8 +65,8 @@ ve bulutun "sunucuyu elle yamama, yeniden inşa et" (immutable) felsefesini anla
 
 | Bölüm | Konu | Derinlik | Neden burada |
 |---|---|---|---|
-| 8.1 | Paket yöneticileri | `[mekanizma]` | Yazılım makineye nasıl girer: `apt`, `dpkg`, repo, imza |
-| 8.2 | Kendi uygulamanı servisleştirmek | `[uygulama]` | **Fazın kalbi** — `nohup &` değil, systemd unit |
+| 8.1 | Paket yöneticileri | `[mekanizma]` | Yazılım makineye nasıl girer: `apt`, `dpkg`, repo, imza; dört klasik apt hatası |
+| 8.2 | Kendi uygulamanı servisleştirmek | `[uygulama]` | **Fazın kalbi** — `nohup &` değil, systemd unit; çıkış kodlarını ve restart döngülerini okumak |
 | 8.3 | Kaynaktan derleme (farkındalık) | `[atla]` | `./configure && make` — ne zaman gerekir |
 | 8.4 | Immutable yaklaşım | `[kavram]` | "Elle yamama, yeniden inşa et" — bulut felsefesi |
 | 8.5 | Bu faz bozulunca | — | Paket ve servisleştirme arıza imzaları |
@@ -139,6 +139,37 @@ sürümlerine yükseltir.
 > Paketleri asıl yükselten **`apt upgrade`**'dir. Doğru sıra hep `apt update` (listeyi tazele) → sonra
 > `apt install`/`apt upgrade` (kur/yükselt). "Paketi bulamıyor" hatasının sık sebebi, `apt update`
 > yapmadan eski bir listeyle iş görmeye çalışmaktır.
+
+## 8.1.3 apt reddettiğinde: dört yaygın hata ve çözümleri `[uygulama]`
+
+Paket yöneticileri az sayıda tanınabilir biçimde hata verir. **Mesajın tam metnini** oku — her biri nedenini
+kendisi söyler:
+
+| Mesaj | Ne demek | İlk hamle |
+|---|---|---|
+| `Could not get lock /var/lib/dpkg/lock-frontend` | **Başka** bir apt/dpkg süreci (çoğu kez boot'tan hemen sonra `unattended-upgrades`) çalışıyor; aynı anda yalnızca biri çalışabilir | Bekle ve bak: `ps aux \| grep -E 'apt\|dpkg'`. Lock dosyasını ilk refleks olarak **silme** — diğer süreç yazma ortasındayken korumayı kaldırmış olursun |
+| `E: Unable to locate package foo` | Yerel paket listesi `foo`'yu bilmiyor: eski liste, eksik repo ya da yazım hatası | `sudo apt update`, sonra `apt-cache policy foo` (herhangi bir repo sunuyor mu?) ya da `apt-cache search foo` |
+| `dpkg was interrupted, you must manually run 'sudo dpkg --configure -a'` | Önceki bir kurulum yarıda kesildi (SSH koptu, disk doldu) ve bir paketi yarı yapılandırılmış bıraktı | `sudo dpkg --configure -a` — yarım kalan işi bitir |
+| `The following packages have unmet dependencies` | İstenen durum sağlanamıyor: bozuk bir bağımlılık ya da bir sürümde **tutulan (held)** paket | `sudo apt --fix-broken install`; `apt-mark showhold` tutulan paketleri gösterir, `sudo apt-mark unhold <paket>` birini serbest bırakır |
+
+Bunların yanına iki komut daha girer. `dpkg -S /usr/sbin/nginx`, `dpkg -L`'nin tersini yanıtlar: **bu dosya hangi
+pakete ait?** `apt-mark hold <paket>` ise sürüm sabitlemenin (8.1.2) en yalın hâlidir: paket her `apt upgrade`'de
+olduğu yerde kalır — bilinçli ve görünür bir karar; tam da bu yüzden hold'lar notlarında listelenmelidir
+(`apt-mark showhold` denetimdir).
+
+> **🔧 Makinende gör** 🟡 — hiçbir şeyi değiştirmeden apt'ye bir paketi sor, sonra birini hold'a al
+>
+> ```
+> $ apt-cache policy curl                 # 🟢 kurulu vs aday sürüm ve hangi repodan
+> $ dpkg -S /usr/bin/curl                 # 🟢 bu dosya hangi pakete ait
+> $ sudo apt-mark hold curl               # 🟡 curl'ü şu anki sürümde dondur
+> $ apt-mark showhold                     # 🟢 curl
+> $ sudo apt-mark unhold curl             # 🟡 geri alma: hold'u serbest bırak
+> ```
+>
+> Son satır önemli: oluşturduğun her "hold" bir **borçtur** — biri serbest bırakana kadar paket güvenlik
+> düzeltmesi almaz. Neden var olduğunu ve ne zaman kaldırılacağını anlatan bir not olmayan hold, sunucuların
+> sessizce geride kalma biçimidir.
 
 > **🤔 Düşün 8.1** — Bir sunucuda `apt install yeni-arac` diyorsun ama "Unable to locate package
 > yeni-arac" hatası alıyorsun — oysa bu aracın var olduğundan eminsin. Aynı sunucuda başka biri dün bu
@@ -227,6 +258,47 @@ erişilebilir olsun.
 > saniye sonra uygulaman `0.0.0.0:8000`'de canlı olsun" akışının tamamı otomatiktir. Bu, bir sonraki
 > bölümün (8.4 immutable) temelidir: sunucuya elle girip uygulama kurmak yerine, kurulumu bir tarife
 > (cloud-init/AMI) yazarsın ve makine kendini kurar.
+
+## 8.2.3 Bozulan bir unit'i okumak: çıkış kodları, restart döngüleri ve start limit `[mekanizma]`
+
+`Restart=on-failure` (8.2.2) bir hediyedir, ama hataları *saklar* de: bozuk bir uygulama artık çöker, yeniden
+başlar, yine çöker — sessizce. `systemctl status myapp`'in gerçekte ne söylediğini okumayı öğren:
+
+| Ne görürsün | Ne demek | Nereye bakılır |
+|---|---|---|
+| `Active: activating (auto-restart)` | Servis **restart döngüsünde**: öldü ve systemd yeniden denemeden önce `RestartSec` bekliyor | `journalctl -u myapp -e` — ölme nedeni her restart'ın üstündeki satırlardadır |
+| `status=203/EXEC` | systemd `ExecStart` programını **çalıştırabildi bile**: yanlış yol, çalıştırılabilir değil ya da eksik yorumlayıcı | Yolu `ls -l` ile kontrol et (Faz 2 izinleri!) ve betiğin ilk satırına bak |
+| `status=200/CHDIR` | `WorkingDirectory=` yok ya da erişilemiyor | `ls -ld /opt/myapp` |
+| `status=217/USER` | Unit'teki `User=` mevcut değil | `id appuser` (Faz 2) |
+| `Result: start-limit-hit` | Öyle sık ve hızlı başarısız oldu ki systemd **denemeyi bıraktı** (varsayılan: 10 saniyede 5'ten fazla başlatma — `StartLimitBurst` / `StartLimitIntervalSec`) | Önce nedeni düzelt, sonra `sudo systemctl reset-failed myapp` ve yeniden başlat |
+| `code=killed, status=9/KILL` | Process'e biri `SIGKILL` gönderdi — çoğu kez OOM killer | `sudo dmesg -T \| grep -i "out of memory"` (Faz 4) |
+
+Servisi başlatmadan önce bile unit dosyasının kendi hatalarını yakalayabilirsin:
+`systemd-analyze verify /etc/systemd/system/myapp.service` dosyayı okur ve bilinmeyen direktiflerden ve eksik
+çalıştırılabilirlerden şikâyet eder — unit dosyasının sözdizimi kontrolü.
+
+Bir tasarım noktası tabloyu tamamlar: `After=network.target` (8.2.2) yalnızca **sırayı** söyler ("ağ
+hedefinden sonra başlat"); ağı bir **gereksinim** yapmaz. Sıra (`After=`) ile bağımlılık (`Wants=` / `Requires=`)
+ayrı fikirlerdir — genellikle ikisine de ihtiyacın olur ve bunları karıştırmak klasik "elle başlatınca çalışıyor,
+boot'ta çalışmıyor" hatasını üretir: boot'ta ihtiyacın olan şey henüz ayakta değildir.
+
+> **🔧 Makinende gör** 🟡 — bilerek bir restart döngüsü yarat ve oku
+>
+> ```
+> $ sudo tee /etc/systemd/system/broken.service <<'EOF'
+> [Service]
+> ExecStart=/opt/nowhere/app
+> Restart=on-failure
+> RestartSec=1
+> EOF
+> $ sudo systemctl daemon-reload          # 🟡 yeni unit'i oku
+> $ sudo systemctl start broken           # 🟡 hemen başarısız olur
+> $ systemctl status broken               # 🟢 status= kodunu oku — tablonun hangi satırı?
+> $ sudo rm /etc/systemd/system/broken.service && sudo systemctl daemon-reload   # 🟡 geri alma: kaldır
+> ```
+>
+> Bilerek yanlış bir yol yazdın; systemd `203/EXEC` ile cevap verir. Bu kodu bir kez görünce okumak on saniye
+> sürer — ve onunla ilk kez bir olay sırasında karşılaşmaktansa burada karşılaşmak çok daha iyidir.
 
 > **🤔 Düşün 8.2** — Bir uygulamayı `myapp.service` olarak yazdın, `systemctl start myapp` dedin, çalıştı.
 > Sonra unit dosyasında `ExecStart` satırını düzelttin ve tekrar `systemctl restart myapp` dedin ama
