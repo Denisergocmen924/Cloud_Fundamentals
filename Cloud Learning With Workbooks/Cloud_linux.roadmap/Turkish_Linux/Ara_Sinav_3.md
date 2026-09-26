@@ -186,35 +186,53 @@ Hangi iki komutu hangi sırayla çalıştırırsın (Faz 6.6.2), ve her komut ç
 
 ## Cevap anahtarı
 
+Her cevabın sonunda o sorunun **hangi fazların kesişiminde** durduğu belirtilmiştir.
+
 **1.** Bir `fstab` satırı systemd tarafında bir **`.mount` unit'ine** dönüşür (systemd-fstab-generator
 boot'ta `fstab`'ı okuyup her satır için bir `.mount` unit üretir; adı mount point'ten türetilir, örn.
 `/data` → `data.mount`). Bu, `fstab`'ı teknik olarak "mount'un enable'ı" yapar: tıpkı `enable`'ın bir
 servisi her boot'ta başlatması gibi, `fstab` satırı her boot'ta ilgili `.mount` unit'ini otomatik
-etkinleştirir. · *Faz 5.3 × Faz 6.2.2* — **2.** İkisi de "geçici çalışan durum" ile "kalıcı, boot'ta
+etkinleştirir. · *Faz 5.3 × Faz 6.2.2*
+
+**2.** İkisi de "geçici çalışan durum" ile "kalıcı, boot'ta
 yeniden kurulan yapılandırma" ayrımıdır: `start`/`mount` çekirdeğin o anki durumuna etki eder ve reboot'ta
 kaybolur; `enable`/`fstab` ise hiçbir şeyi hemen yapmaz ama her boot'ta otomatik yeniden kurar. · *Faz 5.3.3
-× Faz 6.2.2* — **3.** Cihaz adı (`nvme1n1`) boot'lar arası kayabildiği için, `fstab` cihaz adıyla yazılmışsa
+× Faz 6.2.2*
+
+**3.** Cihaz adı (`nvme1n1`) boot'lar arası kayabildiği için, `fstab` cihaz adıyla yazılmışsa
 üretilen `.mount` unit'i var olmayan bir cihaza bağımlı olur; systemd o cihazı (`.device` unit'i) bekler,
 zaman aşımına uğrar ve unit başarısız olur — grafikte kırılgan düğüm budur. UUID kullanmak bu bağımlılığı
-diske özgü, kaymayan bir kimliğe sabitler. · *Faz 5.3.4 × Faz 6.2.3* — **4.** Görülebilir**dir** — ama
+diske özgü, kaymayan bir kimliğe sabitler. · *Faz 5.3.4 × Faz 6.2.3*
+
+**4.** Görülebilir**dir** — ama
 şartlı. `fstab` hatası boot'u **init aşamasında** (PID 1 çalışıyor, systemd emergency target'a düşüyor)
 takar, PID 1'den **önce** değil; yani systemd ve journald zaten ayakta olduğu için `journalctl -xb` mount
 başarısızlığını gösterir. PID 1'den önceki arızalarda (GRUB, initramfs) journalctl işe yaramaz; ama bu
 arıza ondan sonradır. Yine de SSH açılmadığından pratikte log'a EC2 konsolundan ulaşırsın. · *Faz 5.1 ×
-Faz 6.2.3* — **5.** `nofail`, üretilen `.mount` unit'inin `local-fs.target`'a **zorunlu (Requires)** değil
+Faz 6.2.3*
+
+**5.** `nofail`, üretilen `.mount` unit'inin `local-fs.target`'a **zorunlu (Requires)** değil
 **isteğe bağlı (nofail → boot-critical değil)** bağlanmasını sağlar: unit başarısız olsa bile hedef "karşılandı"
 sayılır, dependency zinciri kırılmaz ve boot `multi-user.target`'a devam eder. `nofail`'siz, başarısız mount
-`local-fs.target`'ı çökertir ve boot durur. · *Faz 5.3.4 × Faz 6.2.3* — **6.** Kalıcı journal `/var/log/journal`
+`local-fs.target`'ı çökertir ve boot durur. · *Faz 5.3.4 × Faz 6.2.3*
+
+**6.** Kalıcı journal `/var/log/journal`
 ayrı bir diske mount'luysa ve o disk boot'ta gelmezse, systemd erken boot loglarını yazacak kalıcı yeri
 bulamaz — üstelik "diskin neden gelmediği"ni açıklayan logların kendisi de o gelmeyen diske yazılamaz. Bu
 tavuk-yumurta, arızanın izini erken boot'ta kaybettirir; bu yüzden journal genelde köke veya `nofail`
-korumalı bir yere konur. · *Faz 5.4 × Faz 6.2.2* — **7.** cloud-init **bir kez**, ilk boot'ta çalışır
+korumalı bir yere konur. · *Faz 5.4 × Faz 6.2.2*
+
+**7.** cloud-init **bir kez**, ilk boot'ta çalışır
 (disk hazırlama, ilk biçimleme/mount, kullanıcı verisi); `fstab` ise **her boot'ta** mount'u tekrar kurar.
 Bölünme: cloud-init "bir defalık kurulum/başlatma", `fstab` "kalıcı, tekrarlanan bağlama". Kalıcı bir diski
-`fstab`'a yazmazsan cloud-init sonrası ilk reboot'ta mount kaybolur. · *Faz 5.6 × Faz 6.2.2* — **8.** Asılı
+`fstab`'a yazmazsan cloud-init sonrası ilk reboot'ta mount kaybolur. · *Faz 5.6 × Faz 6.2.2*
+
+**8.** Asılı
 bir mount, bağlı olduğu `.device`/`.mount` unit'i zaman aşımına uğrayana kadar `local-fs.target`'ı bekletir;
 bu bekleme boot süresine doğrudan eklenir. `systemd-analyze blame` çıktısında yüksek süreli bir `*.mount`
-(veya `*.device`) satırı bunu ele verir. · *Faz 5.3 × Faz 6.2.1* — **9.** Servis unit'i mount unit'ine
+(veya `*.device`) satırı bunu ele verir. · *Faz 5.3 × Faz 6.2.1*
+
+**9.** Servis unit'i mount unit'ine
 `After=data.mount` **ve** `Requires=data.mount` (veya `RequiresMountsFor=/data`) tanımlamalı; böylece disk
 mount edilmeden servis başlamaz. Bu eksikse servis boş bir `/data` dizinine (mount'tan önce) başlar, veriyi
 kök diske yazar veya "veri yok" hatası verir — mount sonradan gelince veri "kaybolmuş" görünür. · *Faz 5.3.4
@@ -222,40 +240,59 @@ kök diske yazar veya "veri yok" hatası verir — mount sonradan gelince veri "
 
 **10.** İkisinin **kesişimi**. "Timed out waiting for device /dev/nvme1n1" → Faz 6 (cihaz adı/blok cihaz).
 "Dependency failed for /data" → Faz 5 (unit bağımlılık grafiği, `.mount` başarısız). "emergency mode" → Faz
-5 (systemd boot durdu, hedefe ulaşılamadı). · *Faz 5.3.4 × Faz 6.2.3* — **11.** `fstab`'a **cihaz adıyla**
+5 (systemd boot durdu, hedefe ulaşılamadı). · *Faz 5.3.4 × Faz 6.2.3*
+
+**11.** `fstab`'a **cihaz adıyla**
 (`/dev/nvme1n1`) yazıldı; NVMe cihaz adları boot'lar arası ve attach sırasına göre kayabilir. Reboot'ta (veya
 araya başka bir volume girdiğinde) çekirdek o diske farklı bir ad (örn. `nvme2n1`) verdi; `/dev/nvme1n1`
 artık ya yok ya başka bir şey. systemd o cihaz unit'ini bekledi ve zaman aşımına uğradı. UUID kullanılsaydı
-ad kayması etkisiz olurdu. · *Faz 6.2.3* — **12.** Satırda `nofail` **yok** ve mount boot-kritik `local-fs.target`'a
+ad kayması etkisiz olurdu. · *Faz 6.2.3*
+
+**12.** Satırda `nofail` **yok** ve mount boot-kritik `local-fs.target`'a
 zorunlu bağlı olduğundan, `.mount` başarısız olunca systemd hedefi karşılanamamış sayıp emergency mode'a
 düştü — sadece o mount'u atlamak yerine. Eklenmiş olsaydı **`nofail`**, disk gelmese de boot devam eder,
 SSH açılırdı. (`pass 2` ayrıca boot'ta fsck denemesini işaret eder ama asıl felaketi getiren eksik `nofail`'dir.)
-· *Faz 6.2.3* — **13.** İki değişiklik: (1) cihaz adını **UUID** ile değiştir (`blkid` ile al); (2)
+· *Faz 6.2.3*
+
+**13.** İki değişiklik: (1) cihaz adını **UUID** ile değiştir (`blkid` ile al); (2)
 seçeneklere **`nofail`** ekle. Düzeltmeden sonra reboot etmeden `sudo mount -a` çalıştır — hata vermezse satır
-artık boot'u kilitlemez (`findmnt --verify` ek güvence). · *Faz 6.2.3 × Faz 6.6.1* — **14.** Arıza PID 1'den
+artık boot'u kilitlemez (`findmnt --verify` ek güvence). · *Faz 6.2.3 × Faz 6.6.1*
+
+**14.** Arıza PID 1'den
 **sonra** (systemd emergency target'a düştü) olduğundan `journalctl -xb` mount başarısızlığını **gösterirdi**;
 ama makine SSH kabul etmediğinden mühendis o loglara giremedi. EC2 "System log" (seri konsol) ise SSH'den
 bağımsızdır ve emergency mode dâhil her aşamayı gösterir — bu yüzden erişilemez bir makinede konsol daha
-güvenilir kaynaktır. · *Faz 5.1 × Faz 5.4* — **15.** Tek alışkanlık: **her `fstab` düzenlemesinden sonra,
+güvenilir kaynaktır. · *Faz 5.1 × Faz 5.4*
+
+**15.** Tek alışkanlık: **her `fstab` düzenlemesinden sonra,
 reboot etmeden önce `sudo mount -a`** ile doğrulamak. Faz 5 diliyle: "yanlış bir `.mount` unit'i,
 `local-fs.target` bağımlılığı üzerinden **`multi-user.target`**'a (SSH/servislerin olduğu hedef) ulaşmayı
 engelledi." · *Faz 5.3.4 × Faz 6.6.1*
 
 **16.** (b) **mount edilmemiş** disk — bozuk değil. İki ipucu: `nvme1n1` `TYPE disk` olarak görünüyor
 (çekirdek tanıyor, sağlam) ve `MOUNTPOINTS` boş (mount yok). Biçimli mi belirsiz; `df`'e sokmak için gerekirse
-`mkfs`, sonra kesinlikle `mount` (ve kalıcılık için `fstab`). · *Faz 6.1.2* — **17.** İkinci çıktı (`df -i`)
+`mkfs`, sonra kesinlikle `mount` (ve kalıcılık için `fstab`). · *Faz 6.1.2*
+
+**17.** İkinci çıktı (`df -i`)
 açıklıyor: `IUse% 100%` — **inode tükenmesi**. `df -h` %44 boş göstermesine rağmen yeni dosya açılamaz. Diski
 büyütmek **veri bloğu** bütçesini artırır ama inode bütçesi ayrıdır; çözüm küçük dosyaları temizlemektir. ·
-*Faz 6.4.2* — **18.** `(/etc/fstab; generated)` bu `.mount` unit'inin elle yazılmadığını, **`fstab`'dan
+*Faz 6.4.2*
+
+**18.** `(/etc/fstab; generated)` bu `.mount` unit'inin elle yazılmadığını, **`fstab`'dan
 otomatik üretildiğini** söyler (Soru 1'deki generator) — Faz 5 unit'i ile Faz 6 `fstab`'ının tam bağlantısı.
 `Active: failed (Result: timeout)` Soru 10-11'deki "Timed out waiting for device" ile örtüşür: cihaz gelmedi,
-unit zaman aşımına uğradı. · *Faz 5.3 × Faz 6.2.3* — **19.** Diskin gerçek formatı **xfs**, ama `fstab` tipi
+unit zaman aşımına uğradı. · *Faz 5.3 × Faz 6.2.3*
+
+**19.** Diskin gerçek formatı **xfs**, ama `fstab` tipi
 `ext4` diyor; mount "wrong fs type / unknown filesystem" ile başarısız olur. `nofail` olduğundan boot
 **durmaz**, sadece `/data` mount edilmez. Düzeltme: satırdaki **tip** alanını `ext4` → `xfs` yap. · *Faz 6.3.1*
-— **20.** Logun `systemd[1]` ile başlaması, **PID 1'in (systemd) çalıştığını**, yani boot'un init aşamasına
+
+**20.** Logun `systemd[1]` ile başlaması, **PID 1'in (systemd) çalıştığını**, yani boot'un init aşamasına
 **ulaştığını** gösterir (Faz 5.2.1). Demek arıza PID 1'den **sonra**; bu yüzden bu kez journald ayaktaydı ve
 `journalctl` mount hatasını kaydedebildi — Soru 14'teki "PID 1'den önce olsaydı görünmezdi" durumunun tersi.
-· *Faz 5.2.1 × Faz 5.4* — **21.** Önce `sudo growpart /dev/nvme0n1 1` (partition'ı 20G→60G'ye uzatır — `lsblk`
+· *Faz 5.2.1 × Faz 5.4*
+
+**21.** Önce `sudo growpart /dev/nvme0n1 1` (partition'ı 20G→60G'ye uzatır — `lsblk`
 partition satırını büyütür), sonra `sudo resize2fs /dev/nvme0n1p1` (ext4 dosya sistemini büyütür — `df`
 çıktısını 60G yapar). Sıra: alt katman (partition) önce, üst katman (dosya sistemi) sonra. · *Faz 6.6.2*
 
@@ -263,16 +300,16 @@ partition satırını büyütür), sonra `sudo resize2fs /dev/nvme0n1p1` (ext4 d
 
 ## Puanlama
 
-| Doğru sayısı | Ne anlama geliyor |
+| Doğru sayısı | Değerlendirme |
 |---|---|
-| 18-21 | Boot ile depolamayı boot anında birleştiren köprüyü kurdun. Faz 7'ye hazırsın. |
-| 14-17 | İyi. Kaçırdığın soruların işaret ettiği **köprü** bölümlerini (aşağıdaki tablo) tekrar oku. |
-| 9-13 | Fazları tek tek biliyorsun ama kesişimde zorlanıyorsun. Bölüm B senaryosunu baştan çöz. |
-| 0-8 | Faz 5 ve Faz 6'yı ayrı ayrı bir daha gez; özellikle 5.3 (unit/target) ve 6.2.3 (fstab). |
+| 18–21 | Boot ile depolamayı boot anında birleştiren köprüyü kurdun. Faz 7'ye hazırsın. |
+| 14–17 | İyi. Kaçırdığın soruların işaret ettiği **köprü** bölümlerini (aşağıdaki tablo) tekrar oku. |
+| 9–13 | Fazları tek tek biliyorsun ama kesişimde zorlanıyorsun. Bölüm B senaryosunu baştan çöz. |
+| 0–8 | Faz 5 ve Faz 6'yı ayrı ayrı bir daha gez; özellikle 5.3 (unit/target) ve 6.2.3 (fstab). |
 
-Kaçırdığın soru → dönmen gereken köprü:
+**Hangi soruyu kaçırırsan nereye dön:**
 
-| Soru | Köprü (bölüm × bölüm) |
+| Kaçırdığın soru | Dön — bu köprü zayıf |
 |---|---|
 | 1, 2 | `fstab` → `.mount` unit'i; enable≠start / fstab≠mount (5.3 × 6.2.2) |
 | 3, 11, 19 | UUID vs cihaz adı / dosya sistemi tipi (5.3.4 × 6.2.3, 6.3.1) |
@@ -286,7 +323,7 @@ Kaçırdığın soru → dönmen gereken köprü:
 
 ---
 
-## Kapanış
+## Kapanış — buradan Faz 7'ye
 
 Bu sınav, kariyerinde defalarca karşılaşacağın en pahalı Linux olayının — "instance açılmıyor" — kalbindeki
 kesişimi test etti: bir diskin (Faz 6) yanlış tanımlanması, bir boot'un (Faz 5) durmasına yol açar. İki

@@ -189,35 +189,52 @@ command grow?
 
 ## Answer key
 
+Each answer ends with which **intersection of phases** the question sits at.
+
 **1.** An `fstab` line becomes a **`.mount` unit** on the systemd side (systemd-fstab-generator reads `fstab`
 at boot and produces one `.mount` unit per line; its name is derived from the mount point, e.g. `/data` →
 `data.mount`). This makes `fstab` technically "the enable of the mount": just as `enable` starts a service on
 every boot, an `fstab` line automatically activates the corresponding `.mount` unit on every boot. · *Phase
-5.3 × Phase 6.2.2* — **2.** Both are the distinction between "temporary running state" and "permanent config
+5.3 × Phase 6.2.2*
+
+**2.** Both are the distinction between "temporary running state" and "permanent config
 re-established at boot": `start`/`mount` act on the kernel's current state and are lost on reboot;
 `enable`/`fstab` do nothing immediately but re-establish automatically on every boot. · *Phase 5.3.3 × Phase
-6.2.2* — **3.** Because a device name (`nvme1n1`) can shift between boots, if `fstab` is written by device
+6.2.2*
+
+**3.** Because a device name (`nvme1n1`) can shift between boots, if `fstab` is written by device
 name the generated `.mount` unit depends on a device that may not exist; systemd waits for that device (a
 `.device` unit), times out, and the unit fails — that's the fragile node in the graph. Using a UUID pins the
-dependency to a disk-unique, non-shifting identity. · *Phase 5.3.4 × Phase 6.2.3* — **4.** It **is** visible —
+dependency to a disk-unique, non-shifting identity. · *Phase 5.3.4 × Phase 6.2.3*
+
+**4.** It **is** visible —
 but conditionally. An `fstab` error hangs boot at the **init stage** (PID 1 running, systemd dropping to the
 emergency target), not **before** PID 1; so since systemd and journald are already up, `journalctl -xb` shows
 the mount failure. For failures before PID 1 (GRUB, initramfs) journalctl is useless; but this failure is
 after that. Still, since SSH doesn't come up, in practice you reach the log via the EC2 console. · *Phase 5.1
-× Phase 6.2.3* — **5.** `nofail` makes the generated `.mount` unit bind to `local-fs.target` as **optional**
+× Phase 6.2.3*
+
+**5.** `nofail` makes the generated `.mount` unit bind to `local-fs.target` as **optional**
 (not boot-critical) rather than **required**: even if the unit fails, the target is considered "met," the
 dependency chain isn't broken, and boot continues to `multi-user.target`. Without `nofail`, a failed mount
-collapses `local-fs.target` and boot halts. · *Phase 5.3.4 × Phase 6.2.3* — **6.** If the persistent journal
+collapses `local-fs.target` and boot halts. · *Phase 5.3.4 × Phase 6.2.3*
+
+**6.** If the persistent journal
 `/var/log/journal` is mounted on a separate disk and that disk doesn't come up at boot, systemd can't find the
 persistent place to write early boot logs — and the very logs explaining "why the disk didn't come up" can't
 be written to that missing disk either. This chicken-and-egg loses the trail of the failure at early boot;
 that's why the journal is usually placed on root or a `nofail`-protected location. · *Phase 5.4 × Phase 6.2.2*
-— **7.** cloud-init runs **once**, on first boot (disk prep, first-time format/mount, user data); `fstab`
+
+**7.** cloud-init runs **once**, on first boot (disk prep, first-time format/mount, user data); `fstab`
 re-establishes the mount on **every boot**. The split: cloud-init "one-time setup/bootstrap," `fstab`
 "permanent, repeated attaching." If you don't write a permanent disk into `fstab`, the mount is lost on the
-first reboot after cloud-init. · *Phase 5.6 × Phase 6.2.2* — **8.** A hung mount holds up `local-fs.target`
+first reboot after cloud-init. · *Phase 5.6 × Phase 6.2.2*
+
+**8.** A hung mount holds up `local-fs.target`
 until its `.device`/`.mount` unit times out; that wait adds directly to boot time. In `systemd-analyze blame`
-output a high-duration `*.mount` (or `*.device`) line reveals it. · *Phase 5.3 × Phase 6.2.1* — **9.** The
+output a high-duration `*.mount` (or `*.device`) line reveals it. · *Phase 5.3 × Phase 6.2.1*
+
+**9.** The
 service unit must declare `After=data.mount` **and** `Requires=data.mount` (or `RequiresMountsFor=/data`) on
 the mount unit; then the service won't start before the disk is mounted. If this is missing, the service
 starts against an empty `/data` directory (before the mount), writes data to the root disk or errors "no
@@ -225,22 +242,32 @@ data" — and when the mount arrives later the data appears "lost." · *Phase 5.
 
 **10.** The **intersection** of both. "Timed out waiting for device /dev/nvme1n1" → Phase 6 (device name/block
 device). "Dependency failed for /data" → Phase 5 (unit dependency graph, `.mount` failed). "emergency mode" →
-Phase 5 (systemd halted boot, target unreachable). · *Phase 5.3.4 × Phase 6.2.3* — **11.** `fstab` was written
+Phase 5 (systemd halted boot, target unreachable). · *Phase 5.3.4 × Phase 6.2.3*
+
+**11.** `fstab` was written
 by **device name** (`/dev/nvme1n1`); NVMe device names can shift between boots and by attach order. On reboot
 (or when another volume comes in between), the kernel gave that disk a different name (e.g. `nvme2n1`);
 `/dev/nvme1n1` is now either absent or something else. systemd waited for that device unit and timed out. With
-a UUID the name shift would be harmless. · *Phase 6.2.3* — **12.** The line has **no** `nofail` and the mount
+a UUID the name shift would be harmless. · *Phase 6.2.3*
+
+**12.** The line has **no** `nofail` and the mount
 is required by the boot-critical `local-fs.target`, so when the `.mount` failed systemd deemed the target
 unmet and dropped into emergency mode — instead of just skipping that mount. Had it been added, **`nofail`**
 would let boot continue and SSH come up even if the disk were missing. (`pass 2` also signals an fsck attempt
-at boot, but the real disaster-maker is the missing `nofail`.) · *Phase 6.2.3* — **13.** Two changes: (1)
+at boot, but the real disaster-maker is the missing `nofail`.) · *Phase 6.2.3*
+
+**13.** Two changes: (1)
 replace the device name with the **UUID** (get it with `blkid`); (2) add **`nofail`** to the options. After
 fixing, before rebooting, run `sudo mount -a` — if it doesn't error, the line no longer locks up boot
-(`findmnt --verify` as extra assurance). · *Phase 6.2.3 × Phase 6.6.1* — **14.** Since the failure is **after**
+(`findmnt --verify` as extra assurance). · *Phase 6.2.3 × Phase 6.6.1*
+
+**14.** Since the failure is **after**
 PID 1 (systemd dropped to the emergency target), `journalctl -xb` **would** show the mount failure; but since
 the machine didn't accept SSH, the engineer couldn't get into those logs. The EC2 "System log" (serial
 console) is independent of SSH and shows every stage including emergency mode — so on an unreachable machine
-the console is the more reliable source. · *Phase 5.1 × Phase 5.4* — **15.** The single habit: verify with
+the console is the more reliable source. · *Phase 5.1 × Phase 5.4*
+
+**15.** The single habit: verify with
 **`sudo mount -a` after every `fstab` edit, before rebooting**. In Phase 5's language: "a wrong `.mount` unit,
 via the `local-fs.target` dependency, blocked reaching the **`multi-user.target`**" (the target with
 SSH/services). · *Phase 5.3.4 × Phase 6.6.1*
@@ -248,19 +275,29 @@ SSH/services). · *Phase 5.3.4 × Phase 6.6.1*
 **16.** (b) an **unmounted** disk — not broken. Two clues: `nvme1n1` shows as `TYPE disk` (the kernel
 recognizes it, it's healthy) and `MOUNTPOINTS` is empty (no mount). Whether it's formatted is unclear; to put
 it in `df` you need `mkfs` if necessary, then definitely `mount` (and `fstab` for persistence). · *Phase
-6.1.2* — **17.** The second output (`df -i`) explains it: `IUse% 100%` — **inode exhaustion**. Even though
+6.1.2*
+
+**17.** The second output (`df -i`) explains it: `IUse% 100%` — **inode exhaustion**. Even though
 `df -h` shows 44% free, no new file can be created. Growing the disk increases the **data-block** budget but
-the inode budget is separate; the fix is to clean up the small files. · *Phase 6.4.2* — **18.** `(/etc/fstab;
+the inode budget is separate; the fix is to clean up the small files. · *Phase 6.4.2*
+
+**18.** `(/etc/fstab;
 generated)` tells you this `.mount` unit wasn't hand-written but **auto-generated from `fstab`** (the generator
 from Question 1) — the exact connection between the Phase 5 unit and the Phase 6 `fstab`. `Active: failed
 (Result: timeout)` matches the "Timed out waiting for device" of Questions 10-11: the device didn't come, the
-unit timed out. · *Phase 5.3 × Phase 6.2.3* — **19.** The disk's real format is **xfs**, but the `fstab` type
+unit timed out. · *Phase 5.3 × Phase 6.2.3*
+
+**19.** The disk's real format is **xfs**, but the `fstab` type
 says `ext4`; the mount fails with "wrong fs type / unknown filesystem." Since `nofail` is present, boot does
 **not** halt, only `/data` isn't mounted. Fix: change the **type** field on the line from `ext4` → `xfs`. ·
-*Phase 6.3.1* — **20.** That the log starts with `systemd[1]` shows **PID 1 (systemd) is running**, i.e. boot
+*Phase 6.3.1*
+
+**20.** That the log starts with `systemd[1]` shows **PID 1 (systemd) is running**, i.e. boot
 **reached** the init stage (Phase 5.2.1). So the failure is **after** PID 1; that's why journald was up this
 time and `journalctl` could record the mount error — the opposite of Question 14's "if it were before PID 1 it
-would be invisible." · *Phase 5.2.1 × Phase 5.4* — **21.** First `sudo growpart /dev/nvme0n1 1` (extends the
+would be invisible." · *Phase 5.2.1 × Phase 5.4*
+
+**21.** First `sudo growpart /dev/nvme0n1 1` (extends the
 partition 20G→60G — grows the `lsblk` partition line), then `sudo resize2fs /dev/nvme0n1p1` (grows the ext4
 filesystem — makes `df` show 60G). Order: the lower layer (partition) first, the upper layer (filesystem)
 next. · *Phase 6.6.2*
@@ -269,16 +306,16 @@ next. · *Phase 6.6.2*
 
 ## Scoring
 
-| Correct | What it means |
+| Number correct | Assessment |
 |---|---|
-| 18-21 | You've built the bridge that joins boot and storage at boot time. Ready for Phase 7. |
-| 14-17 | Good. Reread the **bridge** sections your missed questions point to (table below). |
-| 9-13 | You know the phases individually but struggle at the intersection. Redo the Section B scenario. |
-| 0-8 | Walk Phase 5 and Phase 6 separately again; especially 5.3 (unit/target) and 6.2.3 (fstab). |
+| 18–21 | You've built the bridge that joins boot and storage at boot time. Ready for Phase 7. |
+| 14–17 | Good. Reread the **bridge** sections your missed questions point to (table below). |
+| 9–13 | You know the phases individually but struggle at the intersection. Redo the Section B scenario. |
+| 0–8 | Walk Phase 5 and Phase 6 separately again; especially 5.3 (unit/target) and 6.2.3 (fstab). |
 
-Missed question → the bridge to return to:
+**Which question you missed → where to return:**
 
-| Question | Bridge (section × section) |
+| Question you missed | Return to — this bridge is weak |
 |---|---|
 | 1, 2 | `fstab` → `.mount` unit; enable≠start / fstab≠mount (5.3 × 6.2.2) |
 | 3, 11, 19 | UUID vs device name / filesystem type (5.3.4 × 6.2.3, 6.3.1) |
@@ -292,7 +329,7 @@ Missed question → the bridge to return to:
 
 ---
 
-## Closing
+## Closing — from here to Phase 7
 
 This quiz tested the intersection at the heart of the most expensive Linux event you'll meet many times in
 your career — "instance won't boot": a disk (Phase 6) defined wrong causes a boot (Phase 5) to halt. Carry

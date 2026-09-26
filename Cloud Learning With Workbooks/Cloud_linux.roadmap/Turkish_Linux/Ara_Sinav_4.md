@@ -180,32 +180,48 @@ adlandırır, ve neden "açığı önlemek" değil "hasarı sınırlamak" güven
 
 ## Cevap anahtarı
 
+Her cevabın sonunda o sorunun **hangi fazların kesişiminde** durduğu belirtilmiştir.
+
 **1.** `nohup python app.py &` süreci onu başlatan kullanıcının kimliğiyle koşar; genellikle "hızlı olsun" diye
 `sudo` ile, yani **root** çalıştırılır. Root çalışan bir süreç ele geçirilirse saldırgan anında tüm makineyi
 alır — patlama yarıçapı maksimumdur. systemd unit'i ise `User=appuser` ile süreci sınırlı bir kimliğe hapseder;
 `nohup` bu kontrolü hiç sunmaz, dolayısıyla en az yetki ilkesini yapısal olarak ihlal eder. · *Faz 8.2 × Faz
-9.1* — **2.** `systemctl status` yalnızca **beşinci kapıyı** (süreç ayakta mı, doğru çalışıyor mu) doğrular;
+9.1*
+
+**2.** `systemctl status` yalnızca **beşinci kapıyı** (süreç ayakta mı, doğru çalışıyor mu) doğrular;
 DNS, SG, host firewall ve bind adresini **hiç görmez**. Bu yüzden "yeşil ama erişilemiyor" tam kesişimdir:
-servis (Faz 8) sağlam ama önündeki dört ağ kapısından (Faz 7) biri kapalıdır. · *Faz 7.4 × Faz 8.2* — **3.**
-DB'yi `127.0.0.1`'e bind etmek **en az yetki / yüzey daraltmanın** somut uygulamasıdır — servis yalnızca gereken
+servis (Faz 8) sağlam ama önündeki dört ağ kapısından (Faz 7) biri kapalıdır. · *Faz 7.4 × Faz 8.2*
+
+**3.** DB'yi `127.0.0.1`'e bind etmek **en az yetki / yüzey daraltmanın** somut uygulamasıdır — servis yalnızca gereken
 kadar erişilebilir. SG'de portu kapatmaktan farkı: bu ayrı, bağımsız bir katmandır (defense in depth). SG
 yanlışlıkla açılsa bile DB dış arayüzü hiç dinlemediği için erişilemez kalır — iki bağımsız kilit. · *Faz 7.4.2
-× Faz 9.1/9.2* — **4.** SG ve host firewall bağımsız katmanlardır: SG bulut ağ seviyesinde (OS'a ulaşmadan),
+× Faz 9.1/9.2*
+
+**4.** SG ve host firewall bağımsız katmanlardır: SG bulut ağ seviyesinde (OS'a ulaşmadan),
 ufw OS seviyesinde çalışır. Saldırgan ufw'yi (ör. bir yanlış yapılandırmayla) aşsa bile SG paketi daha OS'a
 gelmeden düşürebilir; tersi de geçerli. Biri aşılınca diğeri hâlâ koruduğu için bu tam bir defense in depth
-örneğidir. · *Faz 7.4 × Faz 9.1.2* — **5.** İki adım: (1) `sudo systemctl daemon-reload` (systemd'nin değişen
+örneğidir. · *Faz 7.4 × Faz 9.1.2*
+
+**5.** İki adım: (1) `sudo systemctl daemon-reload` (systemd'nin değişen
 unit tanımını okuması), (2) `sudo systemctl restart myapp` (yeni tanımla süreci yeniden başlatması). Sadece
 dosyayı düzenleyip bırakırsan çalışan süreç **eski** `User=`/capability ile koşmaya devam eder — güvenlik
-değişikliği "kalıcı tanımda" vardır ama "çalışan durumda" yoktur. · *Faz 8.2.2 × Faz 9* — **6.** Faz 7.3'teki
+değişikliği "kalıcı tanımda" vardır ama "çalışan durumda" yoktur. · *Faz 8.2.2 × Faz 9*
+
+**6.** Faz 7.3'teki
 "SSH anahtarını makinelere dağıtma; SSM/kimlik ile eriş" fikrinin veri erişimi versiyonudur. Ortak prensip:
 **kalıcı bir sır (anahtar) dağıtmak yerine bir kimliği doğrulamak** — dağıtılan/saklanan kalıcı sır olmayınca
-sızacak sır da olmaz. · *Faz 7.3.4 × Faz 9.6.2* — **7.** İkisi de "her makinede elle X yapmak" yerine "X'i
+sızacak sır da olmaz. · *Faz 7.3.4 × Faz 9.6.2*
+
+**7.** İkisi de "her makinede elle X yapmak" yerine "X'i
 imaja bir kez pişirmek"tir: baked AMI yazılımı, hardened AMI güvenliği (profiller, kapalı servisler, sıkı SSH)
 imaja koyar. Birleşince her yeni instance güvenli **doğar**, kimse elle sertleştirmez → "güvenlik bir kurulum
 adımı değil, imajın bir özelliği"dir; immutable felsefe güvenliği tekrarlanabilir kılar. · *Faz 8.4 × Faz 9.3.2*
-— **8.** (i) *Erişilebilirlik (Faz 7):* servis doğru adreste mi dinliyor (`0.0.0.0` vs `127.0.0.1`)? (ii)
+
+**8.** (i) *Erişilebilirlik (Faz 7):* servis doğru adreste mi dinliyor (`0.0.0.0` vs `127.0.0.1`)? (ii)
 *Operasyon (Faz 8):* beklediğim servis(ler) gerçekten ayakta ve doğru portta mı? (iii) *Saldırı yüzeyi (Faz 9):*
-dışa dinleyen bu portlardan kaçı **gereksiz** ve kapatılmalı? · *Faz 7.4 × Faz 8.2 × Faz 9.2* — **9.** Bu bir
+dışa dinleyen bu portlardan kaçı **gereksiz** ve kapatılmalı? · *Faz 7.4 × Faz 8.2 × Faz 9.2*
+
+**9.** Bu bir
 **capability** sorunudur, MAC değil. Ayırt etme: 80 gibi 1024-altı bir porta root-olmayan bir sürecin bağlanamaması
 klasik ayrıcalıklı-port sorunudur; MAC olsaydı `journalctl -k | grep apparmor`'da bir DENIED satırı görürdün, o
 yok. Çözüm: tüm servisi root yapmadan `CAP_NET_BIND_SERVICE` ver (`setcap` veya unit'te `AmbientCapabilities=`).
@@ -213,24 +229,33 @@ yok. Çözüm: tüm servisi root yapmadan `CAP_NET_BIND_SERVICE` ver (`setcap` v
 
 **10.** İki kapı: (i) **bind adresi** — app `127.0.0.1`'e bind ediyorsa yalnızca makinenin içinden erişilir
 (`curl localhost` çalışır), dışarıdan asla; (ii) **Security Group** — 8000 portu SG'de dışarıya açık değilse
-paket OS'a hiç ulaşmaz. İkisinden biri bile kapalıysa dışarıdan erişilemez. · *Faz 7.4.2 × Faz 7.4.3* — **11.**
-(Faz 8) `nohup` production değildir: çökerse yeniden başlamaz, reboot'ta gitmez, logları dağınık, oturum
+paket OS'a hiç ulaşmaz. İkisinden biri bile kapalıysa dışarıdan erişilemez. · *Faz 7.4.2 × Faz 7.4.3*
+
+**11.** (Faz 8) `nohup` production değildir: çökerse yeniden başlamaz, reboot'ta gitmez, logları dağınık, oturum
 kapanınca ölebilir — yönetilen bir servis değil, başıboş bir süreçtir. (Faz 9) root çalıştırmak patlama
 yarıçapını maksimuma çıkarır: tek bir açık = tüm makine. Mühendis tek bir "hızlı" adımda hem operasyonu hem
-güvenliği feda etti. · *Faz 8.2.1 × Faz 9.1.1* — **12.** `0.0.0.0/0` için **tüm portları** açmak, SG'nin tek
+güvenliği feda etti. · *Faz 8.2.1 × Faz 9.1.1*
+
+**12.** `0.0.0.0/0` için **tüm portları** açmak, SG'nin tek
 işlevini (yüzeyi daraltmak) tersine çevirir: artık makinedeki her dinleyen port (SSH, DB, iç servisler) tüm
 internete açıktır — devasa bir saldırı yüzeyi. Doğru çözüm: yalnızca **8000 portunu**, ve mümkünse yalnızca
 gereken kaynağa (ör. bir load balancer/CloudFront ya da ofis IP'si), açmaktı — beyaz liste, kara liste değil.
-· *Faz 7.4.3 × Faz 9.2.1* — **13.** Çünkü asıl arıza bind adresiydi (`127.0.0.1`); `--host 0.0.0.0` eklenince app
+· *Faz 7.4.3 × Faz 9.2.1*
+
+**13.** Çünkü asıl arıza bind adresiydi (`127.0.0.1`); `--host 0.0.0.0` eklenince app
 zaten dışarıya dinlemeye başlar ve **dar** bir SG (sadece 8000) ile erişim çalışırdı. SG'yi ardına kadar açmak
 gereksiz ve tehlikeliydi. "Erişim çalıştı" yanıltıcıdır çünkü **birden çok değişikliği aynı anda** yaptı;
 hangisinin gerçekten gerektiğini test etmedi — yüzeyi daraltma disiplini (Faz 9) tam da "işe yarayan en dar
-yapılandırmayı bul"maktır. · *Faz 7.4.2 × Faz 9.2.1* — **14.** (en az yetki) `User=appuser` olsaydı saldırgan
+yapılandırmayı bul"maktır. · *Faz 7.4.2 × Faz 9.2.1*
+
+**14.** (en az yetki) `User=appuser` olsaydı saldırgan
 root değil yalnızca `appuser` olurdu: sistem dosyalarını değiştiremez, başka kullanıcıların/servislerin
 verisini okuyamaz, kalıcılık kurması zorlaşırdı. (MAC) AppArmor profili o sürecin erişebileceği dosya/işlem/ağ
 kümesini zaten sınırladığından, saldırgan profilin dışına çıkamaz (ör. `/etc/shadow` okuma, keyfi ağ bağlantısı
 engellenir). İki katman birlikte hasarı "tüm makine"den "tek sürecin dar kutusu"na indirir. · *Faz 9.1.1 × Faz
-9.3* — **15.** Üç alışkanlık: (i) **Faz 7 — teşhisi dıştan içe yap:** erişilemezlikte önce bind adresi + SG'yi
+9.3*
+
+**15.** Üç alışkanlık: (i) **Faz 7 — teşhisi dıştan içe yap:** erişilemezlikte önce bind adresi + SG'yi
 kontrol et, kör kör SG açma. (ii) **Faz 8 — `nohup` değil unit yaz:** servisi `User=appuser` ile yönetilen bir
 systemd unit'i yap. (iii) **Faz 9 — en az yetki:** root çalıştırma, SG'yi en dar kaynağa aç, gereksiz portları
 kapat. Tek cümle: "erişilebilirliği yanlış katmanda (**SG'yi ardına kadar açarak**) çözmek, güvenliği (**patlama
@@ -238,20 +263,30 @@ yarıçapını maksimuma çıkararak / root + açık yüzey**) feda etti." · *F
 
 **16.** Tek fark **bind adresi**: app `127.0.0.1:8000`'e (yalnız yerel), sshd ise `0.0.0.0:22`'ye (tüm
 arayüzler) dinliyor. Bu yüzden SSH dışarıdan çalışır, app çalışmaz. Çözüm: app'in bind adresini `0.0.0.0:8000`
-yap (uygulama `--host 0.0.0.0` veya config). · *Faz 7.4.2* — **17.** `systemctl status`'ın yeşil olması yalnızca
+yap (uygulama `--host 0.0.0.0` veya config). · *Faz 7.4.2*
+
+**17.** `systemctl status`'ın yeşil olması yalnızca
 **süreç kapısını** (Faz 7'nin 5. kapısı: servis ayakta ve çalışıyor) doğrular; DNS, SG, host firewall ve bind
 adresini doğrulamaz. Bir sonraki komut: `sudo ss -tulpn` — servisin hangi adres:port'ta dinlediğini görmek
-(bind adresi kapısı), ardından SG ve ufw kontrolü. · *Faz 8.2 × Faz 7.4* — **18.** Host firewall varsayılan
+(bind adresi kapısı), ardından SG ve ufw kontrolü. · *Faz 8.2 × Faz 7.4*
+
+**18.** Host firewall varsayılan
 `deny (incoming)` ve listede yalnızca 22 var; 8000 **açık değil**, yani ufw gelen 8000 trafiğini düşürür. SG
 ayrı, bulut seviyesi bir katman olduğundan (Faz 9 defense in depth), 8000 hem SG'de hem ufw'de açık olmalıdır —
 biri bile kapalıysa erişilemez. Bu yüzden "erişilemiyor"da **her iki** firewall'u da kontrol et. · *Faz 7.5.1 ×
-Faz 9.1.2* — **19.** `apparmor="DENIED"` satırı arızanın **MAC katmanında** (AppArmor) olduğunu kanıtlar — DAC
+Faz 9.1.2*
+
+**19.** `apparmor="DENIED"` satırı arızanın **MAC katmanında** (AppArmor) olduğunu kanıtlar — DAC
 izinleri (`ls -l`) doğru olsa bile profil bu yola erişimi reddediyor. Doğru çözüm profili kapatmak (`aa-disable`)
 değildir, çünkü o zaman o servisin ikinci kilidini tümüyle kaybedersin; doğrusu profile `/var/www/data/` yolunu
-izinli eklemektir (en az yetki: sadece gereken yolu aç). · *Faz 9.3.2* — **20.** Eksik olan bir **capability**:
+izinli eklemektir (en az yetki: sadece gereken yolu aç). · *Faz 9.3.2*
+
+**20.** Eksik olan bir **capability**:
 80 gibi ayrıcalıklı bir porta bağlanmak `CAP_NET_BIND_SERVICE` ister; root-olmayan `appuser` bu yetki olmadan
 bind edemez. Tüm servisi root yapmadan çözüm: `sudo setcap 'cap_net_bind_service=+ep' /opt/myapp/server` (veya
-unit'te `AmbientCapabilities=CAP_NET_BIND_SERVICE`). · *Faz 9.5.1* — **21.** Farkı adlandıran kavram **patlama
+unit'te `AmbientCapabilities=CAP_NET_BIND_SERVICE`). · *Faz 9.5.1*
+
+**21.** Farkı adlandıran kavram **patlama
 yarıçapı** (blast radius): aynı açık A'da tüm makineye (root) yayılırken B'de tek sürecin dar kutusuna
 (`appuser` + AppArmor) hapsolur. Güvenliğin asıl işi "hasarı sınırlamak"tır çünkü hiçbir sistem sonsuza dek
 açıksız kalmaz — er ya da geç bir açık sömürülür; katmanlı savunma + en az yetki, o an geldiğinde kaybın ne
@@ -261,16 +296,16 @@ kadar yayılacağını belirler. · *Faz 9.1.1 × Faz 9.3*
 
 ## Puanlama
 
-| Doğru sayısı | Ne anlama geliyor |
+| Doğru sayısı | Değerlendirme |
 |---|---|
-| 18-21 | Ağ, servisleştirme ve güvenliği tek bir refleks olarak birleştirdin. Faz 10'a hazırsın. |
-| 14-17 | İyi. Kaçırdığın soruların işaret ettiği **köprü** bölümlerini (aşağıdaki tablo) tekrar oku. |
-| 9-13 | Fazları tek tek biliyorsun ama kesişimde zorlanıyorsun. Bölüm B senaryosunu baştan çöz. |
-| 0-8 | Faz 7, 8 ve 9'u ayrı ayrı bir daha gez; özellikle 7.4 (kapılar), 8.2 (unit) ve 9.1 (en az yetki). |
+| 18–21 | Ağ, servisleştirme ve güvenliği tek bir refleks olarak birleştirdin. Faz 10'a hazırsın. |
+| 14–17 | İyi. Kaçırdığın soruların işaret ettiği **köprü** bölümlerini (aşağıdaki tablo) tekrar oku. |
+| 9–13 | Fazları tek tek biliyorsun ama kesişimde zorlanıyorsun. Bölüm B senaryosunu baştan çöz. |
+| 0–8 | Faz 7, 8 ve 9'u ayrı ayrı bir daha gez; özellikle 7.4 (kapılar), 8.2 (unit) ve 9.1 (en az yetki). |
 
-Kaçırdığın soru → dönmen gereken köprü:
+**Hangi soruyu kaçırırsan nereye dön:**
 
-| Soru | Köprü (bölüm × bölüm) |
+| Kaçırdığın soru | Dön — bu köprü zayıf |
 |---|---|
 | 1, 11 | `nohup` vs unit + root patlama yarıçapı (8.2 × 9.1) |
 | 2, 17 | Beş kapı × `systemctl status` yeşil (7.4 × 8.2) |
@@ -287,7 +322,7 @@ Kaçırdığın soru → dönmen gereken köprü:
 
 ---
 
-## Kapanış
+## Kapanış — buradan Faz 10'a
 
 Bu sınav, üç fazın tek bir mühendislik olayında nasıl kesiştiğini test etti: bir servisi ağa açmak (Faz 7),
 onu yönetilebilir kılmak (Faz 8) ve bilinçli olarak sınırlamak (Faz 9) — aynı madalyonun üç yüzü. Senaryonun

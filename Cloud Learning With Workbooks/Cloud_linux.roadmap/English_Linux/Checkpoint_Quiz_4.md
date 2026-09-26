@@ -192,36 +192,54 @@ job of security?
 
 ## Answer key
 
+Each answer ends with which **intersection of phases** the question sits at.
+
 **1.** `nohup python app.py &` runs the process with the identity of the user who started it; usually, "to be
 quick," it is run with `sudo`, i.e. as **root**. If a process running as root is compromised, the attacker
 instantly takes the whole machine — the blast radius is maximal. A systemd unit, by contrast, confines the
 process to a limited identity with `User=appuser`; `nohup` offers no such control, so it structurally
-violates least privilege. · *Phase 8.2 × Phase 9.1* — **2.** `systemctl status` verifies only the **fifth gate**
+violates least privilege. · *Phase 8.2 × Phase 9.1*
+
+**2.** `systemctl status` verifies only the **fifth gate**
 (is the process up, is it running correctly); it **never sees** DNS, SG, host firewall, or the bind address.
 That is why "green but unreachable" is exactly the intersection: the service (Phase 8) is fine but one of the
-four network gates in front of it (Phase 7) is closed. · *Phase 7.4 × Phase 8.2* — **3.** Binding the DB to
+four network gates in front of it (Phase 7) is closed. · *Phase 7.4 × Phase 8.2*
+
+**3.** Binding the DB to
 `127.0.0.1` is a concrete application of **least privilege / surface reduction** — the service is reachable only
 as much as needed. Unlike closing the port in the SG: this is a separate, independent layer (defense in depth).
 Even if the SG is opened by mistake, the DB stays unreachable because it never listens on the external
-interface — two independent locks. · *Phase 7.4.2 × Phase 9.1/9.2* — **4.** The SG and host firewall are
+interface — two independent locks. · *Phase 7.4.2 × Phase 9.1/9.2*
+
+**4.** The SG and host firewall are
 independent layers: the SG works at the cloud network level (before reaching the OS), ufw at the OS level. Even
 if the attacker gets past ufw (e.g. via a misconfiguration), the SG can drop the packet before it even reaches
 the OS; and vice versa. Because when one is breached the other still protects, this is a full example of
-defense in depth. · *Phase 7.4 × Phase 9.1.2* — **5.** Two steps: (1) `sudo systemctl daemon-reload` (systemd
+defense in depth. · *Phase 7.4 × Phase 9.1.2*
+
+**5.** Two steps: (1) `sudo systemctl daemon-reload` (systemd
 reading the changed unit definition), (2) `sudo systemctl restart myapp` (restarting the process with the new
 definition). If you just edit the file and leave it, the running process keeps running with the **old**
 `User=`/capability — the security change exists in the "persistent definition" but not in the "running state."
-· *Phase 8.2.2 × Phase 9* — **6.** It is the data-access version of the Phase 7.3 idea "don't distribute the SSH
+· *Phase 8.2.2 × Phase 9*
+
+**6.** It is the data-access version of the Phase 7.3 idea "don't distribute the SSH
 key to machines; access via SSM/identity." The shared principle: **authenticate an identity instead of
 distributing a persistent secret (a key)** — when there is no persistent secret distributed/stored, there is no
-secret to leak. · *Phase 7.3.4 × Phase 9.6.2* — **7.** Both are "bake X into the image once" instead of "do X by
+secret to leak. · *Phase 7.3.4 × Phase 9.6.2*
+
+**7.** Both are "bake X into the image once" instead of "do X by
 hand on every machine": the baked AMI puts software, the hardened AMI puts security (profiles, closed services,
 tight SSH) into the image. Combined, every new instance is **born** secure, no one hardens by hand → "security
 is not an installation step, it is a property of the image"; the immutable philosophy makes security
-reproducible. · *Phase 8.4 × Phase 9.3.2* — **8.** (i) *Reachability (Phase 7):* is the service listening on the
+reproducible. · *Phase 8.4 × Phase 9.3.2*
+
+**8.** (i) *Reachability (Phase 7):* is the service listening on the
 right address (`0.0.0.0` vs `127.0.0.1`)? (ii) *Operation (Phase 8):* is/are the service(s) I expect really up
 and on the right port? (iii) *Attack surface (Phase 9):* how many of these outward-listening ports are
-**unnecessary** and should be closed? · *Phase 7.4 × Phase 8.2 × Phase 9.2* — **9.** This is a **capability**
+**unnecessary** and should be closed? · *Phase 7.4 × Phase 8.2 × Phase 9.2*
+
+**9.** This is a **capability**
 problem, not MAC. Distinguishing: a non-root process being unable to bind to a port below 1024 like 80 is the
 classic privileged-port problem; if it were MAC you would see a DENIED line in `journalctl -k | grep apparmor`,
 and there is none. Fix: without making the whole service root, grant `CAP_NET_BIND_SERVICE` (`setcap` or
@@ -230,25 +248,34 @@ and there is none. Fix: without making the whole service root, grant `CAP_NET_BI
 **10.** Two gates: (i) **bind address** — if the app binds to `127.0.0.1` it is reachable only from inside the
 machine (`curl localhost` works), never from outside; (ii) **Security Group** — if port 8000 is not open
 outward in the SG, the packet never reaches the OS. If even one of these is closed, it is unreachable from
-outside. · *Phase 7.4.2 × Phase 7.4.3* — **11.** (Phase 8) `nohup` is not production: it does not restart on
+outside. · *Phase 7.4.2 × Phase 7.4.3*
+
+**11.** (Phase 8) `nohup` is not production: it does not restart on
 crash, is gone on reboot, its logs are scattered, it can die when the session logs out — it is an unmanaged
 stray process, not a managed service. (Phase 9) running as root maximizes the blast radius: a single
 vulnerability = the whole machine. In one "quick" step the engineer sacrificed both operation and security. ·
-*Phase 8.2.1 × Phase 9.1.1* — **12.** Opening **all ports** for `0.0.0.0/0` reverses the SG's sole function
+*Phase 8.2.1 × Phase 9.1.1*
+
+**12.** Opening **all ports** for `0.0.0.0/0` reverses the SG's sole function
 (shrinking the surface): now every listening port on the machine (SSH, DB, internal services) is open to the
 whole internet — a huge attack surface. The correct fix was to open only **port 8000**, and if possible only to
 the needed source (e.g. a load balancer/CloudFront or office IP) — a whitelist, not a blacklist. · *Phase 7.4.3
-× Phase 9.2.1* — **13.** Because the real failure was the bind address (`127.0.0.1`); once `--host 0.0.0.0` is
+× Phase 9.2.1*
+
+**13.** Because the real failure was the bind address (`127.0.0.1`); once `--host 0.0.0.0` is
 added the app already starts listening outward and access would have worked with a **narrow** SG (only 8000).
 Opening the SG wide was unnecessary and dangerous. "Access worked" is misleading because they made **multiple
 changes at once** and did not test which was really needed — the surface-reduction discipline (Phase 9) is
-exactly "find the narrowest configuration that works." · *Phase 7.4.2 × Phase 9.2.1* — **14.** (least privilege)
+exactly "find the narrowest configuration that works." · *Phase 7.4.2 × Phase 9.2.1*
+
+**14.** (least privilege)
 With `User=appuser` the attacker would be only `appuser`, not root: cannot modify system files, cannot read
 other users'/services' data, would find it hard to establish persistence. (MAC) Because the AppArmor profile
 already limits the set of files/operations/network that process can reach, the attacker cannot step outside the
 profile (e.g. reading `/etc/shadow` or arbitrary network connections are blocked). The two layers together
 reduce the damage from "the whole machine" to "the narrow box of a single process." · *Phase 9.1.1 × Phase 9.3*
-— **15.** Three habits: (i) **Phase 7 — diagnose outside → in:** on unreachability, first check bind address +
+
+**15.** Three habits: (i) **Phase 7 — diagnose outside → in:** on unreachability, first check bind address +
 SG, do not open the SG blindly. (ii) **Phase 8 — write a unit, not `nohup`:** make the service a managed systemd
 unit with `User=appuser`. (iii) **Phase 9 — least privilege:** do not run as root, open the SG to the narrowest
 source, close unnecessary ports. One sentence: "solving reachability at the wrong layer (**by opening the SG
@@ -257,22 +284,30 @@ wide**) sacrificed security (**by maximizing the blast radius / root + open surf
 
 **16.** The single difference is the **bind address**: the app listens on `127.0.0.1:8000` (local only), while
 sshd listens on `0.0.0.0:22` (all interfaces). That is why SSH works from outside and the app does not. Fix:
-make the app's bind address `0.0.0.0:8000` (the application's `--host 0.0.0.0` or config). · *Phase 7.4.2* —
+make the app's bind address `0.0.0.0:8000` (the application's `--host 0.0.0.0` or config). · *Phase 7.4.2*
+
 **17.** `systemctl status` being green verifies only the **process gate** (Phase 7's 5th gate: the service is up
 and running); it does not verify DNS, SG, host firewall, or the bind address. The next command: `sudo ss
 -tulpn` — to see on which address:port the service is listening (the bind-address gate), then check the SG and
-ufw. · *Phase 8.2 × Phase 7.4* — **18.** The host firewall's default is `deny (incoming)` and only 22 is in the
+ufw. · *Phase 8.2 × Phase 7.4*
+
+**18.** The host firewall's default is `deny (incoming)` and only 22 is in the
 list; 8000 is **not open**, so ufw drops incoming 8000 traffic. Because the SG is a separate, cloud-level layer
 (Phase 9 defense in depth), 8000 must be open in **both** the SG and ufw — if even one is closed, it is
-unreachable. So on "unreachable" check **both** firewalls. · *Phase 7.5.1 × Phase 9.1.2* — **19.** The
+unreachable. So on "unreachable" check **both** firewalls. · *Phase 7.5.1 × Phase 9.1.2*
+
+**19.** The
 `apparmor="DENIED"` line proves the failure is at the **MAC layer** (AppArmor) — even though the DAC permissions
 (`ls -l`) are correct, the profile denies access to this path. The correct fix is not to turn off the profile
 (`aa-disable`), because then you lose that service's second lock entirely; the right fix is to add the
-`/var/www/data/` path to the profile as allowed (least privilege: open only the needed path). · *Phase 9.3.2* —
+`/var/www/data/` path to the profile as allowed (least privilege: open only the needed path). · *Phase 9.3.2*
+
 **20.** The missing thing is a **capability**: binding to a privileged port like 80 requires
 `CAP_NET_BIND_SERVICE`; without it the non-root `appuser` cannot bind. The fix without making the whole service
 root: `sudo setcap 'cap_net_bind_service=+ep' /opt/myapp/server` (or `AmbientCapabilities=CAP_NET_BIND_SERVICE`
-in the unit). · *Phase 9.5.1* — **21.** The concept that names the difference is the **blast radius**: the same
+in the unit). · *Phase 9.5.1*
+
+**21.** The concept that names the difference is the **blast radius**: the same
 vulnerability spreads to the whole machine (root) on A, while it is confined to the narrow box of a single
 process (`appuser` + AppArmor) on B. Security's real job is "limiting the damage" because no system stays
 vulnerability-free forever — sooner or later a vulnerability is exploited; defense in depth + least privilege
@@ -282,16 +317,16 @@ determine how far the loss spreads when that moment comes. · *Phase 9.1.1 × Ph
 
 ## Scoring
 
-| Correct | What it means |
+| Number correct | Assessment |
 |---|---|
-| 18-21 | You combined networking, service-ization and security into a single reflex. You are ready for Phase 10. |
-| 14-17 | Good. Re-read the **bridge** sections (table below) that your missed questions point to. |
-| 9-13 | You know the phases individually but struggle at the intersection. Redo the Section B scenario from scratch. |
-| 0-8 | Walk through Phase 7, 8 and 9 individually again; especially 7.4 (gates), 8.2 (unit) and 9.1 (least privilege). |
+| 18–21 | You combined networking, service-ization and security into a single reflex. You are ready for Phase 10. |
+| 14–17 | Good. Re-read the **bridge** sections (table below) that your missed questions point to. |
+| 9–13 | You know the phases individually but struggle at the intersection. Redo the Section B scenario from scratch. |
+| 0–8 | Walk through Phase 7, 8 and 9 individually again; especially 7.4 (gates), 8.2 (unit) and 9.1 (least privilege). |
 
-Missed question → bridge to return to:
+**Which question you missed → where to return:**
 
-| Question | Bridge (section × section) |
+| Question you missed | Return to — this bridge is weak |
 |---|---|
 | 1, 11 | `nohup` vs unit + root blast radius (8.2 × 9.1) |
 | 2, 17 | Five gates × `systemctl status` green (7.4 × 8.2) |
@@ -308,7 +343,7 @@ Missed question → bridge to return to:
 
 ---
 
-## Closing
+## Closing — from here to Phase 10
 
 This quiz tested how three phases intersect in a single engineering event: opening a service to the network
 (Phase 7), making it manageable (Phase 8), and deliberately limiting it (Phase 9) — three faces of the same

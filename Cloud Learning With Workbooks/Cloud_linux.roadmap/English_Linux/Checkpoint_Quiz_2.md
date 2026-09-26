@@ -315,16 +315,16 @@ Phase 4*
 
 ## Scoring
 
-| Correct | Assessment |
+| Number correct | Assessment |
 |---|---|
 | 19–21 | You've fused the process and resource models into a single diagnostic reflex. Move to Phase 5 with confidence. |
 | 15–18 | Solid. Take one pass back to the **bridge** (not a single phase) that your missed questions point to. |
 | 10–14 | You know the two phases separately, but the link between them is weak. Use the table below. |
 | 0–9 | Review Phases 3 and 4, especially their "When this phase breaks" and "Closing" sections; a checkpoint isn't passed until these bridges settle. |
 
-**Which question you missed → where to go back:**
+**Which question you missed → where to return:**
 
-| Missed question | Go back — this bridge is weak |
+| Question you missed | Return to — this bridge is weak |
 |---|---|
 | 1, 3, 8, 21 | Phase 3.2 × Phase 4.4 — D-state, load average, iowait |
 | 2, 5, 18 | Phase 3.4/3.6 × Phase 4.3 — signals, cgroup, OOM Killer |
