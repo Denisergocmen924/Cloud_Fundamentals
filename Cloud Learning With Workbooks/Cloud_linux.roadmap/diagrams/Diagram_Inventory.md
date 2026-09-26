@@ -22,5 +22,5 @@
 | [`lx-8-01-script-to-service`](png/lx-8-01-script-to-service.png) | 8.1 | 8.2 From a script to a managed service | Comparison | 900 |
 | [`lx-9-01-defense-in-depth`](png/lx-9-01-defense-in-depth.png) | 9.1 | 9.1 Defense in depth | Layered model (nested) | 900 |
 | [`lx-10-01-idempotency`](png/lx-10-01-idempotency.png) | 10.1 | 10.4 Idempotency | Comparison | 900 |
-| [`lx-11-01-debugging-layers`](png/lx-11-01-debugging-layers.png) | 11.1 | 11.2 Layer-by-layer debugging methodology | Flow (decision / layered narrowing) | 900 |
-| [`lx-12-01-ami-to-production`](png/lx-12-01-ami-to-production.png) | 12.1 | 12 — the empty-AMI-to-production journey | Flow (pipeline with foundation mapping) | 900 |
+| [`lx-11-01-debugging-layers`](png/lx-11-01-debugging-layers.png) | 11.1 | 11.2.1 Not panic, but systematic narrowing | Flow (decision / layered narrowing) | 900 |
+| [`lx-12-01-ami-to-production`](png/lx-12-01-ami-to-production.png) | 12.1 | Phase 12 — The phase map (unnumbered, before 12.1) | Flow (pipeline with foundation mapping) | 900 |

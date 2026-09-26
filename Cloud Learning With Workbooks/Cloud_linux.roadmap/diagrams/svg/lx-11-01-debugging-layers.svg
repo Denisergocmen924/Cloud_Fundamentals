@@ -6,10 +6,10 @@
   file:             lx-11-01-debugging-layers
   subject:          Linux
   figure:           11.1
-  section:          11.2 Layer-by-layer debugging methodology
+  section:          11.2.1 Not panic, but systematic narrowing
   subtitle:         Narrow down with evidence, not guesses
   type:             Flow (decision / layered narrowing)
-  source:           Cloud Learning With Workbooks/Cloud_linux.roadmap/Turkish_Linux/Faz_11_Gozlemlenebilirlik_ve_Troubleshooting.md
+  source:           Cloud Learning With Workbooks/Cloud_linux.roadmap/English_Linux/Phase_11_Observability_and_Troubleshooting.md
   boundary:         section 11.2.1 — five layers; no tool-mastery table, no cloud
   height:           900
   number-conflicts: none
@@ -59,7 +59,7 @@
   </g>
 
   <g id="title">
-    <text class="t-title" x="64" y="88">11.2 Layer-by-layer debugging</text>
+    <text class="t-title" x="64" y="88">11.2.1 Systematic narrowing</text>
     <text class="t-subtitle" x="64" y="132">Narrow down with evidence, not guesses</text>
     <text class="t-fig" x="1536" y="88" text-anchor="end">Figure 11.1</text>
     <line class="l-rule" x1="64" y1="160" x2="1536" y2="160"/>
